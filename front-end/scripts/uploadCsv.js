@@ -26,7 +26,7 @@ async function handleSubmit(event) {
       .then((r) => formatCsv(r.data.csvData))
       .catch((e) => console.log(JSON.stringify(e.response.data)));
   } else {
-    formatCsv(formatToString(localFile));
+    formatToString(localFile).then((formatedFile) => formatCsv(formatedFile));
   }
 }
 
