@@ -85,18 +85,23 @@ header{
     background-image: linear-gradient(-45deg, rgba(41,206,169, 0.28), rgba(33,199,181,0.28));
     padding: 1% 0;
 }
-
+.tabulator[filters="off"] .tabulator-headers{
+    height:1.5vw;
+}
 .tabulator-headers{
     width:100%;
     display: flex;
     
     font-weight: bolder;
     font-size: 1vw;
+    height:3vw;
+    transition: all 0.2s ease;
     & > * {
         padding-left:1%;
         padding-right:1%;
-        flex:1;
+        flex-grow:1;
     }
+    
 }
 .tabulator-tableHolder{
     min-height: 30vw;
@@ -116,8 +121,7 @@ header{
         justify-content: space-evenly;
         & > .tabulator-cell {
             padding-left: 1%;
-            padding-right: 1%;
-            
+            padding-right: 1%; 
             height:100%;
             flex:1;
             & > .table-col-resize-handle{
@@ -132,6 +136,10 @@ header{
 .tabulator-col-content{
     max-height:fit-content
 }
+.tabulator[filters="off"] .tabulator-header-filter{
+    display:none;
+}
+
 .tabulator-header-filter{
     width:75%;
     & > input {
@@ -186,29 +194,7 @@ header{
         background-image: url("../graphics/images/ArrowRight.png");
     }
 }
-/*
-.tabulator-col-title-holder{
-    position: relative;
-}
-.tabulator-col-title{
-    overflow: hidden;
-}
-.tabulator-arrow{
-    background-image: url("https://www.iconpacks.net/icons/2/free-arrow-down-icon-3101-thumb.png");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: 50%;
-    height:100%;
-    width:50%;
-}
 
-.tabulator-col-sorter{
-    position: absolute;
-    top:0;
-    right:0;
-    height:23px;
-    width:1.5vw;
-}*/
 
 .tabulator-col[aria-sort="none"] .tabulator-arrow{
     background-image: url("../graphics/images/DownArrow.png");
