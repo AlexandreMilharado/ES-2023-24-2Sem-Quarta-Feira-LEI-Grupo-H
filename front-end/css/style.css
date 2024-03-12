@@ -62,3 +62,112 @@ header{
         }
     }
 }
+
+
+.tabulator{
+    font-family: Karla;
+    width: 95%;
+    margin: auto;
+    background-color: #E2E2E2;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0px 9px 26px -1px rgba(0,0,0,0.24);
+    & > * {
+        width:100%;
+    }
+}
+
+.tabulator-header{
+    background-image: linear-gradient(-45deg, rgba(41,206,169, 0.28), rgba(33,199,181,0.28));
+    padding: 1% 0;
+}
+
+.tabulator-headers{
+    width:100%;
+    display: flex;
+    
+    font-weight: bolder;
+    font-size: 1vw;
+    & > * {
+        padding-left:1%;
+        padding-right:1%;
+        flex:1;
+    }
+}
+.tabulator-tableHolder{
+    min-height: 20vw;
+}
+.tabulator-table{
+    width:100%;
+    height:100%;
+    display: flex;
+    font-size: 1vw;
+    flex-direction: column;
+    & > .tabulator-row {
+        
+        width:100%;
+        display: flex;
+        height: 10%;
+        padding-top:1%;
+        justify-content: space-evenly;
+        & > .tabulator-cell {
+            padding-left: 1%;
+            padding-right: 1%;
+            
+            height:100%;
+            flex:1;
+            & > .table-col-resize-handle{
+                height: 100%;
+            }
+        }
+        &:hover{
+            background-color: rgb(41,206,169,0.13);
+        }
+    }
+}
+.tabulator-header-filter{
+    width:75%;
+    
+    & > input {
+        background-color: transparent;
+        border-width:0 0 2px;
+        &::placeholder{
+            content: "teste";
+        }
+    }
+}
+
+.tabulator-footer{
+    display:flex;
+    justify-content: right;
+
+    & > .tabulator-paginator{
+        width: 16%;
+        padding: 1% 0;
+        & > * {
+            margin-right: 4%;
+        }
+        
+    }
+    &  [title="First Page"], [title="Prev Page"], [title="Next Page"], [title="Last Page"]{
+        background-color: none;
+        border: none;
+        text-indent: -9999px;
+        overflow: hidden;
+        background-size: cover;
+        background-position: center;
+        &:disabled{
+            opacity: 50%;
+        }
+        
+    }
+    &  [title="First Page"], [title="Prev Page"]{
+        transform: rotate(180deg);
+    }
+    &  [title="First Page"], [title="Last Page"]{
+        background-image: url("../graphics/images/ArrowRightStrong.png");
+    }
+    &  [title="Prev Page"], [title="Next Page"]{
+        background-image: url("../graphics/images/ArrowRight.png");
+    }
+}
