@@ -58,26 +58,29 @@ var table = new Tabulator("#HorarioPrincipal", {
         {title:"Inicio", field:"hora_inicio", headerFilter:"input"},
         {title:"Fim", field:"hora_final", headerFilter:"input"},
         {title:"Data", field:"data", headerFilter:"input"},
-        {title:"Caracteristicas", field:"caracteristicas", headerFilter:"input"},
+        {title:"Caract.", field:"caracteristicas", headerFilter:"input"},
         {title:"Sala", field:"sala", headerFilter:"input"},
     ],
 });
 
 
 
-//Inserir Filter Toggle Button no paginator da tabela pre-feita
+//Iniciar a tabela com os filtros desligados (estao ligados por default)
+let horario = document.getElementById("HorarioPrincipal")
+horario.setAttribute("filters", "off")
 
+
+//Inserir Filter Toggle Button no paginator da tabela pre-feita
 let paginators = document.getElementsByClassName("tabulator-paginator");
 console.log(paginators)
 let filterToggleButton = document.createElement("button")
 filterToggleButton.className = "tabulator-filter-toggle-button"
-filterToggleButton.innerText = "Filtros"
 for (var i = 0; i < paginators.length; i++) {
     paginators.item(i).prepend(filterToggleButton);
     filterToggleButton.addEventListener("click", ()=> toggleFilter());
 }
 
-
+//funcao que liga/desliga os filtros
 function toggleFilter(){
         let table = document.getElementById("HorarioPrincipal");
         let toggled = table.getAttribute("filters")
