@@ -41,13 +41,13 @@ var tabledata = [
 var table = new Tabulator("#HorarioPrincipal", {
     headerFilterPlaceholder:"Filtrar por",
     data:tabledata,
-    layout:"fitDatafill",
+    layout:"fitDataFill",
     pagination:"local",
     paginationSize:10,
     paginationSizeSelector:[5, 10, 20, 40],
     movableColumns:true,
-    paginationCounter:"rows",
-    initialSort:[{column:"building",dir:"asc"},],
+    
+    initialSort:[{column:"curso",dir:"asc"},],
     columns:[
         {title:"Curso", field:"curso", headerFilter:"input"},
         {title:"UC", field:"uc", headerFilter:"input"},
