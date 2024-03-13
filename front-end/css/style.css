@@ -106,7 +106,6 @@ header{
         font-weight:600;
         font-size: 0.9vw;
         height:4vw;
-        
         transition: all 0.2s ease;
 
         & > .tabulator-col {

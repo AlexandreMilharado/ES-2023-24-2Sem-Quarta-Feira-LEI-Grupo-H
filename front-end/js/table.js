@@ -45,8 +45,7 @@ var table = new Tabulator("#HorarioPrincipal", {
     pagination:"local",
     paginationSize:10,
     paginationSizeSelector:[5, 10, 20, 40],
-    movableColumns:true,
-    
+    movableColumns:false,
     initialSort:[{column:"curso",dir:"asc"},],
     columns:[
         {title:"Curso", field:"curso", headerFilter:"input"},
