@@ -45,16 +45,32 @@ function convertdateToWeekNumber(dateString) {
     return dat;
 }
 
-function getDateWeek(date) {
-    const januaryFirst = new Date(date.getFullYear(), 0, 1);
-    const diffDays = Math.ceil(Math.abs(date - januaryFirst) / (1000 * 60 * 60 * 24));
-    const yearOffSet = januaryFirst.getDay() === 0 ? 6 : januaryFirst.getDay() - 1 //Valor de 0 a 6 segunda feira=1
-    const a = (diffDays + yearOffSet) / 7
-    return Math.floor(a) + 1
+
+/**
+ * Calculate the week number since the beggining of the year.
+ * 
+ * @param {Date} date The date to check for.
+ * @param {int} firstDayOfTheWeek (optional) 0 for Sunday, 1 for Monday,...,6 for Saturday.
+ * @returns int The number of the week.
+ */
+function getDateWeek(date, firstDayOfTheWeek=1) {
+
+    const firstDayOfTheYear = new Date(date.getFullYear(), 0, 1)//January 1st of the same year as date
+
+    var weekStartOffset=(firstDayOfTheYear).getDay() - firstDayOfTheWeek;
+    weekStartOffset += weekStartOffset<0?7:0;
+
+    const daysElapsedThisYear = Math.ceil(Math.abs(date - firstDayOfTheYear) / (1000 * 60 * 60 * 24));//Days since january 1st
+
+    const correctedDay = daysElapsedThisYear+weekStartOffset;
+
+    const weekNumber = Math.floor(correctedDay/7)+1;
+
+    return weekNumber;
 }
 
 var tabledataPlus = tabledata.map((row) => {
-    // ({ ...row, semana_do_ano:})
+    ({ ...row, semana_do_ano:getDateWeek(row.data)})
 })
 
 var table = new Tabulator("#HorarioPrincipal", {
