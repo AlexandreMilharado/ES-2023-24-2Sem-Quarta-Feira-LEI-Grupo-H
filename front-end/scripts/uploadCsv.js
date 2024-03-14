@@ -73,13 +73,23 @@ async function formatToString(localFile) {
 }
 
 /**
- * Recebe em texto um ficheiro .csv e transforma-o num array.
+ * Recebe em texto um ficheiro .csv e transforma-o num array de json's, [{...}, {...}, ...].
  *
- * Depois imprime na consola o array. //TODO mudar funcionalidade
- * Por exemplo: colocar numa variável global.
+ * Assume-se que existe headers no texto passado.
+ * Se conter ";" no header, assume-se uma separação de linhas com ";",
+ * caso contrário usa-se o delimitador ","
  * @param {String} text
+ * @returns Formated CSV
  */
 function formatCsv(text) {
-  const newArr = text.split("\n").map((linha) => linha.split(";"));
-  console.log(newArr);
+  const splitedText = text.split(new RegExp("\r\n|\n|\r"));
+  const delimiter =
+    splitedText.length > 0 && splitedText[0].includes(";") ? ";" : ",";
+  const headers = splitedText[0].split(delimiter);
+  return splitedText.slice(1).map((linha) =>
+    linha.split(delimiter).reduce((json, currentCell, coluna) => {
+      json[headers[coluna]] = currentCell;
+      return json;
+    }, {})
+  );
 }
