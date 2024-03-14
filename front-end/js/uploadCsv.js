@@ -1,5 +1,6 @@
-"use-strict";
+// "use-strict";
 import axios from "axios";
+import { setData } from "./table";
 
 const localForm = document.getElementById("localUpload");
 localForm.addEventListener("submit", handleSubmit);
@@ -10,9 +11,10 @@ localForm.addEventListener("submit", handleSubmit);
  * Se existir um .csv local e um url ao mesmo tempo vai dar prioridade ao ficheiro local,
  * caso contrário faz um chamada a API para ir buscar o ficheiro .csv.
  *
+ * Depois
  * @param {Event} event
  */
-async function handleSubmit(event) {
+async function handleSubmit(event, handleData) {
   event.preventDefault(); // Colocar comentário para testar
   const form = event.currentTarget;
   const { localFile, remoteFile } = formDataToJson(new FormData(form));
@@ -24,9 +26,12 @@ async function handleSubmit(event) {
         url: remoteFile,
       })
       .then((r) => formatCsv(r.data.csvData))
+      .then((file) => setData(file))
       .catch((e) => console.log(JSON.stringify(e.response.data)));
   } else {
-    formatToString(localFile).then((formatedFile) => formatCsv(formatedFile));
+    formatToString(localFile)
+      .then((formatedFile) => formatCsv(formatedFile))
+      .then((file) => setData(file));
   }
 }
 

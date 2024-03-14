@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>Gestor de Horarios</title>
-    <!--<link rel="icon" type="image/x-icon" href="">-->    
+    <!--<link rel="icon" type="image/x-icon" href="">-->
     <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.8.4/dist/js/tabulator.min.js"></script>
-    <script type="text/javascript" src="../js/init.js"></script>
     <link rel="stylesheet" href="../css/style.css">
-    
-    
+
+
 </head>
+
 <body>
+    <script type="text/javascript" src="../js/init.js"></script>
     <header>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Logo_ISCTE_Instituto_Universit%C3%A1rio_de_Lisboa.svg/740px-Logo_ISCTE_Instituto_Universit%C3%A1rio_de_Lisboa.svg.png">
+        <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Logo_ISCTE_Instituto_Universit%C3%A1rio_de_Lisboa.svg/740px-Logo_ISCTE_Instituto_Universit%C3%A1rio_de_Lisboa.svg.png">
     </header>
     <section id="PopUpUpload">
         <script type="module" src="../js/uploadCsv.js"></script>
@@ -22,10 +25,10 @@
             <form id="localUpload" method="post">
                 <input name="localFile" type="file" multiple accept=".csv">
                 <h6 class="line-border">or</h6>
-                
+
                 <input name="remoteFile" type="text" id="fileInput">
-                
-                
+
+
                 <button type="submit">UPLOAD</button>
             </form>
         </div>
@@ -39,7 +42,8 @@
     </section>
     <section id="MainTable">
         <div id="HorarioPrincipal" class="tabela"></div>
-        <script type="text/javascript" src="../js/table.js"></script>
+        <script type="module" src="../js/table.js"></script>
     </section>
 </body>
+
 </html>
