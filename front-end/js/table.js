@@ -40,13 +40,16 @@ var tabledata = [
 
 /**
  * Convert a "dd/MM/yyyy" (date format C) string into a Date object
+ * 
+ * Alternatively, if dd/mm/yy is passed, 1900's will be assumed for yy higher than the last two digits of the current year (+2) and 2000's otherwise
  * @param {string} dateString 
  * @returns {Date} date object
  */
-
 function dateStringFormatCToDate(dateString) { 
     let dateParts = dateString.split("/");
-    return new Date("20"+dateParts[2] + '/' + dateParts[1] + '/' + dateParts[0]);
+
+    const year = dateParts[2].length == 4?dateParts[2]:dateParts[2]>String((new Date().getYear() + 1900 +2)).slice(2)?"19"+dateParts[2]:"20"+dateParts[2];
+    return new Date(year + '/' + dateParts[1] + '/' + dateParts[0]);
 }
 
 
@@ -57,7 +60,7 @@ function dateStringFormatCToDate(dateString) {
  * @param {int} firstDayOfTheWeek (optional) 0 for Sunday, 1 for Monday,...,6 for Saturday.
  * @returns {int} int The number of the week.
  */
-function getDateWeek(date, firstDayOfTheWeek=1) {
+function getWeekNumber(date, firstDayOfTheWeek=1) {
 
     const firstDayOfTheYear = new Date(date.getFullYear(), 0, 1)//January 1st of the same year as date
 
@@ -85,18 +88,18 @@ const semester2Start = new Date(2024,1,5);
  * @param {Date} secondSemesterStart beggining date for the second semester (usually February)
  * @returns {int} int The number of the semester's week.
  */
-function getSemesterWeek(date, firstSemesterStart=semester1Start, secondSemesterStart=semester2Start){
+function getSemesterWeekNumber(date, firstSemesterStart=semester1Start, secondSemesterStart=semester2Start){
     const semesterStart = date < secondSemesterStart ? firstSemesterStart : secondSemesterStart;
-    const weekNumberOfSemesterStart = getDateWeek(semesterStart);
-    const weekNumberOfDate = getDateWeek(date);
+    const weekNumberOfSemesterStart = getWeekNumber(semesterStart);
+    const weekNumberOfDate = getWeekNumber(date);
     return (weekNumberOfDate - weekNumberOfSemesterStart) + 1;
 }
 
 //Adding week numbers to the list
 tabledata.forEach((row) => {
     dateObject = dateStringFormatCToDate(row.data);
-    row.semana_do_ano = getDateWeek(dateObject);
-    row.semana_do_semestre =getSemesterWeek(dateObject);
+    row.semana_do_ano = getWeekNumber(dateObject);
+    row.semana_do_semestre =getSemesterWeekNumber(dateObject);
 })
 
 var table = new Tabulator("#HorarioPrincipal", {
