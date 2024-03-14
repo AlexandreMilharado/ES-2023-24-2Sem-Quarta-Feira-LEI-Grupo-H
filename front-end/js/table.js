@@ -38,11 +38,15 @@ var tabledata = [
 
 ]
 
-function convertdateToWeekNumber(dateString) {
-    //  Convert a "dd/MM/yyyy" string into a Date object
-    let d = dateString.split("/");
-    let dat = new Date(d[2] + '/' + d[1] + '/' + d[0]);
-    return dat;
+/**
+ * Convert a "dd/MM/yyyy" (date format C) string into a Date object
+ * @param {string} dateString 
+ * @returns {Date} date object
+ */
+
+function dateStringFormatCToDate(dateString) { 
+    let dateParts = dateString.split("/");
+    return new Date("20"+dateParts[2] + '/' + dateParts[1] + '/' + dateParts[0]);
 }
 
 
@@ -51,7 +55,7 @@ function convertdateToWeekNumber(dateString) {
  * 
  * @param {Date} date The date to check for.
  * @param {int} firstDayOfTheWeek (optional) 0 for Sunday, 1 for Monday,...,6 for Saturday.
- * @returns int The number of the week.
+ * @returns {int} int The number of the week.
  */
 function getDateWeek(date, firstDayOfTheWeek=1) {
 
@@ -69,8 +73,30 @@ function getDateWeek(date, firstDayOfTheWeek=1) {
     return weekNumber;
 }
 
-var tabledataPlus = tabledata.map((row) => {
-    ({ ...row, semana_do_ano:getDateWeek(row.data)})
+//Semester Beginning dates for 2023/24
+const semester1Start = new Date(2023,8,11);
+const semester2Start = new Date(2024,1,5); 
+
+/**
+ * Calculate the week number since the beggining of the current semester.
+ * 
+ * @param {Date} date The date to check for.
+ * @param {Date} firstSemesterStart beggining date for the first semester (usually September)
+ * @param {Date} secondSemesterStart beggining date for the second semester (usually February)
+ * @returns {int} int The number of the semester's week.
+ */
+function getSemesterWeek(date, firstSemesterStart=semester1Start, secondSemesterStart=semester2Start){
+    const semesterStart = date < secondSemesterStart ? firstSemesterStart : secondSemesterStart;
+    const weekNumberOfSemesterStart = getDateWeek(semesterStart);
+    const weekNumberOfDate = getDateWeek(date);
+    return (weekNumberOfDate - weekNumberOfSemesterStart) + 1;
+}
+
+//Adding week numbers to the list
+tabledata.forEach((row) => {
+    dateObject = dateStringFormatCToDate(row.data);
+    row.semana_do_ano = getDateWeek(dateObject);
+    row.semana_do_semestre =getSemesterWeek(dateObject);
 })
 
 var table = new Tabulator("#HorarioPrincipal", {
@@ -94,6 +120,8 @@ var table = new Tabulator("#HorarioPrincipal", {
         { title: "Data", field: "data", headerFilter: "input" },
         { title: "Caract.", field: "caracteristicas", headerFilter: "input" },
         { title: "Sala", field: "sala", headerFilter: "input" },
+        { title: "Sem. Ano", field: "semana_do_ano", headerFilter: "input" },
+        { title: "Sem. Semestre", field: "semana_do_semestre", headerFilter: "input" },
     ],
 });
 
