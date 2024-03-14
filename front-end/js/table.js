@@ -2,7 +2,16 @@
 
 console.log("CHECK")
 var tabledata = [
+    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
+    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "12/11/22", caracteristicas: "-", sala: "C6.01" },
+    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
+    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "20/12/23", caracteristicas: "Computadores", sala: "D1.07" },
     { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
+    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "18/10/23", caracteristicas: "Servidores", sala: "C7.06" },
+    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "22/11/22", caracteristicas: "-", sala: "C6.01" },
+    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "30/12/23", caracteristicas: "Computadores", sala: "D1.07" },
+    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "28/10/23", caracteristicas: "Servidores", sala: "C7.06" },
+    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "30/11/22", caracteristicas: "-", sala: "C6.01" },
     { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
     { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
     { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
@@ -17,19 +26,10 @@ var tabledata = [
     { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
     { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
     { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
+    { curso: "LEI", uc: "TC2", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
     { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
     { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
-    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
-    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
-    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
-    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
-    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
-    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
+    { curso: "LEI", uc: "TC2", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "25/11/22", caracteristicas: "-", sala: "C6.01" },
     { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
     { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
     { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
@@ -45,10 +45,10 @@ var tabledata = [
  * @param {string} dateString 
  * @returns {Date} date object
  */
-function dateStringFormatCToDate(dateString) { 
+function dateStringFormatCToDate(dateString) {
     let dateParts = dateString.split("/");
 
-    const year = dateParts[2].length == 4?dateParts[2]:dateParts[2]>String((new Date().getYear() + 1900 +2)).slice(2)?"19"+dateParts[2]:"20"+dateParts[2];
+    const year = dateParts[2].length == 4 ? dateParts[2] : dateParts[2] > String((new Date().getYear() + 1900 + 2)).slice(2) ? "19" + dateParts[2] : "20" + dateParts[2];
     return new Date(year + '/' + dateParts[1] + '/' + dateParts[0]);
 }
 
@@ -60,25 +60,67 @@ function dateStringFormatCToDate(dateString) {
  * @param {int} firstDayOfTheWeek (optional) 0 for Sunday, 1 for Monday,...,6 for Saturday.
  * @returns {int} int The number of the week.
  */
-function getWeekNumber(date, firstDayOfTheWeek=1) {
+function getWeekNumber(date, firstDayOfTheWeek = 1) {
 
     const firstDayOfTheYear = new Date(date.getFullYear(), 0, 1)//January 1st of the same year as date
 
-    var weekStartOffset=(firstDayOfTheYear).getDay() - firstDayOfTheWeek;
-    weekStartOffset += weekStartOffset<0?7:0;
+    var weekStartOffset = (firstDayOfTheYear).getDay() - firstDayOfTheWeek;
+    weekStartOffset += weekStartOffset < 0 ? 7 : 0;
 
     const daysElapsedThisYear = Math.ceil(Math.abs(date - firstDayOfTheYear) / (1000 * 60 * 60 * 24));//Days since january 1st
 
-    const correctedDay = daysElapsedThisYear+weekStartOffset;
+    const correctedDay = daysElapsedThisYear + weekStartOffset;
 
-    const weekNumber = Math.floor(correctedDay/7)+1;
+    const weekNumber = Math.floor(correctedDay / 7) + 1;
 
     return weekNumber;
 }
 
+//will return an object with a begginging week for each semester for each course.
+function calculateSemesters(tableData) {
+
+
+
+    const ucs = []
+    tableData.forEach((value) => {
+        const found = ucs.find((v) => { return (value["uc"] == v["uc"] && value["curso"] == v["curso"]) })
+        if (found) {
+            a = dateStringFormatCToDate(value.data)
+            if (a < found.firstDate) {
+                found.firstDate = a
+            }
+            if (a > found.lastDate) {
+                found.lastDate = a
+            }
+        } else {
+            ucs.push({ curso: value["curso"], uc: value["uc"], firstDate: dateStringFormatCToDate(value["data"]), lastDate: dateStringFormatCToDate(value["data"]) })
+        }
+    })
+
+    console.log(ucs)
+    const cursos = new Set(ucs.map((v)=>{return v.curso}))
+    console.log(cursos)
+
+    const output={}
+
+    function calculateToNameLater(){
+
+    }
+
+    cursos.forEach((value)=>{
+        const curso = ucs.filter((v)=>{return v.curso==value})//tem apenas as UCs de um curso
+        calculateToNameLater()
+    })
+
+    const firstSemesterStart = tableData[0]["data"];
+    const secondSemesterStart = tableData[1]["data"];
+    // return {firstSemesterStart:firstSemesterStart,secondSemesterStart:secondSemesterStart}
+    return ucs;
+}
+
 //Semester Beginning dates for 2023/24
-const semester1Start = new Date(2023,8,11);
-const semester2Start = new Date(2024,1,5); 
+const semester1Start = new Date(2023, 8, 11);
+const semester2Start = new Date(2024, 1, 5);
 
 /**
  * Calculate the week number since the beggining of the current semester.
@@ -88,7 +130,7 @@ const semester2Start = new Date(2024,1,5);
  * @param {Date} secondSemesterStart beggining date for the second semester (usually February)
  * @returns {int} int The number of the semester's week.
  */
-function getSemesterWeekNumber(date, firstSemesterStart=semester1Start, secondSemesterStart=semester2Start){
+function getSemesterWeekNumber(date, firstSemesterStart = semester1Start, secondSemesterStart = semester2Start) {
     const semesterStart = date < secondSemesterStart ? firstSemesterStart : secondSemesterStart;
     const weekNumberOfSemesterStart = getWeekNumber(semesterStart);
     const weekNumberOfDate = getWeekNumber(date);
@@ -99,7 +141,7 @@ function getSemesterWeekNumber(date, firstSemesterStart=semester1Start, secondSe
 tabledata.forEach((row) => {
     dateObject = dateStringFormatCToDate(row.data);
     row.semana_do_ano = getWeekNumber(dateObject);
-    row.semana_do_semestre =getSemesterWeekNumber(dateObject);
+    row.semana_do_semestre = getSemesterWeekNumber(dateObject);
 })
 
 var table = new Tabulator("#HorarioPrincipal", {
