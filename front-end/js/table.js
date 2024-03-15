@@ -156,7 +156,6 @@ const {firstSemesterStart:semester1Start,secondSemesterStart:semester2Start}=cal
  */
 function getSemesterWeekNumber(date, firstSemesterStart = semester1Start, secondSemesterStart = semester2Start) {
     const semesterStart = date < secondSemesterStart ? firstSemesterStart : secondSemesterStart;
-    console.log(semesterStart);
     const weekNumberOfSemesterStart = getWeekNumber(semesterStart);
     const weekNumberOfDate = getWeekNumber(date);
     return (weekNumberOfDate - weekNumberOfSemesterStart) + 1;
