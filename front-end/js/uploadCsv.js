@@ -1,6 +1,9 @@
-// "use-strict";
+"use-strict";
 import axios from "axios";
 import { setData } from "./table";
+import { togglePopUp } from "./init";
+
+const server = "http://localhost:3001";
 
 const localForm = document.getElementById("localUpload");
 localForm.addEventListener("submit", handleSubmit);
@@ -11,18 +14,23 @@ localForm.addEventListener("submit", handleSubmit);
  * Se existir um .csv local e um url ao mesmo tempo vai dar prioridade ao ficheiro local,
  * caso contrário faz um chamada a API para ir buscar o ficheiro .csv.
  *
- * Depois
+ * Formata corretamente o ficheiro .CSV num [{...}, {...}, ...] e chama a função
+ * "setData(file)" que irá atualizar os dados no tabulator.
+ * Limpa os inputs e depois fecha o popUp de upload.
  * @param {Event} event
+ *
+ * Example remote URL: https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemplo.csv
+
+ * Example local URL: ./Software-Engineering/front-end/others/HorarioDeExemplo.csv
  */
-async function handleSubmit(event, handleData) {
-  event.preventDefault(); // Colocar comentário para testar
+async function handleSubmit(event) {
+  event.preventDefault();
   const form = event.currentTarget;
   const { localFile, remoteFile } = formDataToJson(new FormData(form));
 
   if (needToDownloadCsv(localFile, remoteFile)) {
-    //Example URL:https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemplo.csv
     axios
-      .post("http://localhost:3001/uploadHorario", {
+      .post(`${server}/uploadHorario`, {
         url: remoteFile,
       })
       .then((r) => formatCsv(r.data.csvData))
@@ -33,6 +41,9 @@ async function handleSubmit(event, handleData) {
       .then((formatedFile) => formatCsv(formatedFile))
       .then((file) => setData(file));
   }
+
+  form.reset();
+  togglePopUp(false);
 }
 
 /**
