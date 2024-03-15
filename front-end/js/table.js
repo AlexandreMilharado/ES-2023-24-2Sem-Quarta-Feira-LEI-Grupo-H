@@ -1,6 +1,5 @@
 //MERAMENTE UMA TEMPLATE
 
-console.log("CHECK")
 var tabledata = [
     { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
     { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "12/11/22", caracteristicas: "-", sala: "C6.01" },
@@ -20,13 +19,13 @@ var tabledata = [
     { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
     { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
     { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
-    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
+    { curso: "LEI", uc: "TC3", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "6/9/22", caracteristicas: "-", sala: "C6.01" },
+    { curso: "HMP", uc: "ADCS3", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "21/2/23", caracteristicas: "Computadores", sala: "D1.07" },
     { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
     { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
     { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
     { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC2", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
+    { curso: "LEI", uc: "TC2", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "1/9/22", caracteristicas: "-", sala: "C6.01" },
     { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
     { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
     { curso: "LEI", uc: "TC2", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "25/11/22", caracteristicas: "-", sala: "C6.01" },
@@ -39,7 +38,7 @@ var tabledata = [
 ]
 
 /**
- * Convert a "dd/MM/yyyy" (date format C) string into a Date object
+ * Convert a "dd/mm/yyyy" string into a Date object
  * 
  * Alternatively, if dd/mm/yy is passed, 1900's will be assumed for yy higher than the last two digits of the current year (+2) and 2000's otherwise
  * @param {string} dateString 
@@ -76,10 +75,21 @@ function getWeekNumber(date, firstDayOfTheWeek = 1) {
     return weekNumber;
 }
 
-//will return an object with a begginging week for each semester for each course.
+/**
+ * Temporarilly returns a static vallue working for the 2022-2023 academic year.
+ * 
+ * @param {[{any}]} tableData 
+ * @returns {{ firstSemesterStart: Date, firstSemesterFinish: Date,secondSemesterStart: Date,secondSemesterFinish: Date}}
+ */
 function calculateSemesters(tableData) {
 
-
+    //Semester Beginning dates for 2023/24
+    return {
+        firstSemesterStart: new Date(2022,8,1),
+        firstSemesterFinish: new Date(2023,0,28),
+        secondSemesterStart: new Date(2023,0,30),
+        secondSemesterFinish: new Date(2023,6,1),
+    }
 
     const ucs = []
     tableData.forEach((value) => {
@@ -98,29 +108,43 @@ function calculateSemesters(tableData) {
     })
 
     console.log(ucs)
-    const cursos = new Set(ucs.map((v)=>{return v.curso}))
+    const cursos = new Set(ucs.map((v) => { return v.curso }))
     console.log(cursos)
 
-    const output={}
+    const output = {}
 
-    function calculateToNameLater(){
+    function calculateSemestersPerCourse(ucs) {
+        console.log("ucs: ", ucs)
+        const firstClass = ucs.reduce((previous, next) => { return previous.firstDate < next.firstDate ? previous : next }, initialValue = ucs[0])
+        const lastClass = ucs.reduce((previous, next) => { return previous.lastDate > next.lastDate ? previous : next }, ucs[0])
+        console.log("fc", firstClass, "lc", lastClass)
+        const semesters = []//[{ucs:["DIAM,PISID,ES"],firstDate:...,lastDate:...},...]
+        function addClass() {
+            function intercepts() {
 
+            }
+        }
+        return { firstClass: new Date(), lastClass: new Date() }
     }
 
-    cursos.forEach((value)=>{
-        const curso = ucs.filter((v)=>{return v.curso==value})//tem apenas as UCs de um curso
-        calculateToNameLater()
+    cursos.forEach((value) => {
+        console.log("curso:", value)
+        const curso = ucs.filter((v) => { return v.curso == value })//tem apenas as UCs de um curso
+        console.log("curso", curso)
+        calculateSemestersPerCourse(curso)
     })
 
     const firstSemesterStart = tableData[0]["data"];
     const secondSemesterStart = tableData[1]["data"];
-    // return {firstSemesterStart:firstSemesterStart,secondSemesterStart:secondSemesterStart}
-    return ucs;
+    return {
+        firstSemesterStart: firstSemesterStart,
+        secondSemesterStart: secondSemesterStart,
+        firstSemesterFinish: firstSemesterFinish,
+        secondSemesterFinish: secondSemesterFinish
+    }
 }
 
-//Semester Beginning dates for 2023/24
-const semester1Start = new Date(2023, 8, 11);
-const semester2Start = new Date(2024, 1, 5);
+const {firstSemesterStart:semester1Start,secondSemesterStart:semester2Start}=calculateSemesters(tabledata)
 
 /**
  * Calculate the week number since the beggining of the current semester.
@@ -132,6 +156,7 @@ const semester2Start = new Date(2024, 1, 5);
  */
 function getSemesterWeekNumber(date, firstSemesterStart = semester1Start, secondSemesterStart = semester2Start) {
     const semesterStart = date < secondSemesterStart ? firstSemesterStart : secondSemesterStart;
+    console.log(semesterStart);
     const weekNumberOfSemesterStart = getWeekNumber(semesterStart);
     const weekNumberOfDate = getWeekNumber(date);
     return (weekNumberOfDate - weekNumberOfSemesterStart) + 1;
