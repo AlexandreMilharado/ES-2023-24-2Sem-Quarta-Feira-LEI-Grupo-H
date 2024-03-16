@@ -1,174 +1,193 @@
-//MERAMENTE UMA TEMPLATE
+/**
+ * Inicializar o tabulator sem dados.
+ */
+let tabledata = [{ Message: "Dados ainda não inseridos" }];
+let table = new Tabulator("#HorarioPrincipal", {
+  data: tabledata,
+  layout: "fitDataFill",
+  pagination: "local",
+  paginationSize: 10,
+  paginationSizeSelector: [5, 10, 20, 40],
+  movableColumns: false,
+  autoColumns: true,
+});
 
-var tabledata = [
-    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
-    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "12/11/22", caracteristicas: "-", sala: "C6.01" },
-    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "20/12/23", caracteristicas: "Computadores", sala: "D1.07" },
-    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
-    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "18/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "22/11/22", caracteristicas: "-", sala: "C6.01" },
-    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "30/12/23", caracteristicas: "Computadores", sala: "D1.07" },
-    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "28/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "30/11/22", caracteristicas: "-", sala: "C6.01" },
-    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
-    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
-    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
-    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
-    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
-    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC3", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "6/9/22", caracteristicas: "-", sala: "C6.01" },
-    { curso: "HMP", uc: "ADCS3", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "21/2/23", caracteristicas: "Computadores", sala: "D1.07" },
-    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
-    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
-    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC2", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "1/9/22", caracteristicas: "-", sala: "C6.01" },
-    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
-    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC2", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "25/11/22", caracteristicas: "-", sala: "C6.01" },
-    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
-    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-    { curso: "LEI", uc: "TC", turno: "Manha", turma: "EI03", num_inscritos: "34", dia_semana: "Ter.", hora_inicio: "11h00", hora_final: "12h30", data: "2/11/22", caracteristicas: "-", sala: "C6.01" },
-    { curso: "HMP", uc: "ADCS", turno: "Manha", turma: "H01", num_inscritos: "15", dia_semana: "Qui.", hora_inicio: "13h00", hora_final: "16h00", data: "10/12/23", caracteristicas: "Computadores", sala: "D1.07" },
-    { curso: "ETI", uc: "AR", turno: "Tarde", turma: "ET07", num_inscritos: "29", dia_semana: "Qua.", hora_inicio: "14h30", hora_final: "16h00", data: "8/10/23", caracteristicas: "Servidores", sala: "C7.06" },
-
-]
+const EMPTY_DATA = "";
+/**
+ * Inicializar o Filter Toggle Button no paginator da tabela
+ */
+let paginators = document.getElementsByClassName("tabulator-paginator");
+let filterToggleButton = document.createElement("button");
+filterToggleButton.className = "tabulator-filter-toggle-button";
 
 /**
  * Convert a "dd/mm/yyyy" string into a Date object
- * 
+ *
  * Alternatively, if dd/mm/yy is passed, 1900's will be assumed for yy higher than the last two digits of the current year (+2) and 2000's otherwise
- * @param {string} dateString 
+ * @param {string} dateString
  * @returns {Date} date object
  */
 function dateStringFormatCToDate(dateString) {
-    let dateParts = dateString.split("/");
+  let dateParts = dateString.split("/");
+  if (dateParts.length < 3) return null;
 
-    const year = dateParts[2].length == 4 ? dateParts[2] : dateParts[2] > String((new Date().getYear() + 1900 + 2)).slice(2) ? "19" + dateParts[2] : "20" + dateParts[2];
-    return new Date(year + '/' + dateParts[1] + '/' + dateParts[0]);
+  const year =
+    dateParts[2].length == 4
+      ? dateParts[2]
+      : dateParts[2] > String(new Date().getYear() + 1900 + 2).slice(2)
+      ? "19" + dateParts[2]
+      : "20" + dateParts[2];
+  return new Date(year + "/" + dateParts[1] + "/" + dateParts[0]);
 }
-
 
 /**
  * Calculate the week number since the beggining of the year.
- * 
+ *
  * @param {Date} date The date to check for.
  * @param {int} firstDayOfTheWeek (optional) 0 for Sunday, 1 for Monday,...,6 for Saturday.
  * @returns {int} int The number of the week.
  */
 function getWeekNumber(date, firstDayOfTheWeek = 1) {
+  if (date === null) return EMPTY_DATA;
 
-    const firstDayOfTheYear = new Date(date.getFullYear(), 0, 1)//January 1st of the same year as date
+  const firstDayOfTheYear = new Date(date.getFullYear(), 0, 1); //January 1st of the same year as date
 
-    var weekStartOffset = (firstDayOfTheYear).getDay() - firstDayOfTheWeek;
-    weekStartOffset += weekStartOffset < 0 ? 7 : 0;
+  var weekStartOffset = firstDayOfTheYear.getDay() - firstDayOfTheWeek;
+  weekStartOffset += weekStartOffset < 0 ? 7 : 0;
 
-    const daysElapsedThisYear = Math.ceil(Math.abs(date - firstDayOfTheYear) / (1000 * 60 * 60 * 24));//Days since january 1st
+  const daysElapsedThisYear = Math.ceil(
+    Math.abs(date - firstDayOfTheYear) / (1000 * 60 * 60 * 24)
+  ); //Days since january 1st
 
-    const correctedDay = daysElapsedThisYear + weekStartOffset;
+  const correctedDay = daysElapsedThisYear + weekStartOffset;
 
-    const weekNumber = Math.floor(correctedDay / 7) + 1;
+  const weekNumber = Math.floor(correctedDay / 7) + 1;
 
-    return weekNumber;
+  return weekNumber;
 }
 
 /**
  * Temporarilly returns a static vallue working for the 2022-2023 academic year.
- * 
- * @param {[{any}]} tableData 
+ *
+ * @param {[{any}]} tableData
  * @returns {{ firstSemesterStart: Date, firstSemesterFinish: Date,secondSemesterStart: Date,secondSemesterFinish: Date}}
  */
 function calculateSemesters(tableData) {
+  // Semester Beginning dates for 2023/24
+  return {
+    firstSemesterStart: new Date(2022, 8, 1),
+    firstSemesterFinish: new Date(2023, 0, 28),
+    secondSemesterStart: new Date(2023, 0, 30),
+    secondSemesterFinish: new Date(2023, 6, 1),
+  };
 
-    //Semester Beginning dates for 2023/24
-    return {
-        firstSemesterStart: new Date(2022,8,1),
-        firstSemesterFinish: new Date(2023,0,28),
-        secondSemesterStart: new Date(2023,0,30),
-        secondSemesterFinish: new Date(2023,6,1),
-    }
+  // TODO - Make Semesters calculation dynamic
+  // const ucs = [];
+  // tableData.forEach((value) => {
+  //   const found = ucs.find((v) => {
+  //     return value["uc"] == v["uc"] && value["curso"] == v["curso"];
+  //   });
+  //   if (found) {
+  //     a = dateStringFormatCToDate(value.data);
+  //     if (a < found.firstDate) {
+  //       found.firstDate = a;
+  //     }
+  //     if (a > found.lastDate) {
+  //       found.lastDate = a;
+  //     }
+  //   } else {
+  //     ucs.push({
+  //       curso: value["curso"],
+  //       uc: value["uc"],
+  //       firstDate: dateStringFormatCToDate(value["data"]),
+  //       lastDate: dateStringFormatCToDate(value["data"]),
+  //     });
+  //   }
+  // });
 
-    const ucs = []
-    tableData.forEach((value) => {
-        const found = ucs.find((v) => { return (value["uc"] == v["uc"] && value["curso"] == v["curso"]) })
-        if (found) {
-            a = dateStringFormatCToDate(value.data)
-            if (a < found.firstDate) {
-                found.firstDate = a
-            }
-            if (a > found.lastDate) {
-                found.lastDate = a
-            }
-        } else {
-            ucs.push({ curso: value["curso"], uc: value["uc"], firstDate: dateStringFormatCToDate(value["data"]), lastDate: dateStringFormatCToDate(value["data"]) })
-        }
-    })
+  // console.log(ucs);
+  // const cursos = new Set(
+  //   ucs.map((v) => {
+  //     return v.curso;
+  //   })
+  // );
+  // console.log(cursos);
 
-    console.log(ucs)
-    const cursos = new Set(ucs.map((v) => { return v.curso }))
-    console.log(cursos)
+  // const output = {};
 
-    const output = {}
+  // function calculateSemestersPerCourse(ucs) {
+  //   console.log("ucs: ", ucs);
+  //   const firstClass = ucs.reduce((previous, next) => {
+  //     return previous.firstDate < next.firstDate ? previous : next;
+  //   }, (initialValue = ucs[0]));
+  //   const lastClass = ucs.reduce((previous, next) => {
+  //     return previous.lastDate > next.lastDate ? previous : next;
+  //   }, ucs[0]);
+  //   console.log("fc", firstClass, "lc", lastClass);
+  //   const semesters = []; //[{ucs:["DIAM,PISID,ES"],firstDate:...,lastDate:...},...]
+  //   function addClass() {
+  //     function intercepts() {}
+  //   }
+  //   return { firstClass: new Date(), lastClass: new Date() };
+  // }
 
-    function calculateSemestersPerCourse(ucs) {
-        console.log("ucs: ", ucs)
-        const firstClass = ucs.reduce((previous, next) => { return previous.firstDate < next.firstDate ? previous : next }, initialValue = ucs[0])
-        const lastClass = ucs.reduce((previous, next) => { return previous.lastDate > next.lastDate ? previous : next }, ucs[0])
-        console.log("fc", firstClass, "lc", lastClass)
-        const semesters = []//[{ucs:["DIAM,PISID,ES"],firstDate:...,lastDate:...},...]
-        function addClass() {
-            function intercepts() {
+  // cursos.forEach((value) => {
+  //   console.log("curso:", value);
+  //   const curso = ucs.filter((v) => {
+  //     return v.curso == value;
+  //   }); //tem apenas as UCs de um curso
+  //   console.log("curso", curso);
+  //   calculateSemestersPerCourse(curso);
+  // });
 
-            }
-        }
-        return { firstClass: new Date(), lastClass: new Date() }
-    }
-
-    cursos.forEach((value) => {
-        console.log("curso:", value)
-        const curso = ucs.filter((v) => { return v.curso == value })//tem apenas as UCs de um curso
-        console.log("curso", curso)
-        calculateSemestersPerCourse(curso)
-    })
-
-    const firstSemesterStart = tableData[0]["data"];
-    const secondSemesterStart = tableData[1]["data"];
-    return {
-        firstSemesterStart: firstSemesterStart,
-        secondSemesterStart: secondSemesterStart,
-        firstSemesterFinish: firstSemesterFinish,
-        secondSemesterFinish: secondSemesterFinish
-    }
+  // const firstSemesterStart = tableData[0]["data"];
+  // const secondSemesterStart = tableData[1]["data"];
+  // return {
+  //   firstSemesterStart: firstSemesterStart,
+  //   secondSemesterStart: secondSemesterStart,
+  //   firstSemesterFinish: firstSemesterFinish,
+  //   secondSemesterFinish: secondSemesterFinish,
+  // };
 }
 
-const {firstSemesterStart:semester1Start,secondSemesterStart:semester2Start}=calculateSemesters(tabledata)
+const {
+  firstSemesterStart: semester1Start,
+  secondSemesterStart: semester2Start,
+} = calculateSemesters(tabledata);
 
 /**
  * Calculate the week number since the beggining of the current semester.
- * 
+ *
  * @param {Date} date The date to check for.
  * @param {Date} firstSemesterStart beggining date for the first semester (usually September)
  * @param {Date} secondSemesterStart beggining date for the second semester (usually February)
  * @returns {int} int The number of the semester's week.
  */
-function getSemesterWeekNumber(date, firstSemesterStart = semester1Start, secondSemesterStart = semester2Start) {
-    const semesterStart = date < secondSemesterStart ? firstSemesterStart : secondSemesterStart;
-    const weekNumberOfSemesterStart = getWeekNumber(semesterStart);
-    const weekNumberOfDate = getWeekNumber(date);
-    return (weekNumberOfDate - weekNumberOfSemesterStart) + 1;
+function getSemesterWeekNumber(
+  date,
+  firstSemesterStart = semester1Start,
+  secondSemesterStart = semester2Start
+) {
+  if (date === null) return EMPTY_DATA;
+
+  const semesterStart =
+    date < secondSemesterStart ? firstSemesterStart : secondSemesterStart;
+  const weekNumberOfSemesterStart = getWeekNumber(semesterStart);
+  const weekNumberOfDate = getWeekNumber(date);
+  return weekNumberOfDate - weekNumberOfSemesterStart + 1;
 }
 
-//Adding week numbers to the list
-tabledata.forEach((row) => {
-    dateObject = dateStringFormatCToDate(row.data);
-    row.semana_do_ano = getWeekNumber(dateObject);
-    row.semana_do_semestre = getSemesterWeekNumber(dateObject);
-})
+/**
+ * Atualizar os dados no Tabulator consoante o ficheiro .CSV formatado:
+ * [{...},{...}, {...}, ...]
+ *
+ * @param {FormatedCsvFile} file
+ */
+export function setData(file) {
+  tabledata = file;
+  addSemanasColumns();
 
-var table = new Tabulator("#HorarioPrincipal", {
+  table = new Tabulator("#HorarioPrincipal", {
     headerFilterPlaceholder: "Filtrar por",
     data: tabledata,
     layout: "fitDataFill",
@@ -176,49 +195,66 @@ var table = new Tabulator("#HorarioPrincipal", {
     paginationSize: 10,
     paginationSizeSelector: [5, 10, 20, 40],
     movableColumns: false,
-    initialSort: [{ column: "curso", dir: "asc" },],
-    columns: [
-        { title: "Curso", field: "curso", headerFilter: "input" },
-        { title: "UC", field: "uc", headerFilter: "input" },
-        { title: "Turno", field: "turno", headerFilter: "input" },
-        { title: "Turma", field: "turma", headerFilter: "input" },
-        { title: "#", field: "num_inscritos", headerFilter: "input" },
-        { title: "Dia Sem.", field: "dia_semana", headerFilter: "input" },
-        { title: "Inicio", field: "hora_inicio", headerFilter: "input" },
-        { title: "Fim", field: "hora_final", headerFilter: "input" },
-        { title: "Data", field: "data", headerFilter: "input" },
-        { title: "Caract.", field: "caracteristicas", headerFilter: "input" },
-        { title: "Sala", field: "sala", headerFilter: "input" },
-        { title: "Sem. Ano", field: "semana_do_ano", headerFilter: "input" },
-        { title: "Sem. Semestre", field: "semana_do_semestre", headerFilter: "input" },
-    ],
-});
+    autoColumns: true,
+    autoColumnsDefinitions: function (definitions) {
+      // Adicionar Filtros no Tabulator
+      definitions.forEach((column) => {
+        column.headerFilter = true;
+      });
+      return definitions;
+    },
+  });
 
-
-
-//Iniciar a tabela com os filtros desligados (estao ligados por default)
-let horario = document.getElementById("HorarioPrincipal")
-horario.setAttribute("filters", "off")
-
-
-//Inserir Filter Toggle Button no paginator da tabela pre-feita
-let paginators = document.getElementsByClassName("tabulator-paginator");
-console.log(paginators)
-let filterToggleButton = document.createElement("button")
-filterToggleButton.className = "tabulator-filter-toggle-button"
-for (var i = 0; i < paginators.length; i++) {
-    paginators.item(i).prepend(filterToggleButton);
-    filterToggleButton.addEventListener("click", () => toggleFilter());
+  renderFilterProps();
 }
 
-//funcao que liga/desliga os filtros
-function toggleFilter() {
-    let table = document.getElementById("HorarioPrincipal");
-    let toggled = table.getAttribute("filters")
-    if (toggled == null || toggled == "off") {
-        table.setAttribute("filters", "on");
-    } else {
-        table.setAttribute("filters", "off");
-    }
+// function addSemanasHeaders(file) {
+//   return file.map((row) => {
+//     row.semana_do_ano = 1;
+//     row.semana_do_semestre = 1;
+//     return row;
+//   });
+// }
 
+/**
+ * Adiciona os filtros no tabela e desliga-os para não aparecerem no ecrã(aparecem por default).
+ */
+function renderFilterProps() {
+  for (let i = 0; i < paginators.length; i++) {
+    paginators.item(i).prepend(filterToggleButton);
+    filterToggleButton.addEventListener("click", () => toggleFilter());
+  }
+
+  let horario = document.getElementById("HorarioPrincipal");
+  horario.setAttribute("filters", "off");
+}
+
+/**
+ * If the following tabledata has attribute "Data da aula" adds week numbers to every row from table,
+ * else skips completly this function.
+ */
+function addSemanasColumns() {
+  tabledata.forEach((row) => {
+    let dateObject;
+    try {
+      dateObject = dateStringFormatCToDate(row["Data da aula"]);
+    } catch (error) {
+      return;
+    }
+    row["Semana do Ano"] = getWeekNumber(dateObject);
+    row["Semana do Semestre"] = getSemesterWeekNumber(dateObject);
+  });
+}
+
+/**
+ * Função que liga/desliga os filtros.
+ */
+function toggleFilter() {
+  let table = document.getElementById("HorarioPrincipal");
+  let toggled = table.getAttribute("filters");
+  if (toggled == null || toggled == "off") {
+    table.setAttribute("filters", "on");
+  } else {
+    table.setAttribute("filters", "off");
+  }
 }

@@ -1,5 +1,9 @@
 "use-strict";
 import axios from "axios";
+import { setData } from "./table";
+import { togglePopUp } from "./init";
+
+const SERVER = "http://localhost:3001";
 
 const localForm = document.getElementById("localUpload");
 localForm.addEventListener("submit", handleSubmit);
@@ -10,24 +14,36 @@ localForm.addEventListener("submit", handleSubmit);
  * Se existir um .csv local e um url ao mesmo tempo vai dar prioridade ao ficheiro local,
  * caso contrário faz um chamada a API para ir buscar o ficheiro .csv.
  *
+ * Formata corretamente o ficheiro .CSV num [{...}, {...}, ...] e chama a função
+ * "setData(file)" que irá atualizar os dados no tabulator.
+ * Limpa os inputs e depois fecha o popUp de upload.
  * @param {Event} event
+ *
+ * Example remote URL: https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemplo.csv
+
+ * Example local URL: ./Software-Engineering/front-end/others/HorarioDeExemplo.csv
  */
 async function handleSubmit(event) {
-  event.preventDefault(); // Colocar comentário para testar
+  event.preventDefault();
   const form = event.currentTarget;
   const { localFile, remoteFile } = formDataToJson(new FormData(form));
 
   if (needToDownloadCsv(localFile, remoteFile)) {
-    //Example URL:https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemplo.csv
     axios
-      .post("http://localhost:3001/uploadHorario", {
+      .post(`${SERVER}/uploadHorario`, {
         url: remoteFile,
       })
       .then((r) => formatCsv(r.data.csvData))
+      .then((file) => setData(file))
       .catch((e) => console.log(JSON.stringify(e.response.data)));
   } else {
-    formatToString(localFile).then((formatedFile) => formatCsv(formatedFile));
+    formatToString(localFile)
+      .then((formatedFile) => formatCsv(formatedFile))
+      .then((file) => setData(file));
   }
+
+  form.reset();
+  togglePopUp(false);
 }
 
 /**
@@ -73,13 +89,31 @@ async function formatToString(localFile) {
 }
 
 /**
- * Recebe em texto um ficheiro .csv e transforma-o num array.
+ * Recebe em texto um ficheiro .csv e transforma-o num array de json's, [{...}, {...}, ...].
  *
- * Depois imprime na consola o array. //TODO mudar funcionalidade
- * Por exemplo: colocar numa variável global.
+ * Assume-se que existe headers no texto passado.
+ * Se conter ";" no header, assume-se uma separação de linhas com ";",
+ * caso contrário usa-se o delimitador ",".
+ * Se existir apenas um Enter na última linha, esta linha é considerada como não fazendo parte dos dados.
  * @param {String} text
+ * @returns Formated CSV
  */
 function formatCsv(text) {
-  const newArr = text.split("\n").map((linha) => linha.split(";"));
-  console.log(newArr);
+  const splitedText = text.split(new RegExp("\r\n|\n|\r"));
+  const delimiter =
+    splitedText.length > 0 && splitedText[0].includes(";") ? ";" : ",";
+
+  const headers = splitedText[0].split(delimiter);
+
+  const dataRows =
+    splitedText[splitedText.length - 1] == ""
+      ? splitedText.slice(1, -1)
+      : splitedText.slice(1);
+
+  return dataRows.map((linha) =>
+    linha.split(delimiter).reduce((json, currentCell, coluna) => {
+      json[headers[coluna]] = currentCell;
+      return json;
+    }, {})
+  );
 }
