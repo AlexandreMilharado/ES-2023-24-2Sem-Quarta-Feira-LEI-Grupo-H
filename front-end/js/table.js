@@ -206,7 +206,7 @@ export function setData(file) {
             return definitions;
         },
     });
-
+    addHiddenButtonsAndInputsToColumns();
     renderFilterProps();
 }
 
@@ -254,17 +254,29 @@ function addSemanasColumns() {
  * Função que liga/desliga os filtros.
  */
 function toggleFilter() {
+    //off and or
     let table = document.getElementById("HorarioPrincipal");
     let toggled = table.getAttribute("filters");
-    if (toggled == null || toggled == "off") {
-        table.setAttribute("filters", "on");
+    if (toggled == "off") {
+        table.setAttribute("filters", "and");
+        document.querySelectorAll(".tabulator-header-filter").forEach(element => {
+            element.querySelector("input").classList.remove("hidden");
+        });
+    } else if (toggled == "and") {
+        table.setAttribute("filters", "or");
+        document.querySelectorAll(".tabulator-header-filter").forEach(element => {
+            element.querySelector("input").classList.add("hidden");
+            element.querySelector(".filter-OR").classList.remove("hidden");
+        });
     } else {
         table.setAttribute("filters", "off");
+        document.querySelectorAll(".tabulator-header-filter").forEach(element => {
+            element.querySelector(".filter-OR").classList.add("hidden");
+        });
     }
 }
 
 //Adiciona a todas as colunas o botão de esconder e um novo input de filtro a respetiva coluna 
-addHiddenButtonsAndInputsToColumns();
 function addHiddenButtonsAndInputsToColumns() {
     let columns = document.querySelectorAll(".tabulator-col");
     columns.forEach(column => {
