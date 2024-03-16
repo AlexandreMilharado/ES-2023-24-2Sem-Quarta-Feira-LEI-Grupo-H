@@ -12,6 +12,7 @@ let table = new Tabulator("#HorarioPrincipal", {
   autoColumns: true,
 });
 
+const EMPTY_DATA = "";
 /**
  * Inicializar o Filter Toggle Button no paginator da tabela
  */
@@ -28,6 +29,7 @@ filterToggleButton.className = "tabulator-filter-toggle-button";
  */
 function dateStringFormatCToDate(dateString) {
   let dateParts = dateString.split("/");
+  if (dateParts.length < 3) return null;
 
   const year =
     dateParts[2].length == 4
@@ -46,6 +48,8 @@ function dateStringFormatCToDate(dateString) {
  * @returns {int} int The number of the week.
  */
 function getWeekNumber(date, firstDayOfTheWeek = 1) {
+  if (date === null) return EMPTY_DATA;
+
   const firstDayOfTheYear = new Date(date.getFullYear(), 0, 1); //January 1st of the same year as date
 
   var weekStartOffset = firstDayOfTheYear.getDay() - firstDayOfTheWeek;
@@ -164,6 +168,8 @@ function getSemesterWeekNumber(
   firstSemesterStart = semester1Start,
   secondSemesterStart = semester2Start
 ) {
+  if (date === null) return EMPTY_DATA;
+
   const semesterStart =
     date < secondSemesterStart ? firstSemesterStart : secondSemesterStart;
   const weekNumberOfSemesterStart = getWeekNumber(semesterStart);
@@ -179,6 +185,8 @@ function getSemesterWeekNumber(
  */
 export function setData(file) {
   tabledata = file;
+  addSemanasColumns();
+
   table = new Tabulator("#HorarioPrincipal", {
     headerFilterPlaceholder: "Filtrar por",
     data: tabledata,
@@ -196,9 +204,17 @@ export function setData(file) {
       return definitions;
     },
   });
+
   renderFilterProps();
-  renderSemanas();
 }
+
+// function addSemanasHeaders(file) {
+//   return file.map((row) => {
+//     row.semana_do_ano = 1;
+//     row.semana_do_semestre = 1;
+//     return row;
+//   });
+// }
 
 /**
  * Adiciona os filtros no tabela e desliga-os para não aparecerem no ecrã(aparecem por default).
@@ -216,11 +232,11 @@ function renderFilterProps() {
 /**
  * Adding week numbers to every row from table
  */
-function renderSemanas() {
+function addSemanasColumns() {
   tabledata.forEach((row) => {
-    dateObject = dateStringFormatCToDate(row.data);
-    row.semana_do_ano = getWeekNumber(dateObject);
-    row.semana_do_semestre = getSemesterWeekNumber(dateObject);
+    const dateObject = dateStringFormatCToDate(row["Data da aula"]);
+    row["Semana do Ano"] = getWeekNumber(dateObject);
+    row["Semana do Semestre"] = getSemesterWeekNumber(dateObject);
   });
 }
 

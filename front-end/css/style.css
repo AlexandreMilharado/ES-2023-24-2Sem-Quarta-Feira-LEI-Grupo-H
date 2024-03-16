@@ -200,10 +200,16 @@ header {
 
   &[filters="off"] {
     & .tabulator-headers {
-      height: 1.5vw;
+      height: 3rem;
     }
     & .tabulator-header-filter {
       display: none;
+    }
+  }
+
+  &[filters="on"] {
+    & .tabulator-headers {
+      height: 4rem;
     }
   }
 

@@ -3,7 +3,7 @@ import axios from "axios";
 import { setData } from "./table";
 import { togglePopUp } from "./init";
 
-const server = "http://localhost:3001";
+const SERVER = "http://localhost:3001";
 
 const localForm = document.getElementById("localUpload");
 localForm.addEventListener("submit", handleSubmit);
@@ -30,7 +30,7 @@ async function handleSubmit(event) {
 
   if (needToDownloadCsv(localFile, remoteFile)) {
     axios
-      .post(`${server}/uploadHorario`, {
+      .post(`${SERVER}/uploadHorario`, {
         url: remoteFile,
       })
       .then((r) => formatCsv(r.data.csvData))
@@ -93,7 +93,8 @@ async function formatToString(localFile) {
  *
  * Assume-se que existe headers no texto passado.
  * Se conter ";" no header, assume-se uma separação de linhas com ";",
- * caso contrário usa-se o delimitador ","
+ * caso contrário usa-se o delimitador ",".
+ * Se existir apenas um Enter na última linha, esta linha é considerada como não fazendo parte dos dados.
  * @param {String} text
  * @returns Formated CSV
  */
@@ -101,8 +102,15 @@ function formatCsv(text) {
   const splitedText = text.split(new RegExp("\r\n|\n|\r"));
   const delimiter =
     splitedText.length > 0 && splitedText[0].includes(";") ? ";" : ",";
+
   const headers = splitedText[0].split(delimiter);
-  return splitedText.slice(1).map((linha) =>
+
+  const dataRows =
+    splitedText[-1] == undefined
+      ? splitedText.slice(1, -1)
+      : splitedText.slice(1);
+
+  return dataRows.map((linha) =>
     linha.split(delimiter).reduce((json, currentCell, coluna) => {
       json[headers[coluna]] = currentCell;
       return json;
