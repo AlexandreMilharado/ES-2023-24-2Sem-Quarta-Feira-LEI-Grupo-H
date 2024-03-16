@@ -106,7 +106,7 @@ function formatCsv(text) {
   const headers = splitedText[0].split(delimiter);
 
   const dataRows =
-    splitedText[-1] == undefined
+    splitedText[splitedText.length - 1] == ""
       ? splitedText.slice(1, -1)
       : splitedText.slice(1);
 
