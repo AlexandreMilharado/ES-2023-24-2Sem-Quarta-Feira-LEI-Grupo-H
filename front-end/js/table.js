@@ -230,11 +230,17 @@ function renderFilterProps() {
 }
 
 /**
- * Adding week numbers to every row from table
+ * If the following tabledata has attribute "Data da aula" adds week numbers to every row from table,
+ * else skips completly this function.
  */
 function addSemanasColumns() {
   tabledata.forEach((row) => {
-    const dateObject = dateStringFormatCToDate(row["Data da aula"]);
+    let dateObject;
+    try {
+      dateObject = dateStringFormatCToDate(row["Data da aula"]);
+    } catch (error) {
+      return;
+    }
     row["Semana do Ano"] = getWeekNumber(dateObject);
     row["Semana do Semestre"] = getSemesterWeekNumber(dateObject);
   });
