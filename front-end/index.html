@@ -1,14 +1,54 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gestor de Horarios</title>
+    <meta charset="UTF-8">
+    <title>Gestor de Horarios</title>
+    <link rel="icon" type="image/x-icon" href="graphics/images/iconSeparador.png">
+    <script type="module" src="js/init.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.8.4/dist/js/tabulator.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+
+
 </head>
 
 <body>
-  <a href="html/uploadCsv.html">UploadCSV</a>
+    <header>
+        <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Logo_ISCTE_Instituto_Universit%C3%A1rio_de_Lisboa.svg/740px-Logo_ISCTE_Instituto_Universit%C3%A1rio_de_Lisboa.svg.png">
+    </header>
+    <section id="PopUpUpload">
+        <script type="module" src="js/uploadCsv.js"></script>
+        <div>
+            <button id="ClosePopUp"></button>
+            <h3>UPLOAD .CSV</h3>
+            <form id="localUpload" method="post">
+                <input name="localFile" type="file" multiple accept=".csv">
+                <h6 class="line-border">or</h6>
+
+                <input name="remoteFile" type="text" id="fileInput">
+
+
+                <button type="submit">UPLOAD</button>
+            </form>
+        </div>
+    </section>
+    <section id="HeroBanner">
+        <img src="graphics/images/HeroBanner.png">
+        <button id="OpenPopUp" type="file" accept=".csv">
+            <img src="graphics/svg/CloudUpload.svg">
+            <span>UPLOAD .CSV</span>
+        </button>
+    </section>
+    <section id="MainTable">
+        <div id="HorarioPrincipal" class="tabela"></div>
+        <div id="HiddenColumns">
+            <ul>
+
+            </ul>
+        </div>
+        <script type="module" src="js/table.js"></script>
+    </section>
 </body>
 
 </html>
