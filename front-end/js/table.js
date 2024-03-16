@@ -69,7 +69,7 @@ function getWeekNumber(date, firstDayOfTheWeek = 1) {
  * @returns {{ firstSemesterStart: Date, firstSemesterFinish: Date,secondSemesterStart: Date,secondSemesterFinish: Date}}
  */
 function calculateSemesters(tableData) {
-  //Semester Beginning dates for 2023/24
+  // Semester Beginning dates for 2023/24
   return {
     firstSemesterStart: new Date(2022, 8, 1),
     firstSemesterFinish: new Date(2023, 0, 28),
@@ -77,72 +77,73 @@ function calculateSemesters(tableData) {
     secondSemesterFinish: new Date(2023, 6, 1),
   };
 
-  const ucs = [];
-  tableData.forEach((value) => {
-    const found = ucs.find((v) => {
-      return value["uc"] == v["uc"] && value["curso"] == v["curso"];
-    });
-    if (found) {
-      a = dateStringFormatCToDate(value.data);
-      if (a < found.firstDate) {
-        found.firstDate = a;
-      }
-      if (a > found.lastDate) {
-        found.lastDate = a;
-      }
-    } else {
-      ucs.push({
-        curso: value["curso"],
-        uc: value["uc"],
-        firstDate: dateStringFormatCToDate(value["data"]),
-        lastDate: dateStringFormatCToDate(value["data"]),
-      });
-    }
-  });
+  // TODO - Make Semesters calculation dynamic
+  // const ucs = [];
+  // tableData.forEach((value) => {
+  //   const found = ucs.find((v) => {
+  //     return value["uc"] == v["uc"] && value["curso"] == v["curso"];
+  //   });
+  //   if (found) {
+  //     a = dateStringFormatCToDate(value.data);
+  //     if (a < found.firstDate) {
+  //       found.firstDate = a;
+  //     }
+  //     if (a > found.lastDate) {
+  //       found.lastDate = a;
+  //     }
+  //   } else {
+  //     ucs.push({
+  //       curso: value["curso"],
+  //       uc: value["uc"],
+  //       firstDate: dateStringFormatCToDate(value["data"]),
+  //       lastDate: dateStringFormatCToDate(value["data"]),
+  //     });
+  //   }
+  // });
 
-  console.log(ucs);
-  const cursos = new Set(
-    ucs.map((v) => {
-      return v.curso;
-    })
-  );
-  console.log(cursos);
+  // console.log(ucs);
+  // const cursos = new Set(
+  //   ucs.map((v) => {
+  //     return v.curso;
+  //   })
+  // );
+  // console.log(cursos);
 
-  const output = {};
+  // const output = {};
 
-  function calculateSemestersPerCourse(ucs) {
-    console.log("ucs: ", ucs);
-    const firstClass = ucs.reduce((previous, next) => {
-      return previous.firstDate < next.firstDate ? previous : next;
-    }, (initialValue = ucs[0]));
-    const lastClass = ucs.reduce((previous, next) => {
-      return previous.lastDate > next.lastDate ? previous : next;
-    }, ucs[0]);
-    console.log("fc", firstClass, "lc", lastClass);
-    const semesters = []; //[{ucs:["DIAM,PISID,ES"],firstDate:...,lastDate:...},...]
-    function addClass() {
-      function intercepts() {}
-    }
-    return { firstClass: new Date(), lastClass: new Date() };
-  }
+  // function calculateSemestersPerCourse(ucs) {
+  //   console.log("ucs: ", ucs);
+  //   const firstClass = ucs.reduce((previous, next) => {
+  //     return previous.firstDate < next.firstDate ? previous : next;
+  //   }, (initialValue = ucs[0]));
+  //   const lastClass = ucs.reduce((previous, next) => {
+  //     return previous.lastDate > next.lastDate ? previous : next;
+  //   }, ucs[0]);
+  //   console.log("fc", firstClass, "lc", lastClass);
+  //   const semesters = []; //[{ucs:["DIAM,PISID,ES"],firstDate:...,lastDate:...},...]
+  //   function addClass() {
+  //     function intercepts() {}
+  //   }
+  //   return { firstClass: new Date(), lastClass: new Date() };
+  // }
 
-  cursos.forEach((value) => {
-    console.log("curso:", value);
-    const curso = ucs.filter((v) => {
-      return v.curso == value;
-    }); //tem apenas as UCs de um curso
-    console.log("curso", curso);
-    calculateSemestersPerCourse(curso);
-  });
+  // cursos.forEach((value) => {
+  //   console.log("curso:", value);
+  //   const curso = ucs.filter((v) => {
+  //     return v.curso == value;
+  //   }); //tem apenas as UCs de um curso
+  //   console.log("curso", curso);
+  //   calculateSemestersPerCourse(curso);
+  // });
 
-  const firstSemesterStart = tableData[0]["data"];
-  const secondSemesterStart = tableData[1]["data"];
-  return {
-    firstSemesterStart: firstSemesterStart,
-    secondSemesterStart: secondSemesterStart,
-    firstSemesterFinish: firstSemesterFinish,
-    secondSemesterFinish: secondSemesterFinish,
-  };
+  // const firstSemesterStart = tableData[0]["data"];
+  // const secondSemesterStart = tableData[1]["data"];
+  // return {
+  //   firstSemesterStart: firstSemesterStart,
+  //   secondSemesterStart: secondSemesterStart,
+  //   firstSemesterFinish: firstSemesterFinish,
+  //   secondSemesterFinish: secondSemesterFinish,
+  // };
 }
 
 const {
@@ -170,13 +171,6 @@ function getSemesterWeekNumber(
   return weekNumberOfDate - weekNumberOfSemesterStart + 1;
 }
 
-//Adding week numbers to the list
-tabledata.forEach((row) => {
-  dateObject = dateStringFormatCToDate(row.data);
-  row.semana_do_ano = getWeekNumber(dateObject);
-  row.semana_do_semestre = getSemesterWeekNumber(dateObject);
-});
-
 /**
  * Atualizar os dados no Tabulator consoante o ficheiro .CSV formatado:
  * [{...},{...}, {...}, ...]
@@ -203,6 +197,7 @@ export function setData(file) {
     },
   });
   renderFilterProps();
+  renderSemanas();
 }
 
 /**
@@ -216,6 +211,17 @@ function renderFilterProps() {
 
   let horario = document.getElementById("HorarioPrincipal");
   horario.setAttribute("filters", "off");
+}
+
+/**
+ * Adding week numbers to every row from table
+ */
+function renderSemanas() {
+  tabledata.forEach((row) => {
+    dateObject = dateStringFormatCToDate(row.data);
+    row.semana_do_ano = getWeekNumber(dateObject);
+    row.semana_do_semestre = getSemesterWeekNumber(dateObject);
+  });
 }
 
 /**
