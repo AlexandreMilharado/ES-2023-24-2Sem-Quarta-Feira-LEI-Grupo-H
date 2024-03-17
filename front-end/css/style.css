@@ -200,10 +200,16 @@ header {
 
   &[filters="off"] {
     & .tabulator-headers {
-      height: 1.5vw;
+      height: 3rem;
     }
     & .tabulator-header-filter {
       display: none;
+    }
+  }
+
+  &[filters="on"] {
+    & .tabulator-headers {
+      height: 4rem;
     }
   }
 
@@ -213,6 +219,7 @@ header {
 }
 
 .tabulator-header {
+  overflow: hidden;
   background-image: linear-gradient(
     -45deg,
     rgba(41, 206, 169, 0.28),
@@ -310,6 +317,7 @@ header {
     flex-direction: column;
 
     & > .tabulator-row {
+      overflow: hidden;
       width: 100%;
       display: flex;
       height: 3vw;
