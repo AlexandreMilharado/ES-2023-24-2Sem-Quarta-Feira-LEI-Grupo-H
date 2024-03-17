@@ -2,12 +2,12 @@
   "name": "front-end",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "docs": "./node_modules/.bin/jsdoc"
+    "docs": "jsdoc -c jsdoc.json"
   },
   "devDependencies": {
     "vite": "^5.1.4"
