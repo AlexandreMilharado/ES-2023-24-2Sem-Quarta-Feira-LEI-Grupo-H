@@ -1,4 +1,32 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: table.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: table.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * String a colocar caso não existam dados na célula da tabela.
  * @type {String}
  */
@@ -11,7 +39,7 @@ const EMPTY_DATA = "";
 
 /**
  * Dados provenientes do .CSV file
- * @type {Array<JSON>}
+ * @type {Array&lt;JSON>}
  */
 let tabledata = [{ Message: "Dados ainda não inseridos" }];
 
@@ -31,7 +59,7 @@ let table = new Tabulator("#HorarioPrincipal", {
 
 /**
  * Footer da tabela relacionada à navegação da mesma.
- * @type {Array<Object>}
+ * @type {Array&lt;Object>}
  */
 let paginators = document.getElementsByClassName("tabulator-paginator");
 
@@ -70,7 +98,7 @@ const {
  */
 function dateStringFormatCToDate(dateString) {
   let dateParts = dateString.split("/");
-  if (dateParts.length < 3) return null;
+  if (dateParts.length &lt; 3) return null;
 
   const year =
     dateParts[2].length == 4
@@ -94,7 +122,7 @@ function getWeekNumber(date, firstDayOfTheWeek = 1) {
   const firstDayOfTheYear = new Date(date.getFullYear(), 0, 1); //January 1st of the same year as date
 
   var weekStartOffset = firstDayOfTheYear.getDay() - firstDayOfTheWeek;
-  weekStartOffset += weekStartOffset < 0 ? 7 : 0;
+  weekStartOffset += weekStartOffset &lt; 0 ? 7 : 0;
 
   const daysElapsedThisYear = Math.ceil(
     Math.abs(date - firstDayOfTheYear) / (1000 * 60 * 60 * 24)
@@ -110,7 +138,7 @@ function getWeekNumber(date, firstDayOfTheWeek = 1) {
 /**
  * Temporariamente retorna estaticamente o valor para o ano académico 2022-2023.
  *
- * @param {Array<JSON>} tableData - dados do .CSV importado
+ * @param {Array&lt;JSON>} tableData - dados do .CSV importado
  * @returns {{ firstSemesterStart: Date, firstSemesterFinish: Date,secondSemesterStart: Date,secondSemesterFinish: Date}} - Início e fim dos semestres
  */
 function calculateSemesters(tableData) {
@@ -126,11 +154,11 @@ function calculateSemesters(tableData) {
   // const ucs = [];
   // tableData.forEach((value) => {
   //   const found = ucs.find((v) => {
-  //     return value["uc"] == v["uc"] && value["curso"] == v["curso"];
+  //     return value["uc"] == v["uc"] &amp;&amp; value["curso"] == v["curso"];
   //   });
   //   if (found) {
   //     a = dateStringFormatCToDate(value.data);
-  //     if (a < found.firstDate) {
+  //     if (a &lt; found.firstDate) {
   //       found.firstDate = a;
   //     }
   //     if (a > found.lastDate) {
@@ -159,7 +187,7 @@ function calculateSemesters(tableData) {
   // function calculateSemestersPerCourse(ucs) {
   //   console.log("ucs: ", ucs);
   //   const firstClass = ucs.reduce((previous, next) => {
-  //     return previous.firstDate < next.firstDate ? previous : next;
+  //     return previous.firstDate &lt; next.firstDate ? previous : next;
   //   }, (initialValue = ucs[0]));
   //   const lastClass = ucs.reduce((previous, next) => {
   //     return previous.lastDate > next.lastDate ? previous : next;
@@ -208,7 +236,7 @@ function getSemesterWeekNumber(
   if (date === null) return EMPTY_DATA;
 
   const semesterStart =
-    date < secondSemesterStart ? firstSemesterStart : secondSemesterStart;
+    date &lt; secondSemesterStart ? firstSemesterStart : secondSemesterStart;
   const weekNumberOfSemesterStart = getWeekNumber(semesterStart);
   const weekNumberOfDate = getWeekNumber(date);
   return weekNumberOfDate - weekNumberOfSemesterStart + 1;
@@ -221,7 +249,7 @@ function getSemesterWeekNumber(
  *
  * See {@link addSemanasColumns} | {@link addHiddenButtonsAndInputsToColumns} | {@link renderFilterProps}.
  *
- * @param {Array<JSON>} file - dados do ficheiro .CSV importado
+ * @param {Array&lt;JSON>} file - dados do ficheiro .CSV importado
  */
 export function setData(file) {
   tabledata = file;
@@ -252,7 +280,7 @@ export function setData(file) {
  * Adiciona os filtros no tabela e desliga-os para não aparecerem no ecrã(aparecem por default).
  */
 function renderFilterProps() {
-  for (let i = 0; i < paginators.length; i++) {
+  for (let i = 0; i &lt; paginators.length; i++) {
     paginators.item(i).prepend(filterToggleButton);
     filterToggleButton.addEventListener("click", () => toggleFilter());
     paginators.item(i).prepend(editToggleButton);
@@ -338,6 +366,7 @@ function addHiddenButtonsAndInputsToColumns() {
  * Esconde/mostra os botões para apagar cada coluna na tabela.
  */
 function toggleEdit() {
+  filterByOr();
   if (editToggleButton.getAttribute("toggled") == "on") {
     editToggleButton.setAttribute("toggled", "off");
     document.querySelectorAll(".tabulator-col-sorter").forEach((element) => {
@@ -409,3 +438,26 @@ function filterByOr() {
   });
   table.setFilter([listFilters]);
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Tabela.html">Tabela</a></li><li><a href="module-UploadCSV.html">UploadCSV</a></li></ul><h3>Global</h3><ul><li><a href="global.html#EMPTY_DATA">EMPTY_DATA</a></li><li><a href="global.html#SERVER">SERVER</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Mar 17 2024 18:30:00 GMT+0000 (Hora padrão da Europa Ocidental)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
