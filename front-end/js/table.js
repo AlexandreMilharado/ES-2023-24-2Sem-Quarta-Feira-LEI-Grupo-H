@@ -338,7 +338,6 @@ function addHiddenButtonsAndInputsToColumns() {
  * Esconde/mostra os botões para apagar cada coluna na tabela.
  */
 function toggleEdit() {
-  filterByOr();
   if (editToggleButton.getAttribute("toggled") == "on") {
     editToggleButton.setAttribute("toggled", "off");
     document.querySelectorAll(".tabulator-col-sorter").forEach((element) => {
