@@ -190,7 +190,7 @@ export function setData(file) {
     addSemanasColumns();
 
     table = new Tabulator("#HorarioPrincipal", {
-        headerFilterPlaceholder: "Filtrar por",
+        headerFilterPlaceholder: "Filtrar 'AND'",
         data: tabledata,
         layout: "fitDataFill",
         pagination: "local",
@@ -282,10 +282,10 @@ function addHiddenButtonsAndInputsToColumns() {
     columns.forEach(column => {
         const button = document.createElement("button");
         button.className = "hidden tabulator-hideColumn-toggle-button";
-        button.textContent = "Esconder";
+        //button.textContent = "";
 
         const input = document.createElement("input");
-        input.placeholder = "Filtrar por";
+        input.placeholder = "Filtrar 'OR'";
         input.className = "hidden filter-OR";
 
         column.querySelector(".tabulator-col-sorter").appendChild(button);
