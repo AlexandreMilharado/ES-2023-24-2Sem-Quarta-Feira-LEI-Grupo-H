@@ -3,15 +3,15 @@ import axios from "axios";
 import { setData } from "./table";
 
 /**
- * Upload .CSV Module
- * @module UploadCSV
- */
-
-/**
  * Server's Path
  * @type {String}
  */
 const SERVER = "http://localhost:3001";
+
+/**
+ * Upload .CSV Module
+ * @module UploadCSV
+ */
 
 /**
  * Forms de upload .CSV
@@ -34,7 +34,7 @@ LOCAL_FORM.addEventListener("submit", handleSubmit);
  *
  * Example local URL: ./Software-Engineering/front-end/others/HorarioDeExemplo.csv
  *
- * See {@link setData}
+ * See {@link setData}.
  * @param {Event} event - Evento para dar prenvent do ação do forms e recolher o mesmo
  */
 async function handleSubmit(event) {
