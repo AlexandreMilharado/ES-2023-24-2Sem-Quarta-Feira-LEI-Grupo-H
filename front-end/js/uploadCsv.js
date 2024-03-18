@@ -18,7 +18,7 @@ const SERVER = "http://localhost:3001";
  * @type {Form}
  */
 const LOCAL_FORM = document.getElementById("localUpload");
-LOCAL_FORM.addEventListener("submit", handleSubmit);
+LOCAL_FORM?.addEventListener("submit", handleSubmit);
 
 /**
  * Recebe um ficheiro .csv local ou o url de um ficheiro csv remoto.
@@ -67,7 +67,7 @@ async function handleSubmit(event) {
  * @param {FormData} formData - new FormData(forms)
  * @returns {JSON} - FormData em JSON
  */
-function formDataToJson(formData) {
+export function formDataToJson(formData) {
   const json = {};
   formData.forEach((value, key) => {
     json[key] = value;

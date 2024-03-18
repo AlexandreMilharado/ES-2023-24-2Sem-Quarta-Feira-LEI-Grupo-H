@@ -47,7 +47,7 @@ start index.html
 ```
 ## Stack utilizada
 
-**Front-end:** HTML, CSS, Javascript, Tabulator, Axios, Jsdoc.
+**Front-end:** HTML, CSS, Javascript, Tabulator, Axios, Jsdoc, Vite, Vitest.
 
 **Back-end:** Nodemon, Express, Cors, Axios.
 

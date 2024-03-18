@@ -1,3 +1,5 @@
+import Tabulator from "tabulator-tables";
+
 /**
  * String a colocar caso não existam dados na célula da tabela.
  * @type {String}
