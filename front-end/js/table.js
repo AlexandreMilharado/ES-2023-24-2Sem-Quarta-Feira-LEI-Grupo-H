@@ -70,7 +70,7 @@ const {
  * @param {String} dateString - String da Data
  * @returns {Date} - Date Object
  */
-function dateStringFormatCToDate(dateString) {
+export function dateStringFormatCToDate(dateString) {
   let dateParts = dateString.split("/");
   if (dateParts.length < 3) return null;
 
