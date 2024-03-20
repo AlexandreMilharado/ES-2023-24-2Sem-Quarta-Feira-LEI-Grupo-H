@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: dates.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: dates.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Funções para o Cálculo de Datas Module
+ * @module Datas
+ */
+
+/**
+ * String a colocar caso não existam dados na célula da tabela.
+ * @type {String}
+ */
+export const EMPTY_DATA = "";
+
+let tabledata = [{ Message: "Dados ainda não inseridos" }];
+
+/**
+ * Objeto para saber o início do primeiro semestre e segundo semestre.
+ * @type {{firstSemesterStart : number, secondSemesterStart: number}}
+ */
+const {
+  firstSemesterStart: semester1Start,
+  secondSemesterStart: semester2Start,
+} = calculateSemesters(tabledata);
+
+/**
+ * Converter String "dd/mm/yyyy" em um Date object.
+ *
+ * Alternativamente, se dd/mm/yy é passado como argumento,
+ * 1900's vai ser assumido para um yy maior que os últimos 2 digitos do ano atual (+2), caso contrário assume-se 2000's.
+ *
+ * @param {String} dateString - String da Data
+ * @returns {Date} - Date Object
+ */
+export function dateStringFormatCToDate(dateString) {
+  let dateParts = dateString.split("/");
+  if (dateParts.length &lt; 3) return null;
+
+  const year =
+    dateParts[2].length == 4
+      ? dateParts[2]
+      : dateParts[2] > String(new Date().getYear() + 1900 + 2).slice(2)
+      ? "19" + dateParts[2]
+      : "20" + dateParts[2];
+  return new Date(year + "/" + dateParts[1] + "/" + dateParts[0]);
+}
+
+/**
+ * Calcular o número da semana desde o início do ano.
+ *
+ * @param {Date} date - a data a verificar
+ * @param {int} [firstDayOfTheWeek] - (opcional) 0 para Domingo, 1 para Segunda,...,6 para Sábado
+ * @returns {int} - Número da semana
+ */
+export function getWeekNumber(date, firstDayOfTheWeek = 1) {
+  if (date === null || isNaN(date)) return EMPTY_DATA;
+
+  const firstDayOfTheYear = new Date(date.getFullYear(), 0, 1); //January 1st of the same year as date
+
+  var weekStartOffset = firstDayOfTheYear.getDay() - firstDayOfTheWeek;
+  weekStartOffset += weekStartOffset &lt; 0 ? 7 : 0;
+
+  const daysElapsedThisYear = Math.ceil(
+    Math.abs(date - firstDayOfTheYear) / (1000 * 60 * 60 * 24)
+  ); //Days since january 1st
+
+  const correctedDay = daysElapsedThisYear + weekStartOffset;
+
+  const weekNumber = Math.floor(correctedDay / 7) + 1;
+
+  return weekNumber;
+}
+
+/**
+ * Temporariamente retorna estaticamente o valor para o ano académico 2022-2023.
+ *
+ * @param {Array&lt;JSON>} tableData - dados do .CSV importado
+ * @returns {{ firstSemesterStart: Date, firstSemesterFinish: Date,secondSemesterStart: Date,secondSemesterFinish: Date}} - Início e fim dos semestres
+ */
+export function calculateSemesters(tableData) {
+  // Semester Beginning dates for 2023/24
+  return {
+    firstSemesterStart: new Date(2022, 8, 1),
+    firstSemesterFinish: new Date(2023, 0, 28),
+    secondSemesterStart: new Date(2023, 0, 30),
+    secondSemesterFinish: new Date(2023, 6, 1),
+  };
+
+  // TODO - Make Semesters calculation dynamic
+  // const ucs = [];
+  // tableData.forEach((value) => {
+  //   const found = ucs.find((v) => {
+  //     return value["uc"] == v["uc"] &amp;&amp; value["curso"] == v["curso"];
+  //   });
+  //   if (found) {
+  //     a = dateStringFormatCToDate(value.data);
+  //     if (a &lt; found.firstDate) {
+  //       found.firstDate = a;
+  //     }
+  //     if (a > found.lastDate) {
+  //       found.lastDate = a;
+  //     }
+  //   } else {
+  //     ucs.push({
+  //       curso: value["curso"],
+  //       uc: value["uc"],
+  //       firstDate: dateStringFormatCToDate(value["data"]),
+  //       lastDate: dateStringFormatCToDate(value["data"]),
+  //     });
+  //   }
+  // });
+
+  // console.log(ucs);
+  // const cursos = new Set(
+  //   ucs.map((v) => {
+  //     return v.curso;
+  //   })
+  // );
+  // console.log(cursos);
+
+  // const output = {};
+
+  // function calculateSemestersPerCourse(ucs) {
+  //   console.log("ucs: ", ucs);
+  //   const firstClass = ucs.reduce((previous, next) => {
+  //     return previous.firstDate &lt; next.firstDate ? previous : next;
+  //   }, (initialValue = ucs[0]));
+  //   const lastClass = ucs.reduce((previous, next) => {
+  //     return previous.lastDate > next.lastDate ? previous : next;
+  //   }, ucs[0]);
+  //   console.log("fc", firstClass, "lc", lastClass);
+  //   const semesters = []; //[{ucs:["DIAM,PISID,ES"],firstDate:...,lastDate:...},...]
+  //   function addClass() {
+  //     function intercepts() {}
+  //   }
+  //   return { firstClass: new Date(), lastClass: new Date() };
+  // }
+
+  // cursos.forEach((value) => {
+  //   console.log("curso:", value);
+  //   const curso = ucs.filter((v) => {
+  //     return v.curso == value;
+  //   }); //tem apenas as UCs de um curso
+  //   console.log("curso", curso);
+  //   calculateSemestersPerCourse(curso);
+  // });
+
+  // const firstSemesterStart = tableData[0]["data"];
+  // const secondSemesterStart = tableData[1]["data"];
+  // return {
+  //   firstSemesterStart: firstSemesterStart,
+  //   secondSemesterStart: secondSemesterStart,
+  //   firstSemesterFinish: firstSemesterFinish,
+  //   secondSemesterFinish: secondSemesterFinish,
+  // };
+}
+
+/**
+ * Calcular o número da semana apartir do início do semestre atual.
+ *
+ * See {@link getWeekNumber}.
+ * @param {Date} date - Data a verificar
+ * @param {Date} firstSemesterStart - data de início do primeiro semestre (normalmente Setembro)
+ * @param {Date} secondSemesterStart - data de início do segundo semestre (normalmente Fevereiro)
+ * @returns {int} - Número da semana consoante o semestre
+ */
+export function getSemesterWeekNumber(
+  date,
+  firstSemesterStart = semester1Start,
+  secondSemesterStart = semester2Start
+) {
+  if (date === null || isNaN(date)) return EMPTY_DATA;
+
+  const semesterStart =
+    date &lt; secondSemesterStart ? firstSemesterStart : secondSemesterStart;
+
+  const weekNumberOfSemesterStart = getWeekNumber(semesterStart);
+
+  const weekNumberOfDate = getWeekNumber(date);
+
+  let newYearCorrection = 0;
+  if (
+    date &lt; secondSemesterStart &amp;&amp;
+    date > new Date(date.getFullYear() - 1, 11, 31)
+  ) {
+    newYearCorrection = getWeekNumber(new Date(date.getFullYear(), 11, 31));
+  }
+
+  return weekNumberOfDate + newYearCorrection - weekNumberOfSemesterStart + 1;
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Datas.html">Datas</a></li><li><a href="module-PopUp.html">PopUp</a></li><li><a href="module-Tabela.html">Tabela</a></li><li><a href="module-UploadCSV.html">UploadCSV</a></li></ul><h3>Global</h3><ul><li><a href="global.html#SERVER">SERVER</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Mar 20 2024 14:41:35 GMT+0000 (Hora padrão da Europa Ocidental)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

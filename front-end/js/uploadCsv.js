@@ -1,6 +1,7 @@
 "use-strict";
 import axios from "axios";
 import { setData } from "./table";
+import { togglePopUp } from "./init";
 
 /**
  * Server's Path
@@ -18,7 +19,7 @@ const SERVER = "http://localhost:3001";
  * @type {Form}
  */
 const LOCAL_FORM = document.getElementById("localUpload");
-LOCAL_FORM.addEventListener("submit", handleSubmit);
+LOCAL_FORM?.addEventListener("submit", handleSubmit);
 
 /**
  * Recebe um ficheiro .csv local ou o url de um ficheiro csv remoto.
@@ -36,28 +37,39 @@ LOCAL_FORM.addEventListener("submit", handleSubmit);
  *
  * See {@link setData}.
  * @param {Event} event - Evento para dar prenvent do ação do forms e recolher o mesmo
+ * @param {Function} [handleData] - Função a executar após a transformação do ficheiro
  */
-async function handleSubmit(event) {
+export async function handleSubmit(event, handleData = setData) {
+  if (!event) return;
+
   event.preventDefault();
+
   const form = event.currentTarget;
+
   const { localFile, remoteFile } = formDataToJson(new FormData(form));
 
+  if (remoteFile === "" && localFile?.size == 0) return "Forms não preenchido.";
+
+  form.reset();
+  togglePopUp(false);
+
   if (needToDownloadCsv(localFile, remoteFile)) {
-    axios
+    return axios
       .post(`${SERVER}/uploadHorario`, {
         url: remoteFile,
       })
       .then((r) => formatCsv(r.data.csvData))
-      .then((file) => setData(file))
-      .catch((e) => console.log(JSON.stringify(e.response.data)));
+      .then((file) => handleData(file))
+      .catch((e) =>
+        e.response?.data
+          ? JSON.stringify(e.response.data)
+          : "Não conseguiu conectar-se ao servidor."
+      );
   } else {
-    formatToString(localFile)
+    return formatToString(localFile)
       .then((formatedFile) => formatCsv(formatedFile))
-      .then((file) => setData(file));
+      .then((file) => handleData(file));
   }
-
-  form.reset();
-  togglePopUp(false);
 }
 
 /**
@@ -67,7 +79,7 @@ async function handleSubmit(event) {
  * @param {FormData} formData - new FormData(forms)
  * @returns {JSON} - FormData em JSON
  */
-function formDataToJson(formData) {
+export function formDataToJson(formData) {
   const json = {};
   formData.forEach((value, key) => {
     json[key] = value;
@@ -84,9 +96,9 @@ function formDataToJson(formData) {
  * @param {String} remoteFile - URL do ficheiro .CSV remoto
  * @returns {Boolean} - Boolean para saber se é preciso fazer download do ficheiro .CSV
  */
-function needToDownloadCsv(localFile, remoteFile) {
+export function needToDownloadCsv(localFile, remoteFile) {
   return (
-    localFile?.type == "application/octet-stream" &&
+    (localFile?.type == "application/octet-stream" || localFile?.size == 0) &&
     remoteFile !== null &&
     remoteFile !== ""
   );
@@ -97,7 +109,7 @@ function needToDownloadCsv(localFile, remoteFile) {
  * @param {File} localFile - Ficheiro .CSV local
  * @returns {String} - Local File em string
  */
-async function formatToString(localFile) {
+export async function formatToString(localFile) {
   const text = await localFile.text();
   return text;
 }
@@ -108,21 +120,21 @@ async function formatToString(localFile) {
  * Assume-se que existe headers no texto passado.
  * Se conter ";" no header, assume-se uma separação de linhas com ";",
  * caso contrário usa-se o delimitador ",".
- * Se existir apenas um Enter na última linha, esta linha é considerada como não fazendo parte dos dados.
+ * Se existir alguma linha sem dados ignora-a não devolvendo-a no Array<JSON>.
  * @param {String} text - Ficheiro de texto do .CSV
+ * @param {Boolean} [enableHeaders] - (opcional) o ficheiro enviado tem headers, por default tem.
  * @returns {Array<JSON>} - Formated .CSV File
  */
-function formatCsv(text) {
+export function formatCsv(text, enableHeaders = true) {
   const splitedText = text.split(new RegExp("\r\n|\n|\r"));
   const delimiter =
     splitedText.length > 0 && splitedText[0].includes(";") ? ";" : ",";
 
-  const headers = splitedText[0].split(delimiter);
+  const headers = enableHeaders
+    ? splitedText[0].split(delimiter)
+    : splitedText[0].split(delimiter).map((_element, index) => index);
 
-  const dataRows =
-    splitedText[splitedText.length - 1] == ""
-      ? splitedText.slice(1, -1)
-      : splitedText.slice(1);
+  const dataRows = splitedText.slice(1).filter((row) => row.length != 0);
 
   return dataRows.map((linha) =>
     linha.split(delimiter).reduce((json, currentCell, coluna) => {
@@ -130,18 +142,4 @@ function formatCsv(text) {
       return json;
     }, {})
   );
-}
-
-/**
- * Recebe um boolean para ativar/desativar o PopUp do upload do .CSV.
- *
- * @param {Boolean} isToShow - argumento para dar show do popup
- */
-export function togglePopUp(isToShow) {
-  let popup = document.getElementById("PopUpUpload");
-  if (isToShow) {
-    popup.classList.remove("hidden");
-  } else {
-    popup.classList.add("hidden");
-  }
 }
