@@ -58,7 +58,7 @@ start index.html
 A partir do root do projeto ./ES-2023-24-2Sem-Quarta-Feira-LEI-Grupo-H
 
 ```
-cd .\front-end\docs\
+cd .\front-end\
 npm run coverage
 ```
 
@@ -67,7 +67,7 @@ npm run coverage
 A partir do root do projeto ./ES-2023-24-2Sem-Quarta-Feira-LEI-Grupo-H
 
 ```
-cd .\front-end\docs\
+cd .\front-end\
 npm run ui
 ```
 
