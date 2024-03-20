@@ -8,9 +8,13 @@
     "build": "vite build",
     "preview": "vite preview",
     "docs": "jsdoc -c jsdoc.json",
-    "test": "vitest"
+    "test": "vitest --config vitest.config.ts",
+    "coverage": "vitest --config vitest.config.ts --coverage",
+    "ui": "vitest --ui"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^1.4.0",
+    "@vitest/ui": "^1.4.0",
     "vite": "^5.1.4"
   },
   "dependencies": {
