@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "docs": "jsdoc -c jsdoc.json",
-    "test": "vitest --config vitest.config.ts",
+    "test": "vitest --config vitest.config.ts run",
+    "testKeep": "vitest --config vitest.config.ts",
     "coverage": "vitest --config vitest.config.ts --coverage",
     "ui": "vitest --ui"
   },
