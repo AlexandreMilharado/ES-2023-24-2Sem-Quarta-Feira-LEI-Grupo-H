@@ -23,18 +23,22 @@ const LOCAL_FORM: HTMLElement | null = document.getElementById("localUpload");
 LOCAL_FORM?.addEventListener("submit", handleSubmit);
 
 /**
- * TODO
+ * CsvCell - célula da tabela.
+ * @type {string | number}
  */
 type CsvCell = string | number;
 
 /**
- * TODO
+ * Linha de dados do .CSV.
+ * @interface CsvRow
  */
 export interface CsvRow {
   [key: string]: CsvCell;
 }
 
 /**
+ * Dados do forms upload .CSV.
+ * @interface FormDataJson
  * TODO
  */
 interface FormDataJson {
@@ -63,7 +67,7 @@ interface FormDataJson {
 export async function handleSubmit(
   event: Event,
   handleData: (file: CsvRow[]) => void = setData
-) {
+): Promise<string | void> {
   if (!event) return;
 
   event.preventDefault();

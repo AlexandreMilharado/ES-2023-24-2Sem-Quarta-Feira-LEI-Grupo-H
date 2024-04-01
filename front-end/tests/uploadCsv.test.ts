@@ -14,7 +14,7 @@ import {
   formatCsv,
   handleSubmit,
   needToDownloadCsv,
-} from "../js/uploadCsv";
+} from "../ts/uploadCsv";
 
 /**
  * Para testar é recomendado ligar o servidor backend.
@@ -22,43 +22,44 @@ import {
  */
 describe("handleSubmit", () => {
   it("devolve uma mensagem de erro caso o link do .CSV for inválido", async () => {
-    let event = getTestEventWithUrl(
+    let event: any = getTestEventWithUrl(
       "https://rw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeTeste.csv"
     );
-    const result = await handleSubmit(event, (file) => file);
-    const isMatch =
+    const result: string | void = await handleSubmit(event, (file) => file);
+    const isMatch: boolean =
       result === `{"error":"Failed to fetch CSV file"}` ||
       result === "Não conseguiu conectar-se ao servidor.";
     expect(isMatch).toBe(true);
   });
 
   it("devolve o .CSV com formato correto dado um link para fazer o download", async () => {
-    let event = getTestEventWithUrl(
+    let event: any = getTestEventWithUrl(
       "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeTeste.csv"
     );
-    const result = await handleSubmit(event, (file) => file);
-    const isMatch =
+    const result: string | void = await handleSubmit(event, (file) => file);
+    const isMatch: boolean =
       result === "Não conseguiu conectar-se ao servidor." ||
       JSON.stringify(result) === JSON.stringify(getTestFileJSON());
     expect(isMatch).toBe(true);
   });
 
   it('devolve "Forms não preenchido." caso o Forms não esteja preenchido', async () => {
-    let event = getTestEventWithEmptyValues();
-    const result = await handleSubmit(event, (file) => file);
+    let event: any = getTestEventWithEmptyValues();
+    const result: string | void = await handleSubmit(event, (file) => file);
     expect(result).toBe("Forms não preenchido.");
   });
 });
 
 describe("formDataToJson", () => {
   it("devolve um JSON com os campos do <input_name> vazios", () => {
-    const form = stringToHTMLElement(`<form id="localUpload" method="post">
+    const form: HTMLFormElement =
+      stringToHTMLElement(`<form id="localUpload" method="post">
                     <input name="localFile" type="file" multiple accept=".csv">
                     <h6 class="line-border">or</h6>
                     <input name="remoteFile" type="text" id="fileInput">
                     <button type="submit">UPLOAD</button>
-                </form>`);
-    const emptyFile = new File([""], "");
+                </form>`) as HTMLFormElement;
+    const emptyFile: File = new File([""], "");
 
     expect(formDataToJson(new FormData(form))).toStrictEqual({
       localFile: emptyFile,
@@ -67,15 +68,16 @@ describe("formDataToJson", () => {
   });
 
   it("devolve um JSON com o campo localFile preenchido com File e o campo remoteFile preenchido com o URL", () => {
-    const file = getTestFile();
-    const url =
+    const file: File = getTestFile();
+    const url: string =
       "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemplo.csv";
-    const form = stringToHTMLElement(`<form id="localUpload" method="post">
+    const form: HTMLFormElement =
+      stringToHTMLElement(`<form id="localUpload" method="post">
                     <input name="localFile" type="file" multiple accept=".csv" value="${file}">
                     <h6 class="line-border">or</h6>
                     <input name="remoteFile" type="text" id="fileInput" value="${url}">
                     <button type="submit">UPLOAD</button>
-                </form>`);
+                </form>`) as HTMLFormElement;
 
     expect(formDataToJson(new FormData(form))).toStrictEqual({
       localFile: file,
@@ -83,21 +85,27 @@ describe("formDataToJson", () => {
     });
   });
 
-  it("devolve um JSON sem atributos se não existir <input_name> no forms", () => {
-    const form = stringToHTMLElement(`<form id="localUpload" method="post">
-                </form>`);
-    expect(formDataToJson(new FormData(form))).toStrictEqual({});
+  it("devolve um JSON com os atributos a null se não existir <input_name> no forms", () => {
+    const form: HTMLFormElement =
+      stringToHTMLElement(`<form id="localUpload" method="post">
+                </form>`) as HTMLFormElement;
+    expect(formDataToJson(new FormData(form))).toStrictEqual({
+      localFile: null,
+      remoteFile: null,
+    });
   });
 
   it('devolve um JSON com o atributo correspondente ao <input_name> e ignora o <input> sem propriedade "name"', () => {
-    const form = stringToHTMLElement(`<form id="localUpload" method="post">
+    const form: HTMLFormElement =
+      stringToHTMLElement(`<form id="localUpload" method="post">
                     <input type="file" multiple accept=".csv">
                     <h6 class="line-border">or</h6>
                     <input name="remoteFile" type="text" id="fileInput">
                     <button type="submit">UPLOAD</button>
-                </form>`);
+                </form>`) as HTMLFormElement;
 
     expect(formDataToJson(new FormData(form))).toStrictEqual({
+      localFile: null,
       remoteFile: "",
     });
   });
@@ -105,20 +113,20 @@ describe("formDataToJson", () => {
 
 describe("needToDownloadCsv", () => {
   it("devolve false com ficheiro local vazio e sem url", () => {
-    const emptyFile = new File([""], "");
+    const emptyFile: File = new File([""], "");
     expect(needToDownloadCsv(emptyFile, "")).toBe(false);
   });
 
   it("devolve true com ficheiro local vazio e com url", () => {
-    const emptyFile = new File([""], "");
-    const url =
+    const emptyFile: File = new File([""], "");
+    const url: string =
       "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemplo.csv";
     expect(needToDownloadCsv(emptyFile, url)).toBe(true);
   });
 
   it("devolve false com conteúdo no ficheiro local e com url", () => {
-    const file = getTestFile();
-    const url =
+    const file: File = getTestFile();
+    const url: string =
       "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemplo.csv";
     expect(needToDownloadCsv(file, url)).toBe(false);
   });

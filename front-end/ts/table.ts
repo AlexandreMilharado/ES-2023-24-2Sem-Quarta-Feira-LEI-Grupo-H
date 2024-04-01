@@ -13,7 +13,9 @@ import { CsvRow } from "./uploadCsv";
 
 /**
  * Dados provenientes do .CSV file
- * @type {Array<JSON>}
+ *
+ * See {@link CsvRow}
+ * @type {CsvRow[]}
  */
 let tabledata: CsvRow[] = [{ Message: "Dados ainda não inseridos" }];
 
@@ -59,9 +61,9 @@ editToggleButton.setAttribute("toggled", "off");
  * juntamente com as colunsa do número das semanas.
  * Também é adicionado à tabela os filtros personalizados e a opção de removoção de colunas.
  *
- * See {@link addSemanasColumns} | {@link addHiddenButtonsAndInputsToColumns} | {@link renderFilterProps}.
+ * See {@link addSemanasColumns} | {@link addHiddenButtonsAndInputsToColumns} | {@link renderFilterProps} | {@link CsvRow}.
  *
- * @param {Array<JSON>} file - dados do ficheiro .CSV importado
+ * @param {CsvRow[]} file - dados do ficheiro .CSV importado
  */
 export function setData(file: CsvRow[]) {
   tabledata = file;

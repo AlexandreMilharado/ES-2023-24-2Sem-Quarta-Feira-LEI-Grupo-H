@@ -11,8 +11,15 @@ import { CsvRow } from "./uploadCsv";
  */
 export const EMPTY_DATA: string = "";
 
+/**
+ * TODO Buscar ao tabulator
+ */
 let tabledata: CsvRow[] = [{ Message: "Dados ainda não inseridos" }];
 
+/**
+ * Objecto com o início e fim dos semestres.
+ * @interface SemestersProps
+ */
 interface SemestersProps {
   firstSemesterStart: Date;
   firstSemesterFinish: Date;
@@ -62,7 +69,7 @@ export function getWeekNumber(
   date: Date,
   firstDayOfTheWeek: number = 1
 ): number | string {
-  if (date === null) return EMPTY_DATA;
+  if (date.toString() === "Invalid Date") return EMPTY_DATA;
 
   const firstDayOfTheYear: Date = new Date(date.getFullYear(), 0, 1); //January 1st of the same year as date
 
@@ -84,7 +91,8 @@ export function getWeekNumber(
 /**
  * Temporariamente retorna estaticamente o valor para o ano académico 2022-2023.
  *
- * @param {Array<JSON>} tableData - dados do .CSV importado
+ * See {@link CsvRow}
+ * @param {CsvRow[]} tableData - dados do .CSV importado
  * @returns {SemestersProps} - Início e fim dos semestres
  */
 export function calculateSemesters(tableData: CsvRow[]): SemestersProps {
@@ -178,8 +186,8 @@ export function getSemesterWeekNumber(
   date: Date,
   firstSemesterStart: Date = semester1Start,
   secondSemesterStart: Date = semester2Start
-) {
-  if (date === null) return EMPTY_DATA;
+): string | number {
+  if (date.toString() === "Invalid Date") return EMPTY_DATA;
 
   const semesterStart: Date =
     date < secondSemesterStart ? firstSemesterStart : secondSemesterStart;
