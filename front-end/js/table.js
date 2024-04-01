@@ -88,7 +88,7 @@ export function setData(file) {
   editToggleButton = document.createElement("button");
   editToggleButton.className = "tabulator-edit-toggle-button";
   editToggleButton.setAttribute("toggled", "off");
-  list.innerHTML = '';
+  list.innerHTML = "";
   renderFilterProps();
   addHiddenButtonsAndInputsToColumns();
 }
@@ -224,9 +224,6 @@ function hideColumn(column, nameColumn) {
  * @param {String} nameColumn - nome da coluna
  */
 function addHiddenColumns(column, nameColumn) {
-  list = document
-    .getElementById("HiddenColumns")
-    .getElementsByTagName("ul")[0];
   const button = document.createElement("button");
   button.className = "tabulator-hiddenColumn-toggle-button";
   button.textContent = column.querySelector(".tabulator-col-title").textContent;
