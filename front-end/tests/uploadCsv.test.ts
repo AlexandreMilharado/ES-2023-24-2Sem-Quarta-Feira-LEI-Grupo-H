@@ -133,7 +133,7 @@ describe("needToDownloadCsv", () => {
 });
 
 describe("formatCsv", () => {
-  it("devolve Array<JSON> do ficheiro em texto enviado como argumento", () => {
+  it("devolve Array<JSON> do ficheiro em texto com caracteres especiais(UTF-8) enviado como argumento", () => {
     expect(formatCsv(getTestFileText())).toEqual(getTestFileJSON());
   });
 
