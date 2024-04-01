@@ -4,6 +4,7 @@ import {
   getSemesterWeekNumber,
   getWeekNumber,
 } from "./dates";
+import { CsvRow } from "./uploadCsv";
 
 /**
  * Funções da Tabela Module
@@ -14,13 +15,13 @@ import {
  * Dados provenientes do .CSV file
  * @type {Array<JSON>}
  */
-let tabledata = [{ Message: "Dados ainda não inseridos" }];
+let tabledata: CsvRow[] = [{ Message: "Dados ainda não inseridos" }];
 
 /**
  * Tabela do Tabulator
  * @type {Tabulator}
  */
-let table = new Tabulator("#HorarioPrincipal", {
+let table: Tabulator = new Tabulator("#HorarioPrincipal", {
   data: tabledata,
   layout: "fitDataFill",
   pagination: "local",
@@ -32,22 +33,24 @@ let table = new Tabulator("#HorarioPrincipal", {
 
 /**
  * Footer da tabela relacionada à navegação da mesma.
- * @type {Array<Object>}
+ * @type {HTMLCollectionOf<Element>}
  */
-let paginators = document.getElementsByClassName("tabulator-paginator");
+let paginators: HTMLCollectionOf<Element> = document.getElementsByClassName(
+  "tabulator-paginator"
+);
 
 /**
  * Botão para aplicar a funcionalidade dos filtros.
- * @type {Button}
+ * @type {HTMLButtonElement}
  */
-let filterToggleButton = document.createElement("button");
+let filterToggleButton: HTMLButtonElement = document.createElement("button");
 filterToggleButton.className = "tabulator-filter-toggle-button";
 
 /**
  * Botão para editar/apagar colunas na tabela.
- * @type {Button}
+ * @type {HTMLButtonElement}
  */
-let editToggleButton = document.createElement("button");
+let editToggleButton: HTMLButtonElement = document.createElement("button");
 editToggleButton.className = "tabulator-edit-toggle-button";
 editToggleButton.setAttribute("toggled", "off");
 
@@ -60,7 +63,7 @@ editToggleButton.setAttribute("toggled", "off");
  *
  * @param {Array<JSON>} file - dados do ficheiro .CSV importado
  */
-export function setData(file) {
+export function setData(file: CsvRow[]) {
   tabledata = file;
   addSemanasColumns();
 
@@ -73,9 +76,9 @@ export function setData(file) {
     paginationSizeSelector: [5, 10, 20, 40],
     movableColumns: false,
     autoColumns: true,
-    autoColumnsDefinitions: function (definitions) {
+    autoColumnsDefinitions: function (definitions: any) {
       // Adicionar Filtros no Tabulator
-      definitions.forEach((column) => {
+      definitions.forEach((column: any) => {
         column.headerFilter = true;
       });
       return definitions;
@@ -90,15 +93,15 @@ export function setData(file) {
  */
 function renderFilterProps() {
   for (let i = 0; i < paginators.length; i++) {
-    paginators.item(i).prepend(filterToggleButton);
+    paginators.item(i)?.prepend(filterToggleButton);
     filterToggleButton.addEventListener("click", () => toggleFilter());
-    paginators.item(i).prepend(editToggleButton);
-    editToggleButton.addEventListener("click", () =>
-      toggleEdit(editToggleButton)
-    );
+    paginators.item(i)?.prepend(editToggleButton);
+    editToggleButton.addEventListener("click", () => toggleEdit());
   }
 
-  let horario = document.getElementById("HorarioPrincipal");
+  let horario: HTMLElement = document.getElementById(
+    "HorarioPrincipal"
+  ) as HTMLElement;
   horario.setAttribute("filters", "off");
 }
 
@@ -110,9 +113,11 @@ function renderFilterProps() {
  */
 function addSemanasColumns() {
   tabledata.forEach((row) => {
-    let dateObject;
+    let dateObject: Date;
     try {
-      dateObject = dateStringFormatCToDate(row["Data da aula"]);
+      dateObject = dateStringFormatCToDate(
+        row["Data da aula"] as string
+      ) as Date;
     } catch (error) {
       return;
     }
@@ -128,23 +133,26 @@ function addSemanasColumns() {
  */
 function toggleFilter() {
   //off and or
-  let table = document.getElementById("HorarioPrincipal");
+  let table: HTMLElement = document.getElementById(
+    "HorarioPrincipal"
+  ) as HTMLElement;
   let toggled = table.getAttribute("filters");
+
   if (toggled == "off") {
     table.setAttribute("filters", "and");
     document.querySelectorAll(".tabulator-header-filter").forEach((element) => {
-      element.querySelector("input").classList.remove("hidden");
+      element.querySelector("input")?.classList.remove("hidden");
     });
   } else if (toggled == "and") {
     table.setAttribute("filters", "or");
     document.querySelectorAll(".tabulator-header-filter").forEach((element) => {
-      element.querySelector("input").classList.add("hidden");
-      element.querySelector(".filter-OR").classList.remove("hidden");
+      element.querySelector("input")?.classList.add("hidden");
+      element.querySelector(".filter-OR")?.classList.remove("hidden");
     });
   } else {
     table.setAttribute("filters", "off");
     document.querySelectorAll(".tabulator-header-filter").forEach((element) => {
-      element.querySelector(".filter-OR").classList.add("hidden");
+      element.querySelector(".filter-OR")?.classList.add("hidden");
     });
   }
 }
@@ -153,20 +161,22 @@ function toggleFilter() {
  * Adiciona a todas as colunas o botão de esconder e um novo input de filtro OR.
  */
 function addHiddenButtonsAndInputsToColumns() {
-  let columns = document.querySelectorAll(".tabulator-col");
+  let columns: NodeListOf<Element> =
+    document.querySelectorAll(".tabulator-col");
+
   columns.forEach((column) => {
-    const button = document.createElement("button");
+    const button: HTMLButtonElement = document.createElement("button");
     button.className = "hidden tabulator-hideColumn-toggle-button";
     //button.textContent = "";
 
-    const input = document.createElement("input");
+    const input: HTMLInputElement = document.createElement("input");
     input.placeholder = "Filtrar 'OR'";
     input.className = "hidden filter-OR";
 
-    column.querySelector(".tabulator-col-sorter").appendChild(button);
-    const nameColumn = column.getAttribute("tabulator-field");
+    column.querySelector(".tabulator-col-sorter")?.appendChild(button);
+    const nameColumn: string = column.getAttribute("tabulator-field") as string;
     button.addEventListener("click", () => hideColumn(column, nameColumn));
-    column.querySelector(".tabulator-header-filter").appendChild(input);
+    column.querySelector(".tabulator-header-filter")?.appendChild(input);
     input.addEventListener("keypress", () => filterByOr());
   });
 }
@@ -178,18 +188,18 @@ function toggleEdit() {
   if (editToggleButton.getAttribute("toggled") == "on") {
     editToggleButton.setAttribute("toggled", "off");
     document.querySelectorAll(".tabulator-col-sorter").forEach((element) => {
-      element.querySelector(".tabulator-arrow").classList.remove("hidden");
+      element.querySelector(".tabulator-arrow")?.classList.remove("hidden");
       element
         .querySelector(".tabulator-hideColumn-toggle-button")
-        .classList.add("hidden");
+        ?.classList.add("hidden");
     });
   } else {
     editToggleButton.setAttribute("toggled", "on");
     document.querySelectorAll(".tabulator-col-sorter").forEach((element) => {
-      element.querySelector(".tabulator-arrow").classList.add("hidden");
+      element.querySelector(".tabulator-arrow")?.classList.add("hidden");
       element
         .querySelector(".tabulator-hideColumn-toggle-button")
-        .classList.remove("hidden");
+        ?.classList.remove("hidden");
     });
   }
 }
@@ -201,7 +211,7 @@ function toggleEdit() {
  * @param {Column} column - coluna da tabela
  * @param {String} nameColumn - nome da coluna
  */
-function hideColumn(column, nameColumn) {
+function hideColumn(column: any, nameColumn: string) {
   table.hideColumn(nameColumn);
   addHiddenColumns(column, nameColumn);
 }
@@ -213,14 +223,14 @@ function hideColumn(column, nameColumn) {
  * @param {Column} column - coluna da tabela
  * @param {String} nameColumn - nome da coluna
  */
-function addHiddenColumns(column, nameColumn) {
+function addHiddenColumns(column: any, nameColumn: string) {
   const list = document
     .getElementById("HiddenColumns")
-    .getElementsByTagName("ul")[0];
-  const button = document.createElement("button");
+    ?.getElementsByTagName("ul")[0];
+  const button: HTMLButtonElement = document.createElement("button");
   button.className = "tabulator-hiddenColumn-toggle-button";
   button.textContent = column.querySelector(".tabulator-col-title").textContent;
-  list.appendChild(button);
+  list?.appendChild(button);
   button.addEventListener("click", () => {
     button.remove();
     table.showColumn(nameColumn);
@@ -231,10 +241,11 @@ function addHiddenColumns(column, nameColumn) {
  * Filtra os dados no Tabulator com o operador lógico "OR".
  */
 function filterByOr() {
-  const columns = document.querySelectorAll(".tabulator-col");
-  let listFilters = [];
+  const columns: NodeListOf<Element> =
+    document.querySelectorAll(".tabulator-col");
+  let listFilters: any[] = [];
   columns.forEach((column) => {
-    const filter = column.querySelector(".filter-OR");
+    const filter: any = column.querySelector(".filter-OR");
     const inputValue = filter.value.trim();
     if (inputValue.length > 0) {
       listFilters.push({

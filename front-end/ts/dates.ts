@@ -3,22 +3,31 @@
  * @module Datas
  */
 
+import { CsvRow } from "./uploadCsv";
+
 /**
  * String a colocar caso não existam dados na célula da tabela.
  * @type {String}
  */
-export const EMPTY_DATA = "";
+export const EMPTY_DATA: string = "";
 
-let tabledata = [{ Message: "Dados ainda não inseridos" }];
+let tabledata: CsvRow[] = [{ Message: "Dados ainda não inseridos" }];
+
+interface SemestersProps {
+  firstSemesterStart: Date;
+  firstSemesterFinish: Date;
+  secondSemesterStart: Date;
+  secondSemesterFinish: Date;
+}
 
 /**
  * Objeto para saber o início do primeiro semestre e segundo semestre.
- * @type {{firstSemesterStart : number, secondSemesterStart: number}}
+ * @type {SemestersProps}
  */
 const {
   firstSemesterStart: semester1Start,
   secondSemesterStart: semester2Start,
-} = calculateSemesters(tabledata);
+}: SemestersProps = calculateSemesters(tabledata);
 
 /**
  * Converter String "dd/mm/yyyy" em um Date object.
@@ -29,14 +38,14 @@ const {
  * @param {String} dateString - String da Data
  * @returns {Date} - Date Object
  */
-export function dateStringFormatCToDate(dateString) {
-  let dateParts = dateString.split("/");
+export function dateStringFormatCToDate(dateString: string): Date | null {
+  let dateParts: string[] = dateString.split("/");
   if (dateParts.length < 3) return null;
 
-  const year =
+  const year: string =
     dateParts[2].length == 4
       ? dateParts[2]
-      : dateParts[2] > String(new Date().getYear() + 1900 + 2).slice(2)
+      : dateParts[2] > String(new Date().getFullYear()).slice(2)
       ? "19" + dateParts[2]
       : "20" + dateParts[2];
   return new Date(year + "/" + dateParts[1] + "/" + dateParts[0]);
@@ -49,21 +58,25 @@ export function dateStringFormatCToDate(dateString) {
  * @param {int} [firstDayOfTheWeek] - (opcional) 0 para Domingo, 1 para Segunda,...,6 para Sábado
  * @returns {int} - Número da semana
  */
-export function getWeekNumber(date, firstDayOfTheWeek = 1) {
-  if (date === null || isNaN(date)) return EMPTY_DATA;
+export function getWeekNumber(
+  date: Date,
+  firstDayOfTheWeek: number = 1
+): number | string {
+  if (date === null) return EMPTY_DATA;
 
-  const firstDayOfTheYear = new Date(date.getFullYear(), 0, 1); //January 1st of the same year as date
+  const firstDayOfTheYear: Date = new Date(date.getFullYear(), 0, 1); //January 1st of the same year as date
 
-  var weekStartOffset = firstDayOfTheYear.getDay() - firstDayOfTheWeek;
+  var weekStartOffset: number = firstDayOfTheYear.getDay() - firstDayOfTheWeek;
   weekStartOffset += weekStartOffset < 0 ? 7 : 0;
 
-  const daysElapsedThisYear = Math.ceil(
-    Math.abs(date - firstDayOfTheYear) / (1000 * 60 * 60 * 24)
+  const daysElapsedThisYear: number = Math.ceil(
+    Math.abs(date.getTime() - firstDayOfTheYear.getTime()) /
+      (1000 * 60 * 60 * 24)
   ); //Days since january 1st
 
-  const correctedDay = daysElapsedThisYear + weekStartOffset;
+  const correctedDay: number = daysElapsedThisYear + weekStartOffset;
 
-  const weekNumber = Math.floor(correctedDay / 7) + 1;
+  const weekNumber: number = Math.floor(correctedDay / 7) + 1;
 
   return weekNumber;
 }
@@ -72,9 +85,9 @@ export function getWeekNumber(date, firstDayOfTheWeek = 1) {
  * Temporariamente retorna estaticamente o valor para o ano académico 2022-2023.
  *
  * @param {Array<JSON>} tableData - dados do .CSV importado
- * @returns {{ firstSemesterStart: Date, firstSemesterFinish: Date,secondSemesterStart: Date,secondSemesterFinish: Date}} - Início e fim dos semestres
+ * @returns {SemestersProps} - Início e fim dos semestres
  */
-export function calculateSemesters(tableData) {
+export function calculateSemesters(tableData: CsvRow[]): SemestersProps {
   // Semester Beginning dates for 2023/24
   return {
     firstSemesterStart: new Date(2022, 8, 1),
@@ -162,25 +175,29 @@ export function calculateSemesters(tableData) {
  * @returns {int} - Número da semana consoante o semestre
  */
 export function getSemesterWeekNumber(
-  date,
-  firstSemesterStart = semester1Start,
-  secondSemesterStart = semester2Start
+  date: Date,
+  firstSemesterStart: Date = semester1Start,
+  secondSemesterStart: Date = semester2Start
 ) {
-  if (date === null || isNaN(date)) return EMPTY_DATA;
+  if (date === null) return EMPTY_DATA;
 
-  const semesterStart =
+  const semesterStart: Date =
     date < secondSemesterStart ? firstSemesterStart : secondSemesterStart;
 
-  const weekNumberOfSemesterStart = getWeekNumber(semesterStart);
+  const weekNumberOfSemesterStart: number = getWeekNumber(
+    semesterStart
+  ) as number;
 
-  const weekNumberOfDate = getWeekNumber(date);
+  const weekNumberOfDate: number = getWeekNumber(date) as number;
 
-  let newYearCorrection = 0;
+  let newYearCorrection: number = 0;
   if (
     date < secondSemesterStart &&
     date > new Date(date.getFullYear() - 1, 11, 31)
   ) {
-    newYearCorrection = getWeekNumber(new Date(date.getFullYear(), 11, 31));
+    newYearCorrection = getWeekNumber(
+      new Date(date.getFullYear(), 11, 31)
+    ) as number;
   }
 
   return weekNumberOfDate + newYearCorrection - weekNumberOfSemesterStart + 1;
