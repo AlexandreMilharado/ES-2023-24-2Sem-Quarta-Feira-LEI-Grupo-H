@@ -40,17 +40,21 @@ let paginators = document.getElementsByClassName("tabulator-paginator");
  * Botão para aplicar a funcionalidade dos filtros.
  * @type {Button}
  */
-let filterToggleButton = document.createElement("button");
-filterToggleButton.className = "tabulator-filter-toggle-button";
+let filterToggleButton;
 
 /**
  * Botão para editar/apagar colunas na tabela.
  * @type {Button}
  */
-let editToggleButton = document.createElement("button");
-editToggleButton.className = "tabulator-edit-toggle-button";
-editToggleButton.setAttribute("toggled", "off");
+let editToggleButton;
 
+/**
+ * Lista para mostrar as colunas escondidas.
+ * @type {HTMLUListElement}
+ */
+let list = document
+  .getElementById("HiddenColumns")
+  .getElementsByTagName("ul")[0];
 /**
  * Atualizar os dados no Tabulator consoante o ficheiro .CSV formatado
  * juntamente com as colunsa do número das semanas.
@@ -81,14 +85,20 @@ export function setData(file) {
       return definitions;
     },
   });
-  addHiddenButtonsAndInputsToColumns();
+  editToggleButton = document.createElement("button");
+  editToggleButton.className = "tabulator-edit-toggle-button";
+  editToggleButton.setAttribute("toggled", "off");
+  list.innerHTML = "";
   renderFilterProps();
+  addHiddenButtonsAndInputsToColumns();
 }
 
 /**
  * Adiciona os filtros no tabela e desliga-os para não aparecerem no ecrã(aparecem por default).
  */
 function renderFilterProps() {
+  filterToggleButton = document.createElement("button");
+  filterToggleButton.className = "tabulator-filter-toggle-button";
   for (let i = 0; i < paginators.length; i++) {
     paginators.item(i).prepend(filterToggleButton);
     filterToggleButton.addEventListener("click", () => toggleFilter());
@@ -214,9 +224,6 @@ function hideColumn(column, nameColumn) {
  * @param {String} nameColumn - nome da coluna
  */
 function addHiddenColumns(column, nameColumn) {
-  const list = document
-    .getElementById("HiddenColumns")
-    .getElementsByTagName("ul")[0];
   const button = document.createElement("button");
   button.className = "tabulator-hiddenColumn-toggle-button";
   button.textContent = column.querySelector(".tabulator-col-title").textContent;
