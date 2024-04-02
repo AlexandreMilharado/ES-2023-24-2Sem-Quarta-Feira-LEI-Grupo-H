@@ -1,4 +1,5 @@
 import Tabulator from "tabulator-tables";
+import ColumnDefinition from "tabulator-tables";
 import {
   dateStringFormatCToDate,
   getSemesterWeekNumber,
@@ -23,7 +24,7 @@ let tabledata: CsvRow[] = [{ Message: "Dados ainda não inseridos" }];
  * Tabela do Tabulator
  * @type {Tabulator}
  */
-let table = new Tabulator("#HorarioPrincipal", {
+let table: Tabulator = new Tabulator("#HorarioPrincipal", {
   data: tabledata,
   layout: "fitDataFill",
   pagination: "local",
@@ -83,9 +84,9 @@ export function setData(file: CsvRow[]): void {
     paginationSizeSelector: [5, 10, 20, 40],
     movableColumns: false,
     autoColumns: true,
-    autoColumnsDefinitions: function (definitions: any) {
+    autoColumnsDefinitions: function (definitions: ColumnDefinition[]) {
       // Adicionar Filtros no Tabulator
-      definitions.forEach((column: any) => {
+      definitions.forEach((column: ColumnDefinition) => {
         column.headerFilter = true;
       });
       return definitions;
@@ -224,7 +225,7 @@ function toggleEdit(): void {
  * @param {Column} column - coluna da tabela
  * @param {String} nameColumn - nome da coluna
  */
-function hideColumn(column: any, nameColumn: string): void {
+function hideColumn(column: ColumnDefinition, nameColumn: string): void {
   table.hideColumn(nameColumn);
   addHiddenColumns(column, nameColumn);
 }
@@ -236,7 +237,7 @@ function hideColumn(column: any, nameColumn: string): void {
  * @param {Column} column - coluna da tabela
  * @param {String} nameColumn - nome da coluna
  */
-function addHiddenColumns(column: any, nameColumn: string): void {
+function addHiddenColumns(column: ColumnDefinition, nameColumn: string): void {
   const button: HTMLButtonElement = document.createElement("button");
   button.className = "tabulator-hiddenColumn-toggle-button";
   button.textContent = column.querySelector(".tabulator-col-title").textContent;

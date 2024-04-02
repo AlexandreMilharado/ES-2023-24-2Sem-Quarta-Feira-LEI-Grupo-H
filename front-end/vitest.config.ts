@@ -4,7 +4,7 @@ export default defineConfig({
   test: {
     exclude: [...configDefaults.exclude, "docs/*"],
     coverage: {
-      exclude: [...configDefaults.exclude, "docs/*"],
+      exclude: [...configDefaults.exclude, "docs/*", "tests/utilities.ts"],
     },
   },
 });

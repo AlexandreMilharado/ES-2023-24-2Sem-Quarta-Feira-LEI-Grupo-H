@@ -61,11 +61,11 @@ export interface FormDataJson {
  * Example local URL: ./Software-Engineering/frontend/others/HorarioDeExemplo.csv
  *
  * See {@link setData}.
- * @param {Event} event - Evento para buscar forms
+ * @param {SubmitEvent} event - Evento para buscar forms
  * @param {Function} [handleData] - Função a executar após a transformação do ficheiro
  */
 export async function handleSubmit(
-  event: Event,
+  event: SubmitEvent,
   handleData: (file: CsvRow[]) => void = setData
 ): Promise<string | void> {
   if (!event) return;
@@ -143,8 +143,14 @@ export function needToDownloadCsv(
  * @returns {Promise<string>} Local File em string
  */
 export async function formatToString(localFile: File): Promise<string> {
-  const text = await localFile.text();
-  return text;
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      resolve(text);
+    };
+    reader.readAsText(localFile);
+  });
 }
 
 /**

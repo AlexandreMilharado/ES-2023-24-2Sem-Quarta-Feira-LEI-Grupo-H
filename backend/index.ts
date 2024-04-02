@@ -1,8 +1,8 @@
-import express from "express";
+import express, { Express, Request, Response } from "express";
 import cors from "cors";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
-const app: any = express();
+const app: Express = express();
 app.use(express.json());
 app.use(cors({ origin: true }));
 
@@ -10,10 +10,10 @@ app.use(cors({ origin: true }));
  * EndPoint para fazer upload do Horario através do url passado no body,
  * faz download do ficheiro e envia para o cliente.
  */
-app.post("/uploadHorario", async (req: any, res: any) => {
+app.post("/uploadHorario", async (req: Request, res: Response) => {
   const { url } = req.body;
   try {
-    const csvData = await getFile(url);
+    const csvData: string = await getFile(url);
     return res.json({ csvData });
   } catch (error) {
     return res.status(500).json({ error: "Failed to fetch CSV file" });
@@ -21,12 +21,14 @@ app.post("/uploadHorario", async (req: any, res: any) => {
 });
 
 /**
- * Faz download do .csv e retorna-o
+ * Faz download do .csv e retorna-o.
  * @param {string} url
- * @returns .csv File
+ * @returns {Promise<string>} Dados do ficheiro .CSV
  */
-async function getFile(url: string) {
-  const response: any = await axios.get(url);
+async function getFile(url: string): Promise<string> {
+  if (!url.endsWith(".csv")) throw Error();
+
+  const response: AxiosResponse = await axios.get(url);
   return response.data;
 }
 

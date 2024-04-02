@@ -12,6 +12,7 @@ import {
 import {
   formDataToJson,
   formatCsv,
+  formatToString,
   handleSubmit,
   needToDownloadCsv,
 } from "../ts/uploadCsv";
@@ -24,6 +25,17 @@ describe("handleSubmit", () => {
   it("devolve uma mensagem de erro caso o link do .CSV for inválido", async () => {
     let event: any = getTestEventWithUrl(
       "https://rw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeTeste.csv"
+    );
+    const result: string | void = await handleSubmit(event, (file) => file);
+    const isMatch: boolean =
+      result === `{"error":"Failed to fetch CSV file"}` ||
+      result === "Não conseguiu conectar-se ao servidor.";
+    expect(isMatch).toBe(true);
+  });
+
+  it("devolve uma mensagem de erro caso o link do ficheiro não acabar em .CSV", async () => {
+    let event: any = getTestEventWithUrl(
+      "https://rw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeTeste.cs"
     );
     const result: string | void = await handleSubmit(event, (file) => file);
     const isMatch: boolean =
@@ -47,6 +59,14 @@ describe("handleSubmit", () => {
     let event: any = getTestEventWithEmptyValues();
     const result: string | void = await handleSubmit(event, (file) => file);
     expect(result).toBe("Forms não preenchido.");
+  });
+});
+
+describe("formatToString", () => {
+  it("devolve corretamente o em texto o ficheiro passado como argumento", async () => {
+    const text = await formatToString(getTestFile());
+
+    expect(text).toStrictEqual(getTestFileText());
   });
 });
 
