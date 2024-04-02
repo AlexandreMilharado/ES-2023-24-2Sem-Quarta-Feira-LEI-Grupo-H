@@ -80,10 +80,10 @@ npm run ui
 ## Screenshots
 
 Página Inicial/Upload do .CSV:
-![Ecrã principal](https://cdn.discordapp.com/attachments/967433291194044436/1218966338182184960/image.png?ex=660995de&is=65f720de&hm=5a5b5e355215b5f3af9cccbd4c870e1fa74a7ff7d243a624424d58a37359f361&)
+![Ecrã principal](/readmeFiles/uploadcsv.png)
 
 Tabela com o Horário importado:
-![Tabela de Horários](https://cdn.discordapp.com/attachments/967433291194044436/1218966489923715266/image.png?ex=66099602&is=65f72102&hm=54615b2758744e554ea435c6be903b359c267e99d82ca95bf63eaf6b7714c278&)
+![Tabela de Horários](/readmeFiles/tabela.png)
 
 ## Problemas Conhecidos
 

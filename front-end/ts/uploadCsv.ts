@@ -26,7 +26,7 @@ LOCAL_FORM?.addEventListener("submit", handleSubmit);
  * CsvCell - célula da tabela.
  * @type {string | number}
  */
-type CsvCell = string | number;
+export type CsvCell = string | number;
 
 /**
  * Linha de dados do .CSV.
@@ -41,7 +41,7 @@ export interface CsvRow {
  * @interface FormDataJson
  * TODO
  */
-interface FormDataJson {
+export interface FormDataJson {
   localFile: File;
   remoteFile: string;
 }
@@ -61,7 +61,7 @@ interface FormDataJson {
  * Example local URL: ./Software-Engineering/frontend/others/HorarioDeExemplo.csv
  *
  * See {@link setData}.
- * @param {HTMLFormElement} form - Forms relacionado ao handleSubmit
+ * @param {Event} event - Evento para buscar forms
  * @param {Function} [handleData] - Função a executar após a transformação do ficheiro
  */
 export async function handleSubmit(

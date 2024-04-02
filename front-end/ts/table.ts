@@ -21,6 +21,7 @@ let tabledata: CsvRow[] = [{ Message: "Dados ainda não inseridos" }];
 
 /**
  * Tabela do Tabulator
+ * @type {Tabulator}
  */
 let table = new Tabulator("#HorarioPrincipal", {
   data: tabledata,
@@ -44,21 +45,22 @@ let paginators: HTMLCollectionOf<Element> = document.getElementsByClassName(
  * Botão para aplicar a funcionalidade dos filtros.
  * @type {HTMLButtonElement}
  */
-let filterToggleButton;
+let filterToggleButton: HTMLButtonElement;
 
 /**
  * Botão para editar/apagar colunas na tabela.
  * @type {HTMLButtonElement}
  */
-let editToggleButton;
+let editToggleButton: HTMLButtonElement;
 
 /**
  * Lista para mostrar as colunas escondidas.
  * @type {HTMLUListElement}
  */
-let list = document
+let list: HTMLUListElement = document
   .getElementById("HiddenColumns")
-  ?.getElementsByTagName("ul")[0];
+  ?.getElementsByTagName("ul")[0] as HTMLUListElement;
+
 /**
  * Atualizar os dados no Tabulator consoante o ficheiro .CSV formatado
  * juntamente com as colunsa do número das semanas.
@@ -68,7 +70,7 @@ let list = document
  *
  * @param {CsvRow[]} file - dados do ficheiro .CSV importado
  */
-export function setData(file: CsvRow[]) {
+export function setData(file: CsvRow[]): void {
   tabledata = file;
   addSemanasColumns();
 
@@ -100,7 +102,7 @@ export function setData(file: CsvRow[]) {
 /**
  * Adiciona os filtros no tabela e desliga-os para não aparecerem no ecrã(aparecem por default).
  */
-function renderFilterProps() {
+function renderFilterProps(): void {
   filterToggleButton = document.createElement("button");
   filterToggleButton.className = "tabulator-filter-toggle-button";
   for (let i = 0; i < paginators.length; i++) {
@@ -122,7 +124,7 @@ function renderFilterProps() {
  *
  * See {@link dateStringFormatCToDate} | {@link getWeekNumber} | {@link getSemesterWeekNumber}.
  */
-function addSemanasColumns() {
+function addSemanasColumns(): void {
   tabledata.forEach((row) => {
     let dateObject: Date;
     try {
@@ -142,7 +144,7 @@ function addSemanasColumns() {
  * Os filtros têm três estados: AND, OR ou desligado, consoante o número de vezes que esta função
  * é acionda muda os estados do filtro, mundando a funcionalidade de procura para AND, OR ou sem filtro.
  */
-function toggleFilter() {
+function toggleFilter(): void {
   //off and or
   let table: HTMLElement = document.getElementById(
     "HorarioPrincipal"
@@ -171,7 +173,7 @@ function toggleFilter() {
 /**
  * Adiciona a todas as colunas o botão de esconder e um novo input de filtro OR.
  */
-function addHiddenButtonsAndInputsToColumns() {
+function addHiddenButtonsAndInputsToColumns(): void {
   let columns: NodeListOf<Element> =
     document.querySelectorAll(".tabulator-col");
 
@@ -195,7 +197,7 @@ function addHiddenButtonsAndInputsToColumns() {
 /**
  * Esconde/mostra os botões para apagar cada coluna na tabela.
  */
-function toggleEdit() {
+function toggleEdit(): void {
   if (editToggleButton.getAttribute("toggled") == "on") {
     editToggleButton.setAttribute("toggled", "off");
     document.querySelectorAll(".tabulator-col-sorter").forEach((element) => {
@@ -222,7 +224,7 @@ function toggleEdit() {
  * @param {Column} column - coluna da tabela
  * @param {String} nameColumn - nome da coluna
  */
-function hideColumn(column: any, nameColumn: string) {
+function hideColumn(column: any, nameColumn: string): void {
   table.hideColumn(nameColumn);
   addHiddenColumns(column, nameColumn);
 }
@@ -234,8 +236,8 @@ function hideColumn(column: any, nameColumn: string) {
  * @param {Column} column - coluna da tabela
  * @param {String} nameColumn - nome da coluna
  */
-function addHiddenColumns(column, nameColumn) {
-  const button = document.createElement("button");
+function addHiddenColumns(column: any, nameColumn: string): void {
+  const button: HTMLButtonElement = document.createElement("button");
   button.className = "tabulator-hiddenColumn-toggle-button";
   button.textContent = column.querySelector(".tabulator-col-title").textContent;
   list?.appendChild(button);
@@ -248,7 +250,7 @@ function addHiddenColumns(column, nameColumn) {
 /**
  * Filtra os dados no Tabulator com o operador lógico "OR".
  */
-function filterByOr() {
+function filterByOr(): void {
   const columns: NodeListOf<Element> =
     document.querySelectorAll(".tabulator-col");
   let listFilters: any[] = [];

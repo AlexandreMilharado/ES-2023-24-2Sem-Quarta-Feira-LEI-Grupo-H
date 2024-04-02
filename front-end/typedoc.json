@@ -1,0 +1,6 @@
+{
+  "entryPoints": ["ts/*"],
+  "out": "docs",
+  "readme": "../README.md",
+  "disableSources": true
+}
