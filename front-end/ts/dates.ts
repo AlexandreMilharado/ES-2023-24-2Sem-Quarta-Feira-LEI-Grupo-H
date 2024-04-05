@@ -88,6 +88,30 @@ export function getWeekNumber(
   return weekNumber;
 }
 
+
+type SemesterStartDates = Record<number, { first?: Date; second?: Date }>;
+
+export function getSemesterStarts(tableData : CsvRow[], dateKey: string = "Data da aula") {
+  let semesterStartingDates : SemesterStartDates = {};
+
+  tableData.forEach((row) => {
+    const date = dateStringFormatCToDate(row[dateKey] as string);
+    if(date === null) return;
+    
+    const month = date.getMonth()+1;
+    const fullYear = date.getFullYear() - (month < 8 ? 1 : 0);
+    const semester : 'first' | "second" = (month > 8 || (month < 2 && date.getDay() < 20 )) ? "first" : "second";
+    
+    if(!semesterStartingDates[fullYear]){
+      semesterStartingDates[fullYear] = {[semester]:date}
+    }else if(!semesterStartingDates[fullYear][semester] || semesterStartingDates[fullYear][semester]!> date ){
+      semesterStartingDates[fullYear][semester]=date
+    }
+  })
+  return (semesterStartingDates);  
+}
+
+
 /**
  * Temporariamente retorna estaticamente o valor para o ano académico 2022-2023.
  *
@@ -103,6 +127,9 @@ export function calculateSemesters(tableData: CsvRow[]): SemestersProps {
     secondSemesterStart: new Date(2023, 0, 30),
     secondSemesterFinish: new Date(2023, 6, 1),
   };
+
+
+  
 
   // TODO - Make Semesters calculation dynamic
   // const ucs = [];
