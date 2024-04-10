@@ -2,6 +2,7 @@ import Tabulator from "tabulator-tables";
 import ColumnDefinition from "tabulator-tables";
 import {
   dateStringFormatCToDate,
+  getSemesterStarts,
   getSemesterWeekNumber,
   getWeekNumber,
 } from "./dates";
@@ -126,6 +127,9 @@ function renderFilterProps(): void {
  * See {@link dateStringFormatCToDate} | {@link getWeekNumber} | {@link getSemesterWeekNumber}.
  */
 function addSemanasColumns(): void {
+  const startSemesterDates = getSemesterStarts(tabledata.map((row) => row['Data da aula'] as string));
+  console.log(startSemesterDates);
+
   tabledata.forEach((row) => {
     let dateObject: Date;
     try {
@@ -136,7 +140,7 @@ function addSemanasColumns(): void {
       return;
     }
     row["Semana do Ano"] = getWeekNumber(dateObject);
-    row["Semana do Semestre"] = getSemesterWeekNumber(dateObject);
+    row["Semana do Semestre"] = getSemesterWeekNumber(dateObject,startSemesterDates);
   });
 }
 

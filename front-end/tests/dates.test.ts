@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 import {
   EMPTY_DATA,
-  calculateSemesters,
   dateStringFormatCToDate,
   getSemesterWeekNumber,
+  getSemesterStarts,
   getWeekNumber,
 } from "../ts/dates";
 
@@ -48,27 +48,17 @@ describe("getWeekNumber", () => {
   });
 });
 
-describe("calculateSemesters", () => {
-  // TODO Dar fix a isto quando a função aceitar dados do tabulator
-  it("devolve as datas dos semestres corretamente quando não é passado dados da tabela", () => {
-    expect(JSON.stringify(calculateSemesters([{}]))).toBe(
-      JSON.stringify({
-        firstSemesterStart: new Date(2022, 8, 1),
-        firstSemesterFinish: new Date(2023, 0, 28),
-        secondSemesterStart: new Date(2023, 0, 30),
-        secondSemesterFinish: new Date(2023, 6, 1),
-      })
-    );
-  });
-});
+
+
 
 describe("getSemesterWeekNumber", () => {
   it("devolve EMPTY_DATA se for passada uma data inválida", () => {
     expect(
       getSemesterWeekNumber(
         new Date("2024/12/50"),
-        new Date(2024, 8, 1),
-        new Date(2024, 0, 30)
+        {
+          2023:{first:new Date(2023, 8, 1), second:new Date(2024, 0, 30)}
+        }        
       )
     ).toBe(EMPTY_DATA);
   });
@@ -77,8 +67,9 @@ describe("getSemesterWeekNumber", () => {
     expect(
       getSemesterWeekNumber(
         new Date("2024/2/13"),
-        new Date(2023, 8, 1),
-        new Date(2024, 0, 30)
+        {
+          2023:{first:new Date(2023, 8, 1), second:new Date(2024, 0, 30)}
+        }    
       )
     ).toBe(3);
   });
@@ -87,9 +78,18 @@ describe("getSemesterWeekNumber", () => {
     expect(
       getSemesterWeekNumber(
         new Date("2024/1/13"),
-        new Date(2023, 8, 1),
-        new Date(2024, 0, 30)
+        {
+          2023:{first:new Date(2023, 8, 1), second:new Date(2024, 0, 30)}
+        }    
       )
     ).toBe(20);
   });
 });
+
+describe('getSemesterWeekNumber', () => {
+  it("devolve um objecto com a primeira aula do primeiro semestre de 2018/2019", () => {
+    expect(
+      getSemesterStarts(["3/12/2018","8/12/2018","1/1/2019","5/9/2018", "10/2/2018"])
+    ).toStrictEqual({2018:{first:new Date(2018,8,5)} , 2017:{second:new Date(2018,1,10)}})
+  }) 
+})
