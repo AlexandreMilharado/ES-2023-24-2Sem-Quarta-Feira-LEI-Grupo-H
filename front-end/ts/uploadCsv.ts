@@ -1,7 +1,7 @@
 "use-strict";
 import axios from "axios";
 import { setData } from "./table";
-import { togglePopUp } from "./init";
+import { togglePopUp } from "./popUp";
 
 /**
  * Server's Path
