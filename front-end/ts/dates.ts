@@ -94,7 +94,7 @@ export function getSemesterStarts(datesList : string[]) : SemesterStartDates {
 
   datesList.forEach((dateString) => {
     const date = dateStringFormatCToDate(dateString);
-    if(date === null) return;
+    if(date === null || date.toString() === "Invalid Date") return;
     
     const month = date.getMonth()+1;
     const fullYear = date.getFullYear() - (month < 8 ? 1 : 0);

@@ -86,10 +86,15 @@ describe("getSemesterWeekNumber", () => {
   });
 });
 
-describe('getSemesterWeekNumber', () => {
-  it("devolve um objecto com a primeira aula do primeiro semestre de 2018/2019", () => {
+describe('getSemesterStarts', () => {
+  it("devolve um objecto com a primeira aula do primeiro semestre de 2018/2019 e segundo semestre 2017/2018", () => {
     expect(
-      getSemesterStarts(["3/12/2018","8/12/2018","1/1/2019","5/9/2018", "10/2/2018"])
+      getSemesterStarts(["3/12/2018","8/12/2018","1/1/2019","5/9/2018", "4/2/2018", "10/2/2018"])
+    ).toStrictEqual({2018:{first:new Date(2018,8,5)} , 2017:{second:new Date(2018,1,4)}})
+  }) 
+  it("devolve um objecto com a primeira aula do primeiro semestre de 2018/2019 e segundo semestre 2017/2018 com datas ", () => {
+    expect(
+      getSemesterStarts(["3/13/2018","2018/12/08","1/1/2019","5/9/2018", "10/2/2018"])
     ).toStrictEqual({2018:{first:new Date(2018,8,5)} , 2017:{second:new Date(2018,1,10)}})
   }) 
 })
