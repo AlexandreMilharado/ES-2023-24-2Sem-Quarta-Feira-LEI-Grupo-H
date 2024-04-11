@@ -1,4 +1,4 @@
-import { CsvRow } from "../ts/uploadCsv";
+import { TableRow } from "../ts/uploadCsv";
 
 /**
  * Evento falso para testar funções.
@@ -54,10 +54,10 @@ DATMC;Projecto de Investigação em Arquitectura dos Territórios Metropolitanos
 /**
  * Devolve um conjunto de dados do HorarioDeExemplo.csv em JSON.
  *
- * See {@link CsvRow}
- * @returns {CsvRow[]} Array<JSON> com header personalizado dos dados do horário
+ * See {@link TableRow}
+ * @returns {TableRow[]} Array<JSON> com header personalizado dos dados do horário
  */
-export function getTestFileJSON(): CsvRow[] {
+export function getTestFileJSON(): TableRow[] {
   return [
     {
       Curso: "ME",
@@ -242,10 +242,10 @@ DATMC;Projecto de Investigação em Arquitectura dos Territórios Metropolitanos
 /**
  * Devolve um conjunto de dados com header númerico do HorarioDeExemplo.csv em JSON.
  *
- * See {@link CsvRow}
- * @returns {CsvRow[]} Array<JSON> sem header personalizado dos dados do horário
+ * See {@link TableRow}
+ * @returns {TableRow[]} Array<JSON> sem header personalizado dos dados do horário
  */
-export function getTestFileWithoutHeadersJSON(): CsvRow[] {
+export function getTestFileWithoutHeadersJSON(): TableRow[] {
   return [
     {
       "0": "ME",

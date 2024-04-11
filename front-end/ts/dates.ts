@@ -3,7 +3,7 @@
  * @module Datas
  */
 
-import { CsvRow } from "./uploadCsv";
+import { TableRow } from "./uploadCsv";
 
 /**
  * String a colocar caso não existam dados na célula da tabela.
@@ -14,7 +14,7 @@ export const EMPTY_DATA: string = "";
 /**
  * TODO Buscar ao tabulator
  */
-let tabledata: CsvRow[] = [{ Message: "Dados ainda não inseridos" }];
+let tabledata: TableRow[] = [{ Message: "Dados ainda não inseridos" }];
 
 /**
  * Objecto com o início e fim dos semestres.
@@ -91,11 +91,11 @@ export function getWeekNumber(
 /**
  * Temporariamente retorna estaticamente o valor para o ano académico 2022-2023.
  *
- * See {@link CsvRow} | {@link SemestersProps}.
- * @param {CsvRow[]} tableData - dados do .CSV importado
+ * See {@link TableRow} | {@link SemestersProps}.
+ * @param {TableRow[]} tableData - dados do .CSV importado
  * @returns {SemestersProps} - Início e fim dos semestres
  */
-export function calculateSemesters(tableData: CsvRow[]): SemestersProps {
+export function calculateSemesters(tableData: TableRow[]): SemestersProps {
   // Semester Beginning dates for 2023/24
   return {
     firstSemesterStart: new Date(2022, 8, 1),

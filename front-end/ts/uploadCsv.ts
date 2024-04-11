@@ -21,20 +21,20 @@ const SERVER: string = "http://localhost:3001";
  */
 const LOCAL_FORM: HTMLElement | null = document.getElementById("localUpload");
 LOCAL_FORM?.addEventListener("submit", handleSubmit);
+//TODO Deal with json files and see if I can accept multiple files.
 
 /**
- * CsvCell - célula da tabela.
+ * TableCell - célula da tabela.
  * @type {string | number}
  */
-export type CsvCell = string | number;
+export type TableCell = string | number;
 
 /**
- * Linha de dados do .CSV.
- * @interface CsvRow
+ * Linha de dados da tabela.
+ * @type TableRow
  */
-export interface CsvRow {
-  [key: string]: CsvCell;
-}
+export type TableRow = Record<string,TableCell>
+
 
 /**
  * Dados do forms upload .CSV.
@@ -66,7 +66,7 @@ export interface FormDataJson {
  */
 export async function handleSubmit(
   event: SubmitEvent,
-  handleData: (file: CsvRow[]) => void = setData
+  handleData: (file: TableRow[]) => void = setData
 ): Promise<string | void> {
   if (!event) return;
 
@@ -160,21 +160,21 @@ export async function formatToString(localFile: File): Promise<string> {
  * Se conter ";" no header, assume-se uma separação de linhas com ";",
  * caso contrário usa-se o delimitador ",".
  * Se existir alguma linha sem dados ignora-a não devolvendo-a no CsvRow[].
- * Ver {@link CsvCell} | {@link CsvRow}
+ * Ver {@link TableCell} | {@link TableRow}
  *
  * @param {String} text - Ficheiro de texto do .CSV
  * @param {Boolean} [enableHeaders] - (opcional) o ficheiro enviado tem headers, por default tem.
- * @returns {CsvRow[]} Ficheiro .CSV formatado
+ * @returns {TableRow[]} Ficheiro .CSV formatado
  */
 export function formatCsv(
   text: string,
   enableHeaders: boolean = true
-): CsvRow[] {
+): TableRow[] {
   const splitedText: string[] = text.split(new RegExp("\r\n|\n|\r"));
   const delimiter: string =
     splitedText.length > 0 && splitedText[0].includes(";") ? ";" : ",";
 
-  const headers: CsvCell[] = enableHeaders
+  const headers: TableCell[] = enableHeaders
     ? splitedText[0].split(delimiter)
     : splitedText[0].split(delimiter).map((_element, index) => index);
 
@@ -186,6 +186,6 @@ export function formatCsv(
     linha.split(delimiter).reduce((json, currentCell, coluna) => {
       json[headers[coluna]] = currentCell;
       return json;
-    }, {} as CsvRow)
+    }, {} as TableRow)
   );
 }
