@@ -12,12 +12,6 @@ import { CsvRow } from "./uploadCsv";
 export const EMPTY_DATA: string = "";
 
 /**
- * TODO Buscar ao tabulator
- */
-let tabledata: CsvRow[] = [{ Message: "Dados ainda não inseridos" }];
-
-
-/**
  * Converter String "dd/mm/yyyy" em um Date object.
  *
  * Alternativamente, se dd/mm/yy é passado como argumento,
@@ -78,7 +72,7 @@ export function getWeekNumber(
  * Valor = objecto que contêm dois atributos optativos: first e second que correspondem
  *         respetivamente à data de inicio do primeiro e data de inicio do segundo semestre
  *         desse ano letivo
- * @type SemesterStartDates
+ * @type {SemesterStartDates}
  */
 type SemesterStartDates = Record<number, { first?: Date; second?: Date }>;
 
@@ -115,6 +109,7 @@ export function getSemesterStarts(datesList : string[]) : SemesterStartDates {
  *
  * See {@link getWeekNumber}.
  * @param {Date} date - Data a verificar
+ * @param {SemesterStartDates} semesterStartingDates - Objecto com o inicio dos semestres existentes na informação importada
  * @returns {number} - Número da semana consoante o semestre
  */
 export function getSemesterWeekNumber( date: Date, semesterStartingDates : SemesterStartDates) {

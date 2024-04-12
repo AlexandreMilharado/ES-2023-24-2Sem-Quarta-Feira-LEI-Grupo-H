@@ -128,7 +128,6 @@ function renderFilterProps(): void {
  */
 function addSemanasColumns(): void {
   const startSemesterDates = getSemesterStarts(tabledata.map((row) => row['Data da aula'] as string));
-  console.log(startSemesterDates);
 
   tabledata.forEach((row) => {
     let dateObject: Date;
