@@ -12,31 +12,6 @@ import { CsvRow } from "./uploadCsv";
 export const EMPTY_DATA: string = "";
 
 /**
- * TODO Buscar ao tabulator
- */
-let tabledata: CsvRow[] = [{ Message: "Dados ainda não inseridos" }];
-
-/**
- * Objecto com o início e fim dos semestres.
- * @interface SemestersProps
- */
-export interface SemestersProps {
-  firstSemesterStart: Date;
-  firstSemesterFinish: Date;
-  secondSemesterStart: Date;
-  secondSemesterFinish: Date;
-}
-
-/**
- * Objeto para saber o início do primeiro semestre e segundo semestre.
- * @type {SemestersProps}
- */
-const {
-  firstSemesterStart: semester1Start,
-  secondSemesterStart: semester2Start,
-}: SemestersProps = calculateSemesters(tabledata);
-
-/**
  * Converter String "dd/mm/yyyy" em um Date object.
  *
  * Alternativamente, se dd/mm/yy é passado como argumento,
@@ -46,6 +21,7 @@ const {
  * @returns {Date} - Date Object
  */
 export function dateStringFormatCToDate(dateString: string): Date | null {
+  if(!dateString)return null;
   let dateParts: string[] = dateString.split("/");
   if (dateParts.length < 3) return null;
 
@@ -58,17 +34,16 @@ export function dateStringFormatCToDate(dateString: string): Date | null {
   return new Date(year + "/" + dateParts[1] + "/" + dateParts[0]);
 }
 
+
+
 /**
  * Calcular o número da semana desde o início do ano.
  *
  * @param {Date} date - a data a verificar
- * @param {int} [firstDayOfTheWeek] - (opcional) 0 para Domingo, 1 para Segunda,...,6 para Sábado
- * @returns {int} - Número da semana
+ * @param {number} [firstDayOfTheWeek] - (opcional) 0 para Domingo, 1 para Segunda,...,6 para Sábado
+ * @returns {number} - Número da semana
  */
-export function getWeekNumber(
-  date: Date,
-  firstDayOfTheWeek: number = 1
-): number | string {
+export function getWeekNumber(date: Date, firstDayOfTheWeek: number = 1): number | string {
   if (date === null || date.toString() === "Invalid Date") return EMPTY_DATA;
 
   const firstDayOfTheYear: Date = new Date(date.getFullYear(), 0, 1); //January 1st of the same year as date
@@ -88,125 +63,69 @@ export function getWeekNumber(
   return weekNumber;
 }
 
+
 /**
- * Temporariamente retorna estaticamente o valor para o ano académico 2022-2023.
- *
- * See {@link CsvRow} | {@link SemestersProps}.
- * @param {CsvRow[]} tableData - dados do .CSV importado
- * @returns {SemestersProps} - Início e fim dos semestres
+ * Objeto do tipo Record que contêm pares chaves-valor onde:
+ * Chave = ano do inicio do ano letivo (número) 
+ * Valor = objecto que contêm dois atributos optativos: first e second que correspondem
+ *         respetivamente à data de inicio do primeiro e data de inicio do segundo semestre
+ *         desse ano letivo
+ * @type {SemesterStartDates}
  */
-export function calculateSemesters(tableData: CsvRow[]): SemestersProps {
-  // Semester Beginning dates for 2023/24
-  return {
-    firstSemesterStart: new Date(2022, 8, 1),
-    firstSemesterFinish: new Date(2023, 0, 28),
-    secondSemesterStart: new Date(2023, 0, 30),
-    secondSemesterFinish: new Date(2023, 6, 1),
-  };
+type SemesterStartDates = Record<number, { first?: Date; second?: Date }>;
 
-  // TODO - Make Semesters calculation dynamic
-  // const ucs = [];
-  // tableData.forEach((value) => {
-  //   const found = ucs.find((v) => {
-  //     return value["uc"] == v["uc"] && value["curso"] == v["curso"];
-  //   });
-  //   if (found) {
-  //     a = dateStringFormatCToDate(value.data);
-  //     if (a < found.firstDate) {
-  //       found.firstDate = a;
-  //     }
-  //     if (a > found.lastDate) {
-  //       found.lastDate = a;
-  //     }
-  //   } else {
-  //     ucs.push({
-  //       curso: value["curso"],
-  //       uc: value["uc"],
-  //       firstDate: dateStringFormatCToDate(value["data"]),
-  //       lastDate: dateStringFormatCToDate(value["data"]),
-  //     });
-  //   }
-  // });
+/**
+ * Verifica para todas as datas das aulas não nulas importadas qual é a data desse semestre mais recente 
+ * Guardando essa data como o inicio do semestro (primeiro ou segundo desse ano letivo)
+ * @param {string[]} datesList - Lista das datas provenientes da data importada na tabela (tabledata)
+ * @returns {SemesterStartDates} - Objecto com as datas inicio dos semestres presentes nos dados importados 
+ * See {@link SemesterStartDates}
+ */
+export function getSemesterStarts(datesList : string[]) : SemesterStartDates {
+  let semesterStartingDates : SemesterStartDates = {};
 
-  // console.log(ucs);
-  // const cursos = new Set(
-  //   ucs.map((v) => {
-  //     return v.curso;
-  //   })
-  // );
-  // console.log(cursos);
-
-  // const output = {};
-
-  // function calculateSemestersPerCourse(ucs) {
-  //   console.log("ucs: ", ucs);
-  //   const firstClass = ucs.reduce((previous, next) => {
-  //     return previous.firstDate < next.firstDate ? previous : next;
-  //   }, (initialValue = ucs[0]));
-  //   const lastClass = ucs.reduce((previous, next) => {
-  //     return previous.lastDate > next.lastDate ? previous : next;
-  //   }, ucs[0]);
-  //   console.log("fc", firstClass, "lc", lastClass);
-  //   const semesters = []; //[{ucs:["DIAM,PISID,ES"],firstDate:...,lastDate:...},...]
-  //   function addClass() {
-  //     function intercepts() {}
-  //   }
-  //   return { firstClass: new Date(), lastClass: new Date() };
-  // }
-
-  // cursos.forEach((value) => {
-  //   console.log("curso:", value);
-  //   const curso = ucs.filter((v) => {
-  //     return v.curso == value;
-  //   }); //tem apenas as UCs de um curso
-  //   console.log("curso", curso);
-  //   calculateSemestersPerCourse(curso);
-  // });
-
-  // const firstSemesterStart = tableData[0]["data"];
-  // const secondSemesterStart = tableData[1]["data"];
-  // return {
-  //   firstSemesterStart: firstSemesterStart,
-  //   secondSemesterStart: secondSemesterStart,
-  //   firstSemesterFinish: firstSemesterFinish,
-  //   secondSemesterFinish: secondSemesterFinish,
-  // };
+  datesList.forEach((dateString) => {
+    const date = dateStringFormatCToDate(dateString);
+    if(date === null || date.toString() === "Invalid Date") return;
+    
+    const month = date.getMonth()+1;
+    const fullYear = date.getFullYear() - (month < 8 ? 1 : 0);
+    const semester : 'first' | "second" = (month > 8 || (month < 2 && date.getDay() < 20 )) ? "first" : "second";
+    
+    if(!semesterStartingDates[fullYear]){
+      semesterStartingDates[fullYear] = {[semester]:date}
+    }else if(!semesterStartingDates[fullYear][semester] || semesterStartingDates[fullYear][semester]!> date ){
+      semesterStartingDates[fullYear][semester]=date
+    }
+  })
+  return semesterStartingDates;  
 }
+
 
 /**
  * Calcular o número da semana apartir do início do semestre atual.
  *
  * See {@link getWeekNumber}.
  * @param {Date} date - Data a verificar
- * @param {Date} firstSemesterStart - data de início do primeiro semestre (normalmente Setembro)
- * @param {Date} secondSemesterStart - data de início do segundo semestre (normalmente Fevereiro)
- * @returns {int} - Número da semana consoante o semestre
+ * @param {SemesterStartDates} semesterStartingDates - Objecto com o inicio dos semestres existentes na informação importada
+ * @returns {number} - Número da semana consoante o semestre
  */
-export function getSemesterWeekNumber(
-  date: Date,
-  firstSemesterStart: Date = semester1Start,
-  secondSemesterStart: Date = semester2Start
-): string | number {
+export function getSemesterWeekNumber( date: Date, semesterStartingDates : SemesterStartDates) : string | number {
   if (date === null || date.toString() === "Invalid Date") return EMPTY_DATA;
 
-  const semesterStart: Date =
-    date < secondSemesterStart ? firstSemesterStart : secondSemesterStart;
+  const month = date.getMonth()+1;
+  const academicYear = date.getFullYear() - (month < 8 ? 1 : 0);
+  const semester : 'first' | "second" = (month > 8 || (month < 2 && date.getDay() < 20 )) ? "first" : "second";
 
-  const weekNumberOfSemesterStart: number = getWeekNumber(
-    semesterStart
-  ) as number;
+  const semesterStart: Date = semesterStartingDates[academicYear][semester]!;
+
+  const weekNumberOfSemesterStart: number = getWeekNumber(semesterStart) as number;
 
   const weekNumberOfDate: number = getWeekNumber(date) as number;
 
-  let newYearCorrection: number = 0;
-  if (
-    date < secondSemesterStart &&
-    date > new Date(date.getFullYear() - 1, 11, 31)
-  ) {
-    newYearCorrection = getWeekNumber(
-      new Date(date.getFullYear(), 11, 31)
-    ) as number;
-  }
+  const newYearCorrection: number = ( semester === 'first' && date.getFullYear()>academicYear ) ? 
+        getWeekNumber(new Date(academicYear,11,31)) as number : 0;
 
-  return weekNumberOfDate + newYearCorrection - weekNumberOfSemesterStart + 1;
+
+  return weekNumberOfDate + newYearCorrection - weekNumberOfSemesterStart + 1 ;
 }
