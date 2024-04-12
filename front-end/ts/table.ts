@@ -299,7 +299,12 @@ function filterByOr(): void {
 	table.setFilter([listFilters]);
 }
 
-//TODO add documentation
+//TODO ADD TESTS
+/**
+ * Create and download a file with the specified data as a string and a filename.
+ * @param {string} data Data to be saved as a pre formated string.
+ * @param {string} filename File name.
+ */
 function saveToFile(data: string, filename: string): void {
 	//Cria e chama um link de download escondido.
 	//Adiciona \ufeff para denotar UTF8.
@@ -315,27 +320,39 @@ function saveToFile(data: string, filename: string): void {
 	hiddenLink.click();
 }
 
-//TODO add documentation
+//TODO ADD TESTS
+/**
+ * Create and download a backup of the current state of _tabledata_ (the currently loaded table).
+ * 
+ * This save will be made as a json formated text file with the name "save.json".
+ */
 export function saveFileJSON(): void {
 	const formatedJSON = JSON.stringify(tabledata);
 	saveToFile(formatedJSON, "save.json");
 }
 
-//TODO add documentation
+//TODO ADD TESTS
+/**
+ * Create and download a backup of the current state of _tabledata_ (the currently loaded table).
+ * 
+ * This save will be made as a csv formated text file with the name "save.csv".
+ * 
+ * The default separator used will be a semicolin ";". In case there is at least one semicolin in the data, the separator will be changed to a coma ",".
+ * 
+ * Semicolins and colins in files saved may break the save and make it behave strangely on load.
+ */
 export function saveFileCSV(): void {
-	//TODO Document this.
+	//Check if any of the TableCells has at least one semicolin.
 	const hasSemicolins: boolean = tabledata.some((tableRow) =>
 		Object.entries(tableRow).some((tableCell) =>
 			tableCell[1].toString().includes(";")
 		)
 	);
-	console.log("SC");
-	console.log(hasSemicolins);
-	let separator: string;
+
+	let separator: string = ";";
+	//If there is a semicolin, change the separator to a coma.
 	if (hasSemicolins) {
 		separator = ",";
-	} else {
-		separator = ";";
 	}
 
 	//Extract all the headers.

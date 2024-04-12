@@ -21,7 +21,6 @@ const SERVER: string = "http://localhost:3001";
  */
 const LOCAL_FORM: HTMLElement | null = document.getElementById("localUpload");
 LOCAL_FORM?.addEventListener("submit", handleSubmit);
-//TODO Deal with json files and see if I can accept multiple files.
 
 /**
  * TableCell - célula da tabela.
@@ -33,8 +32,7 @@ export type TableCell = string | number;
  * Linha de dados da tabela.
  * @type TableRow
  */
-export type TableRow = Record<string,TableCell>
-
+export type TableRow = Record<string, TableCell>;
 
 /**
  * Dados do forms upload .CSV.
@@ -42,8 +40,8 @@ export type TableRow = Record<string,TableCell>
  * TODO
  */
 export interface FormDataJson {
-  localFile: File;
-  remoteFile: string;
+	localFile: File;
+	remoteFile: string;
 }
 
 /**
@@ -65,43 +63,44 @@ export interface FormDataJson {
  * @param {Function} [handleData] - Função a executar após a transformação do ficheiro
  */
 export async function handleSubmit(
-  event: SubmitEvent,
-  handleData: (file: TableRow[]) => void = setData
+	event: SubmitEvent,
+	handleData: (file: TableRow[]) => void = setData
 ): Promise<string | void> {
-  if (!event) return;
+	//TODO Deal with json files and see if I can accept multiple files.
+	if (!event) return;
 
-  event.preventDefault();
+	event.preventDefault();
 
-  const form: HTMLFormElement = event.currentTarget as HTMLFormElement;
+	const form: HTMLFormElement = event.currentTarget as HTMLFormElement;
 
-  const { localFile, remoteFile }: FormDataJson = formDataToJson(
-    new FormData(form)
-  );
+	const { localFile, remoteFile }: FormDataJson = formDataToJson(
+		new FormData(form)
+	);
 
-  if (remoteFile === "" && localFile?.size === 0)
-    return "Forms não preenchido.";
+	if (remoteFile === "" && localFile?.size === 0)
+		return "Forms não preenchido.";
 
-  form.reset();
-  togglePopUp(false);
+	form.reset();
+	togglePopUp(false);
 
-  // Ficheiro local
-  if (!needToDownloadCsv(localFile, remoteFile))
-    return formatToString(localFile)
-      .then((formatedFile) => formatCsv(formatedFile))
-      .then((file) => handleData(file));
+	// Ficheiro local
+	if (!needToDownloadCsv(localFile, remoteFile))
+		return formatToString(localFile)
+			.then((formatedFile) => formatCsv(formatedFile))
+			.then((file) => handleData(file));
 
-  // Ficheiro remoto
-  return axios
-    .post(`${SERVER}/uploadHorario`, {
-      url: remoteFile,
-    })
-    .then((r) => formatCsv(r.data.csvData))
-    .then((file) => handleData(file))
-    .catch((e) =>
-      e.response?.data
-        ? JSON.stringify(e.response.data)
-        : "Não conseguiu conectar-se ao servidor."
-    );
+	// Ficheiro remoto
+	return axios
+		.post(`${SERVER}/uploadHorario`, {
+			url: remoteFile,
+		})
+		.then((r) => formatCsv(r.data.csvData))
+		.then((file) => handleData(file))
+		.catch((e) =>
+			e.response?.data
+				? JSON.stringify(e.response.data)
+				: "Não conseguiu conectar-se ao servidor."
+		);
 }
 
 /**
@@ -115,10 +114,10 @@ export async function handleSubmit(
  * @returns {FormDataJson} FormData em JSON
  */
 export function formDataToJson(formData: FormData): FormDataJson {
-  return {
-    localFile: formData.get("localFile") as File,
-    remoteFile: formData.get("remoteFile") as string,
-  };
+	return {
+		localFile: formData.get("localFile") as File,
+		remoteFile: formData.get("remoteFile") as string,
+	};
 }
 
 /**
@@ -131,10 +130,10 @@ export function formDataToJson(formData: FormData): FormDataJson {
  * @returns {Boolean} - Boolean para saber se é preciso fazer download do ficheiro .CSV
  */
 export function needToDownloadCsv(
-  localFile: File,
-  remoteFile: string
+	localFile: File,
+	remoteFile: string
 ): boolean {
-  return localFile?.size == 0 && remoteFile !== null && remoteFile !== "";
+	return localFile?.size == 0 && remoteFile !== null && remoteFile !== "";
 }
 
 /**
@@ -143,14 +142,14 @@ export function needToDownloadCsv(
  * @returns {Promise<string>} Local File em string
  */
 export async function formatToString(localFile: File): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const text = event.target?.result as string;
-      resolve(text);
-    };
-    reader.readAsText(localFile);
-  });
+	return new Promise<string>((resolve, reject) => {
+		const reader = new FileReader();
+		reader.onload = (event) => {
+			const text = event.target?.result as string;
+			resolve(text);
+		};
+		reader.readAsText(localFile);
+	});
 }
 
 /**
@@ -167,25 +166,25 @@ export async function formatToString(localFile: File): Promise<string> {
  * @returns {TableRow[]} Ficheiro .CSV formatado
  */
 export function formatCsv(
-  text: string,
-  enableHeaders: boolean = true
+	text: string,
+	enableHeaders: boolean = true
 ): TableRow[] {
-  const splitedText: string[] = text.split(new RegExp("\r\n|\n|\r"));
-  const delimiter: string =
-    splitedText.length > 0 && splitedText[0].includes(";") ? ";" : ",";
+	const splitedText: string[] = text.split(new RegExp("\r\n|\n|\r"));
+	const delimiter: string =
+		splitedText.length > 0 && splitedText[0].includes(";") ? ";" : ",";
 
-  const headers: TableCell[] = enableHeaders
-    ? splitedText[0].split(delimiter)
-    : splitedText[0].split(delimiter).map((_element, index) => index);
+	const headers: TableCell[] = enableHeaders
+		? splitedText[0].split(delimiter)
+		: splitedText[0].split(delimiter).map((_element, index) => index);
 
-  const dataRows: string[] = splitedText
-    .slice(1)
-    .filter((row) => row.length != 0);
+	const dataRows: string[] = splitedText
+		.slice(1)
+		.filter((row) => row.length != 0);
 
-  return dataRows.map((linha) =>
-    linha.split(delimiter).reduce((json, currentCell, coluna) => {
-      json[headers[coluna]] = currentCell;
-      return json;
-    }, {} as TableRow)
-  );
+	return dataRows.map((linha) =>
+		linha.split(delimiter).reduce((json, currentCell, coluna) => {
+			json[headers[coluna]] = currentCell;
+			return json;
+		}, {} as TableRow)
+	);
 }
