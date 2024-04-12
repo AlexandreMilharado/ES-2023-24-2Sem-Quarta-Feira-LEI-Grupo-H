@@ -21,6 +21,7 @@ export const EMPTY_DATA: string = "";
  * @returns {Date} - Date Object
  */
 export function dateStringFormatCToDate(dateString: string): Date | null {
+  if(!dateString)return null;
   let dateParts: string[] = dateString.split("/");
   if (dateParts.length < 3) return null;
 
@@ -42,10 +43,7 @@ export function dateStringFormatCToDate(dateString: string): Date | null {
  * @param {number} [firstDayOfTheWeek] - (opcional) 0 para Domingo, 1 para Segunda,...,6 para Sábado
  * @returns {number} - Número da semana
  */
-export function getWeekNumber(
-  date: Date,
-  firstDayOfTheWeek: number = 1
-): number | string {
+export function getWeekNumber(date: Date, firstDayOfTheWeek: number = 1): number | string {
   if (date === null || date.toString() === "Invalid Date") return EMPTY_DATA;
 
   const firstDayOfTheYear: Date = new Date(date.getFullYear(), 0, 1); //January 1st of the same year as date
@@ -112,7 +110,7 @@ export function getSemesterStarts(datesList : string[]) : SemesterStartDates {
  * @param {SemesterStartDates} semesterStartingDates - Objecto com o inicio dos semestres existentes na informação importada
  * @returns {number} - Número da semana consoante o semestre
  */
-export function getSemesterWeekNumber( date: Date, semesterStartingDates : SemesterStartDates) {
+export function getSemesterWeekNumber( date: Date, semesterStartingDates : SemesterStartDates) : string | number {
   if (date === null || date.toString() === "Invalid Date") return EMPTY_DATA;
 
   const month = date.getMonth()+1;
