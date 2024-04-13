@@ -44,6 +44,7 @@ export interface FormDataJson {
 	remoteFile: string;
 }
 
+//TODO update docs.
 /**
  * Recebe um ficheiro .csv local ou o url de um ficheiro csv remoto.
  *
@@ -66,7 +67,6 @@ export async function handleSubmit(
 	event: SubmitEvent,
 	handleData: (file: TableRow[]) => void = setData
 ): Promise<string | void> {
-	//TODO Deal with json files and see if I can accept multiple files.
 	if (!event) return;
 
 	event.preventDefault();
@@ -83,24 +83,57 @@ export async function handleSubmit(
 	form.reset();
 	togglePopUp(false);
 
-	// Ficheiro local
-	if (!needToDownloadCsv(localFile, remoteFile))
-		return formatToString(localFile)
-			.then((formatedFile) => formatCsv(formatedFile))
-			.then((file) => handleData(file));
+	
 
+	// Ficheiro local
+	if (!needToDownloadCsv(localFile, remoteFile)) {
+		const extention = localFile.name.split(".").pop();
+		if (extention == "csv") {
+			return formatToString(localFile)
+				.then((formatedFile) => formatCsv(formatedFile))
+				.then((file) => handleData(file));
+		} else if (extention == "json") {
+			return formatToString(localFile)
+				.then((formatedFile) => JSON.parse(formatedFile))
+				.then((file) => handleData(file));
+		} else {
+			alert("Invalid file extension found: " + extention);
+			return;
+		}
+	}
 	// Ficheiro remoto
-	return axios
-		.post(`${SERVER}/uploadHorario`, {
-			url: remoteFile,
-		})
-		.then((r) => formatCsv(r.data.csvData))
-		.then((file) => handleData(file))
-		.catch((e) =>
-			e.response?.data
-				? JSON.stringify(e.response.data)
-				: "Não conseguiu conectar-se ao servidor."
-		);
+	else {
+		const extention = remoteFile.split(".").pop();
+		console.log(extention);
+		if (extention == "csv") {
+			return axios
+				.post(`${SERVER}/uploadHorario`, {
+					url: remoteFile,
+				})
+				.then((r) => formatCsv(r.data.csvData))
+				.then((file) => handleData(file))
+				.catch((e) =>
+					e.response?.data
+						? JSON.stringify(e.response.data)
+						: "Não conseguiu conectar-se ao servidor."
+				);
+		} else if (extention == "json") {
+			return axios
+				.post(`${SERVER}/uploadHorario`, {
+					url: remoteFile,
+				})
+				.then((r) => JSON.parse(r.data.csvData))
+				.then((file) => handleData(file))
+				.catch((e) =>
+					e.response?.data
+						? JSON.stringify(e.response.data)
+						: "Não conseguiu conectar-se ao servidor."
+				);
+		} else {
+			alert("Invalid file extension found: " + extention);
+			return;
+		}
+	}
 }
 
 /**

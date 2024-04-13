@@ -300,6 +300,7 @@ function filterByOr(): void {
 }
 
 //TODO ADD TESTS
+//TODO PORTGUES
 /**
  * Create and download a file with the specified data as a string and a filename.
  * @param {string} data Data to be saved as a pre formated string.
@@ -321,6 +322,7 @@ function saveToFile(data: string, filename: string): void {
 }
 
 //TODO ADD TESTS
+//TODO PORTGUES
 /**
  * Create and download a backup of the current state of _tabledata_ (the currently loaded table).
  * 
@@ -332,6 +334,7 @@ export function saveFileJSON(): void {
 }
 
 //TODO ADD TESTS
+//TODO PORTGUES
 /**
  * Create and download a backup of the current state of _tabledata_ (the currently loaded table).
  * 
