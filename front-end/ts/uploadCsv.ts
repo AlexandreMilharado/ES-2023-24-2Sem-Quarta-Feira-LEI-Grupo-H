@@ -83,57 +83,36 @@ export async function handleSubmit(
 	form.reset();
 	togglePopUp(false);
 
-	
+	let fileString: Promise<string>;
+	let fileTable: Promise<TableRow[]>;
+	let extension: string | undefined;
 
-	// Ficheiro local
 	if (!needToDownloadCsv(localFile, remoteFile)) {
-		const extention = localFile.name.split(".").pop();
-		if (extention == "csv") {
-			return formatToString(localFile)
-				.then((formatedFile) => formatCsv(formatedFile))
-				.then((file) => handleData(file));
-		} else if (extention == "json") {
-			return formatToString(localFile)
-				.then((formatedFile) => JSON.parse(formatedFile))
-				.then((file) => handleData(file));
-		} else {
-			alert("Invalid file extension found: " + extention);
-			return;
-		}
+		extension = localFile.name.split(".").pop();
+		fileString = formatToString(localFile);
+	} else {
+		extension = remoteFile.split(".").pop();
+		fileString = axios
+			.post(`${SERVER}/uploadHorario`, {
+				url: remoteFile,
+			})
+			.then((data) => data.data.csvData);
 	}
-	// Ficheiro remoto
-	else {
-		const extention = remoteFile.split(".").pop();
-		console.log(extention);
-		if (extention == "csv") {
-			return axios
-				.post(`${SERVER}/uploadHorario`, {
-					url: remoteFile,
-				})
-				.then((r) => formatCsv(r.data.csvData))
-				.then((file) => handleData(file))
-				.catch((e) =>
-					e.response?.data
-						? JSON.stringify(e.response.data)
-						: "Não conseguiu conectar-se ao servidor."
-				);
-		} else if (extention == "json") {
-			return axios
-				.post(`${SERVER}/uploadHorario`, {
-					url: remoteFile,
-				})
-				.then((r) => JSON.parse(r.data.csvData))
-				.then((file) => handleData(file))
-				.catch((e) =>
-					e.response?.data
-						? JSON.stringify(e.response.data)
-						: "Não conseguiu conectar-se ao servidor."
-				);
-		} else {
-			alert("Invalid file extension found: " + extention);
-			return;
-		}
+	if (extension == "csv") {
+		fileTable = fileString.then((formatedFile) => formatCsv(formatedFile));
+	} else if (extension == "json") {
+		fileTable = fileString.then((formatedFile) => JSON.parse(formatedFile));
+	} else {
+		alert("Invalid file extension found: " + extension);
+		return;
 	}
+	return fileTable
+		.then((file) => handleData(file))
+		.catch((e) =>
+			e.response?.data
+				? JSON.stringify(e.response.data)
+				: "Não conseguiu conectar-se ao servidor."
+		);
 }
 
 /**
