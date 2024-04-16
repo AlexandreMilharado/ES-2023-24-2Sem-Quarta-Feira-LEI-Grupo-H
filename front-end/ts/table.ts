@@ -300,11 +300,10 @@ function filterByOr(): void {
 }
 
 //TODO ADD TESTS
-//TODO PORTGUES
 /**
- * Create and download a file with the specified data as a string and a filename.
- * @param {string} data Data to be saved as a pre formated string.
- * @param {string} filename File name.
+ * Cria e transfere um ficheiro com os dados(string) e o nome de ficheiro(string) especificados.
+ * @param {string} data Dados a serem salvos(string pre formatada).
+ * @param {string} filename Nome do ficheiro.
  */
 function saveToFile(data: string, filename: string): void {
 	//Cria e chama um link de download escondido.
@@ -322,11 +321,10 @@ function saveToFile(data: string, filename: string): void {
 }
 
 //TODO ADD TESTS
-//TODO PORTGUES
 /**
- * Create and download a backup of the current state of _tabledata_ (the currently loaded table).
+ * Cria e transfere o estado atual da tabela atual _tabledata_.
  * 
- * This save will be made as a json formated text file with the name "save.json".
+ * Este ficheiro será um ficheiro de texto formatado em JSON com o nome "save.json"
  */
 export function saveFileJSON(): void {
 	const formatedJSON = JSON.stringify(tabledata);
@@ -334,18 +332,17 @@ export function saveFileJSON(): void {
 }
 
 //TODO ADD TESTS
-//TODO PORTGUES
 /**
- * Create and download a backup of the current state of _tabledata_ (the currently loaded table).
+ * Cria e transfere o estado atual da tabela atual _tabledata_.
  * 
- * This save will be made as a csv formated text file with the name "save.csv".
+ * Este ficheiro será um ficheiro de texto formatado em CSV com o nome "save.csv"
  * 
- * The default separator used will be a semicolin ";". In case there is at least one semicolin in the data, the separator will be changed to a coma ",".
+ * O separador por defeito será o ponto e virgula ";". Caso exista pelo menos um ponto e virgula nos dados, o separador será mudado para a virgula ",".
  * 
- * Semicolins and colins in files saved may break the save and make it behave strangely on load.
+ * Ficheiros que contenham tanto "," como ";" não irão ser corretamente exportados e a sua importação não irá funcionar.
  */
 export function saveFileCSV(): void {
-	//Check if any of the TableCells has at least one semicolin.
+	//Confirma se alguma das celulas de dados contem ";".
 	const hasSemicolins: boolean = tabledata.some((tableRow) =>
 		Object.entries(tableRow).some((tableCell) =>
 			tableCell[1].toString().includes(";")
@@ -353,37 +350,37 @@ export function saveFileCSV(): void {
 	);
 
 	let separator: string = ";";
-	//If there is a semicolin, change the separator to a coma.
+	//Se existirem ";" nos dados, muda o separador para ",".
 	if (hasSemicolins) {
 		separator = ",";
 	}
 
-	//Extract all the headers.
+	//Obtem os cabeçalhos.
 	const headers: string =
-		//Get all key/value pairs.
+		//Obtem os pares chave/valor de uma linha.
 		Object.entries(tabledata[0])
-			//Get all the keys.
+			//Obtem as chaves (cabeçalhos).
 			.map((v) => v[0])
-			//Condensate all the string keys into a string.
+			//Junta todos os cabeçalhos numa string separada com o separador.
 			.reduce((previous, current) => previous + separator + current);
 
-	//Extract all the data
+	//Obtem os dados.
 	const data: string =
-		//Start with all the data.
+		//Começa com os dados todos.
 		tabledata
-			//Map the TableRow[] into a string[] by mapping every TableCell item onto a string and joining them.
+			//Converte a lista de TableRow numa lista de string, juntando todas as TableCell de cada TableRow numa string com o separador.
 			.map((row) =>
-				//Get all key/value pairs for this TableRow. Gets a string key and a TableCell value.
+				//Obtem os pares chave/valor de uma linha.
 				Object.entries(row)
-					//Turn each key/value pair into a string by selecting only index 1(the value).
+					//Mantem apenas os valores(index 1) e transforma-os em strings.
 					.map((value) => value[1].toString())
-					//Join all the strings with the given separator.
+					//Junta todas as strings usando o separador.
 					.reduce((previous, value) => previous + separator + value)
 			)
-			//Join all the string formated TableRows by adding new lines.
+			//Junta todas as strings, separando-as por linhas.
 			.reduce((previous, current) => previous + "\n" + current);
 
-	// Adds the header to the data.
+	// Junta os cabeçalhos aos dados.
 	const formatedCSV: string = headers + "\n" + data;
 
 	saveToFile(formatedCSV, "save.csv");
