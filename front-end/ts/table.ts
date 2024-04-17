@@ -7,6 +7,7 @@ import {
   getWeekNumber,
 } from "./dates";
 import { CsvRow } from "./uploadCsv";
+import { createHtmlElements } from "./suggestSlotst"
 
 /**
  * Funções da Tabela Module
@@ -25,7 +26,7 @@ let tabledata: CsvRow[] = [{ Message: "Dados ainda não inseridos" }];
  * Tabela do Tabulator
  * @type {Tabulator}
  */
-let table: Tabulator = new Tabulator("#HorarioPrincipal", {
+export let table: Tabulator = new Tabulator("#HorarioPrincipal", {
   data: tabledata,
   layout: "fitDataFill",
   pagination: "local",
@@ -117,6 +118,8 @@ function renderFilterProps(): void {
   let horario: HTMLElement = document.getElementById(
     "HorarioPrincipal"
   ) as HTMLElement;
+  ///Ciriei esta funcao
+  createHtmlElements();
   horario.setAttribute("filters", "off");
 }
 
@@ -203,23 +206,37 @@ function addHiddenButtonsAndInputsToColumns(): void {
  * Esconde/mostra os botões para apagar cada coluna na tabela.
  */
 function toggleEdit(): void {
-  if (editToggleButton.getAttribute("toggled") == "on") {
-    editToggleButton.setAttribute("toggled", "off");
-    document.querySelectorAll(".tabulator-col-sorter").forEach((element) => {
-      element.querySelector(".tabulator-arrow")?.classList.remove("hidden");
-      element
-        .querySelector(".tabulator-hideColumn-toggle-button")
-        ?.classList.add("hidden");
-    });
-  } else {
-    editToggleButton.setAttribute("toggled", "on");
-    document.querySelectorAll(".tabulator-col-sorter").forEach((element) => {
-      element.querySelector(".tabulator-arrow")?.classList.add("hidden");
-      element
-        .querySelector(".tabulator-hideColumn-toggle-button")
-        ?.classList.remove("hidden");
-    });
-  }
+  table.setFilter([
+    // { field: "curso", type: "like", value: "ME" }, //filter by age greater than 52
+    [
+      [
+        { field: "Inscritos no turno", type: "=", value: "30" }, //and by height less than 142
+        { field: "Semana do Ano", type: "=", value: "48" },
+      ],
+      [
+        { field: "Semana do Ano", type: "=", value: "49" },
+      ]
+
+    ]
+  ]);
+  console.log(table.getFilters());
+  // if (editToggleButton.getAttribute("toggled") == "on") {
+  //   editToggleButton.setAttribute("toggled", "off");
+  //   document.querySelectorAll(".tabulator-col-sorter").forEach((element) => {
+  //     element.querySelector(".tabulator-arrow")?.classList.remove("hidden");
+  //     element
+  //       .querySelector(".tabulator-hideColumn-toggle-button")
+  //       ?.classList.add("hidden");
+  //   });
+  // } else {
+  //   editToggleButton.setAttribute("toggled", "on");
+  //   document.querySelectorAll(".tabulator-col-sorter").forEach((element) => {
+  //     element.querySelector(".tabulator-arrow")?.classList.add("hidden");
+  //     element
+  //       .querySelector(".tabulator-hideColumn-toggle-button")
+  //       ?.classList.remove("hidden");
+  //   });
+  // }
 }
 
 /**
@@ -271,4 +288,8 @@ function filterByOr(): void {
     }
   });
   table.setFilter([listFilters]);
+}
+
+export function customFilter(data: Tabulator, filterParams: string) {
+  return eval(filterParams);
 }
