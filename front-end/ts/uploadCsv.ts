@@ -8,7 +8,6 @@ import { togglePopUp } from "./init";
  * @type {String}
  */
 const SERVER: string = "http://localhost:3001";
-
 /**
  * Upload .CSV Module
  * @module UploadCSV
@@ -91,17 +90,7 @@ export async function handleSubmit(
       .then((file) => handleData(file));
 
   // Ficheiro remoto
-  return axios
-    .post(`${SERVER}/uploadHorario`, {
-      url: remoteFile,
-    })
-    .then((r) => formatCsv(r.data.csvData))
-    .then((file) => handleData(file))
-    .catch((e) =>
-      e.response?.data
-        ? JSON.stringify(e.response.data)
-        : "Não conseguiu conectar-se ao servidor."
-    );
+  return getRemoteFile(remoteFile, handleData);
 }
 
 /**
@@ -188,4 +177,48 @@ export function formatCsv(
       return json;
     }, {} as CsvRow)
   );
+}
+
+/**
+ *
+ * @param remoteFileUrl
+ * @param handleData
+ * @returns
+ */
+async function getRemoteFile(
+  remoteFileUrl: string,
+  handleData: (file: CsvRow[]) => void
+): Promise<string | void> {
+  return axios
+    .post(`${SERVER}/uploadHorario`, {
+      url: remoteFileUrl,
+    })
+    .then((r) => formatCsv(r.data.csvData))
+    .then((file) => handleData(file))
+    .catch((e) =>
+      e.response?.data
+        ? JSON.stringify(e.response.data)
+        : "Não conseguiu conectar-se ao servidor."
+    );
+}
+
+export async function loadInitialCsvFiles(): Promise<CsvRow[][]> {
+  const urls: string[] = [
+    "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemplo.csv",
+    "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/Caracteriza%C3%A7%C3%A3oDasSalas.csv",
+  ];
+  const files: CsvRow[][] = [];
+  urls.forEach(async (url) => {
+    let remoteFile: CsvRow[] = [{}];
+    const message: void | string = (await getRemoteFile(
+      url,
+      (file) => (remoteFile = file)
+    )) as string;
+    if (
+      message !== "Não conseguiu conectar-se ao servidor." &&
+      JSON.stringify(remoteFile) !== JSON.stringify([{}])
+    )
+      files.push(remoteFile);
+  });
+  return files;
 }

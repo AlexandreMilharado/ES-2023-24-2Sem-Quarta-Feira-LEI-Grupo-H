@@ -1,3 +1,6 @@
+import { loadInitialCsvFiles } from "./uploadCsv";
+import { setFiles } from "./variables";
+
 /**
  * Abre um popUp para fazer upload do .csv assim que a página estiver completamente carregada.
  */
@@ -8,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("OpenPopUp")?.addEventListener("click", () => {
     togglePopUp(true);
   });
+  loadInitialCsvFiles().then((files) => setFiles(files));
 });
 
 /**

@@ -28,7 +28,9 @@ app.post("/uploadHorario", async (req: Request, res: Response) => {
 async function getFile(url: string): Promise<string> {
   if (!url.endsWith(".csv")) throw Error();
 
-  const response: AxiosResponse = await axios.get(url);
+  const response: AxiosResponse = await axios.get(url, {
+    responseType: "text",
+  });
   return response.data;
 }
 
