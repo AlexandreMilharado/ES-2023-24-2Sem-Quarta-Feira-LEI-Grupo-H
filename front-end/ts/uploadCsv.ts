@@ -44,14 +44,13 @@ export interface FormDataJson {
 	remoteFile: string;
 }
 
-//TODO update docs.
 /**
- * Recebe um ficheiro .csv local ou o url de um ficheiro csv remoto.
+ * Recebe um ficheiro .csv ou .json local ou o url de um ficheiro remoto.
  *
- * Se existir um .csv local e um url ao mesmo tempo vai dar prioridade ao ficheiro local,
- * caso contrário faz um chamada a API para ir buscar o ficheiro .csv.
+ * Se existir um ficheiro local e um url ao mesmo tempo vai dar prioridade ao ficheiro local,
+ * caso contrário faz um chamada a API para ir buscar o ficheiro.
  *
- * Formata corretamente o ficheiro .CSV num [{...}, {...}, ...] e chama a função
+ * Formata corretamente o ficheiro .csv ou .json num [{...}, {...}, ...] (lista de objetos TableRow) e chama a função
  * "setData(file)" que irá atualizar os dados no tabulator.
  * Limpa os inputs e depois fecha o popUp de upload.
  *
