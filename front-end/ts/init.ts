@@ -1,4 +1,4 @@
-import { togglePopUp } from "./popUp";
+import { togglePopUp,togglePopUpSave } from "./popUp";
 import { saveFileCSV,saveFileJSON } from "./table";
 
 
@@ -12,12 +12,21 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("OpenPopUp")?.addEventListener("click", () => {
     togglePopUp(true);
   });
+
+  document.getElementById("ClosePopUpSave")?.addEventListener("click", () => {
+    togglePopUpSave(false);
+  });
+  // document.getElementById("OpenPopUpSave")?.addEventListener("click", () => {
+  //   togglePopUpSave(true);
+  // });
+
   document.getElementById("SaveFileCSV")?.addEventListener("click", (e) => {
     saveFileCSV();
   });
   document.getElementById("SaveFileJSON")?.addEventListener("click", () => {
     saveFileJSON();
   });
+
 });
 
 

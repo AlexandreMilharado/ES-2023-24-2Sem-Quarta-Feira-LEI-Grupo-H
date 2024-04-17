@@ -20,7 +20,7 @@
     <section id="PopUpUpload">
         <script type="module" src="ts/uploadCsv.ts"></script>
         <div>
-            <button id="ClosePopUp"></button>
+            <button id="ClosePopUp" type="close"></button>
             <h3>UPLOAD .CSV</h3>
             <form id="localUpload" method="post">
                 <input name="localFile" type="file" accept=".csv,.json">
@@ -30,6 +30,16 @@
 
 
                 <button type="submit">UPLOAD</button>
+            </form>
+        </div>
+    </section>
+    <section id="PopUpSave" class="hidden">
+        <div>
+            <button id="ClosePopUpSave" type="close"></button>
+            <h3>SAVE TABLE</h3>
+            <form>
+                <button id="SaveFileCSV" type="save">SAVE .CSV</button>
+                <button id="SaveFileJSON" type="save">SAVE .JSON</button>
             </form>
         </div>
     </section>
