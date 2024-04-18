@@ -62,7 +62,7 @@ function showCriteriaSuggestSlots(mainDiv: HTMLDivElement): void {
     // buttonCreateTable.addEventListener("click", () => updateLabel(mainDiv, textLabel));
     // buttonCreateTable.addEventListener("click", () => getCriteriaInputs(mainDiv));
     //APAGAR ISTO!!!
-    buttonCreateTable.addEventListener("click", () => generateDays(""));
+    buttonCreateTable.addEventListener("click", () => daysBasedOnFilter(mainDiv));
     // buttonCreateTable.addEventListener("click", () => generteHoraInicioHoraFim("09:30:00", "21:00:00"));
     ///
     buttonCreateTable.textContent = "Gerar tabela"
@@ -121,7 +121,7 @@ function addNewCriteriaOptionToSuggestSlots(mainDiv: HTMLDivElement): HTMLDivEle
     let columnOption: string = ''
 
     const columns: NodeListOf<Element> = document.querySelectorAll(".tabulator-col");
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < columns.length; i++) {
         const title: string = columns[i].querySelector(".tabulator-col-title")?.textContent as string;
         columnOption += `<option value="${title}">${title}</option>`
     }
@@ -229,6 +229,7 @@ function getCriteriaInputs(mainDiv: HTMLDivElement): string {
     return finalFilter;
 }
 
+
 function updateLabel(mainDiv: HTMLDivElement, label: HTMLLabelElement) {
     let labelText: string = "";
     const filter: NodeListOf<Element> = mainDiv.querySelectorAll(".criteria-container");
@@ -290,7 +291,48 @@ function generateSugestions() {
 
 }
 
-function generateDays(initalDate: string) {
+function daysBasedOnFilter(mainDiv: HTMLDivElement) {
+    const daysToInclude : Date[]= [];
+    const filter: NodeListOf<Element> = mainDiv.querySelectorAll(".criteria-container");
+    for (let i = 0; i != filter.length; i++) {
+        let criteriaString: string = "";
+        const criteriaContainerComponents = filter[i].querySelectorAll(".criteria-container-components");
+        const daysToIncludeAux : Date[] = [];
+        const daysToExclude : Date[]= [];
+        for (let i = 0; i != criteriaContainerComponents.length; i++) {
+            const column: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-column-selector") as HTMLSelectElement;
+            const operator: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-filter-option-selector") as HTMLSelectElement;
+            const inputValue: HTMLInputElement = criteriaContainerComponents[i].querySelector(".criteria-input") as HTMLInputElement;
+            if(column.value!=="Data da aula") continue;
+            if(operator.value === "==" ) daysToIncludeAux.push( new Date(inputValue.value) )
+            else if(operator.value === "!=") daysToExclude.push( new Date(inputValue.value) )
+            else daysToIncludeAux.push( ...gDays(inputValue.value,operator.value === ">=" ) ) 
+        }
+        daysToExclude.length ? 
+            daysToInclude.push(  ...(
+                daysToIncludeAux.filter((element) => daysToExclude.every((excludedDay) => excludedDay.getTime() !== element.getTime()) )
+            )  ) :
+            daysToInclude.push(...daysToIncludeAux)
+    }
+
+    return daysToInclude;
+}
+
+function gDays(dateString : string, greaterThen : boolean ) : Date[] { 
+    let currentDate : Date = new Date();
+    const finalDate : Date = greaterThen ?  new Date(currentDate.setMonth(currentDate.getMonth()+1)) : new Date(dateString);
+    const dates = [];
+    let iteratingDate = greaterThen ? new Date(dateString) : new Date();   
+    while (iteratingDate.getTime() <= finalDate.getTime()) {
+        if(iteratingDate.getDay()) // Adiciona data se não for domingo
+            dates.push(new Date(iteratingDate));  
+        iteratingDate.setDate(iteratingDate.getDate() + 1);
+    }
+    return dates;
+}
+
+
+function generateDays(initalDate?: string ) {
     let list: String[] = [];
     let date: Date;
     date = (initalDate == null || initalDate == "") ? new Date() : dateStringFormatCToDate(initalDate) as Date;
