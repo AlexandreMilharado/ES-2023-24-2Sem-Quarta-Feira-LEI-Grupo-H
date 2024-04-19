@@ -129,3 +129,44 @@ export function getSemesterWeekNumber( date: Date, semesterStartingDates : Semes
 
   return weekNumberOfDate + newYearCorrection - weekNumberOfSemesterStart + 1 ;
 }
+
+export function getClassesStartingHours(startTime: Date, finishStartTime : Date, classDuration = 90) {
+  const hours = [];
+  let currentHour = new Date('1 08:00:00');
+  const finishHour = new Date('1 22:00:00');
+
+  while (currentHour <= finishHour && currentHour <= finishStartTime) {
+      if (currentHour >= startTime) {
+          hours.push(
+              `${String(currentHour.getHours()).padStart(2, '0')}:${String(currentHour.getMinutes()).padStart(2, '0')}`
+          );
+      }
+
+      if (currentHour.getHours() === 11) {
+          currentHour.setHours(13);
+          currentHour.setMinutes(0);
+      } else {
+          currentHour.setMinutes(currentHour.getMinutes() + classDuration);
+      }
+  }
+
+  return hours;
+}
+
+export function getDaysFromRange(startDate: Date, finalDate : Date) : Date[] { 
+  let currentDate : Date = startDate;
+  const dates = [];
+  while (currentDate.getTime() <= finalDate.getTime()) {
+      if(currentDate.getDay()) // Adiciona data se não for domingo
+          dates.push(new Date(currentDate));  
+          currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return dates;
+}
+
+export function formatDateToDDMMYYYY(date : Date) {
+  var day = String(date.getDate()).padStart(2, '0');
+  var month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() returns 0-based index
+  var year = date.getFullYear();
+  return day + '/' + month + '/' + year;
+}

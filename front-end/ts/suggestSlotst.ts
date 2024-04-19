@@ -1,6 +1,6 @@
 import Tabulator from "tabulator-tables";
 import { CsvRow } from "./uploadCsv";
-import { dateStringFormatCToDate } from "./dates";
+import {formatDateToDDMMYYYY, getClassesStartingHours, getDaysFromRange } from "./dates";
 import { customFilter, table } from "./table";
 
 //Variaveis globais
@@ -62,7 +62,7 @@ function showCriteriaSuggestSlots(mainDiv: HTMLDivElement): void {
     // buttonCreateTable.addEventListener("click", () => updateLabel(mainDiv, textLabel));
     // buttonCreateTable.addEventListener("click", () => getCriteriaInputs(mainDiv));
     //APAGAR ISTO!!!
-    buttonCreateTable.addEventListener("click", () => daysBasedOnFilter(mainDiv));
+    buttonCreateTable.addEventListener("click", () => getFilteredDateHourCombination(mainDiv));
     // buttonCreateTable.addEventListener("click", () => generteHoraInicioHoraFim("09:30:00", "21:00:00"));
     ///
     buttonCreateTable.textContent = "Gerar tabela"
@@ -152,8 +152,17 @@ function addNewCriteriaOptionToSuggestSlots(mainDiv: HTMLDivElement): HTMLDivEle
     criteriaContainerComponents.querySelector("input")?.addEventListener("focusout", () => {
         updateLabel(mainDiv, mainDiv.querySelector(".criteira-label") as HTMLLabelElement);
     });
+    criteriaContainerComponents.querySelector("select")?.addEventListener("change", (e) => {
+        let type : string = "text"; 
+        if(criteriaContainerComponents.querySelector("select")?.value === "Data da aula") 
+            type = "date";
+        if(criteriaContainerComponents.querySelector("select")?.value ===  "Hora início da aula") 
+            type = "time";
+        criteriaContainerComponents.querySelector("input")!.type = type;
+        })    
     return criteriaContainerComponents;
 }
+
 /**
  * Cria um botão que permite remover o criterio assocaido ao mesmo.
 */
@@ -290,102 +299,84 @@ function generateSugestions() {
 
 
 }
-
-function daysBasedOnFilter(mainDiv: HTMLDivElement) {
+function daysBasedOnFilter(mainDiv: HTMLDivElement) : Date[] {
     const daysToInclude : Date[]= [];
+    
     const filter: NodeListOf<Element> = mainDiv.querySelectorAll(".criteria-container");
-    for (let i = 0; i != filter.length; i++) {
-        let criteriaString: string = "";
-        const criteriaContainerComponents = filter[i].querySelectorAll(".criteria-container-components");
+    for (let j = 0; j != filter.length; j++) {
+        const criteriaContainerComponents = filter[j].querySelectorAll(".criteria-container-components");
         const daysToIncludeAux : Date[] = [];
         const daysToExclude : Date[]= [];
+        let startDate : Date = new Date();
+        let finishDate : Date = new Date();
+        finishDate.setMonth(finishDate.getMonth()+1);
         for (let i = 0; i != criteriaContainerComponents.length; i++) {
             const column: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-column-selector") as HTMLSelectElement;
             const operator: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-filter-option-selector") as HTMLSelectElement;
             const inputValue: HTMLInputElement = criteriaContainerComponents[i].querySelector(".criteria-input") as HTMLInputElement;
-            if(column.value!=="Data da aula") continue;
+            if(column.value!=="Data da aula" ) continue;
             if(operator.value === "==" ) daysToIncludeAux.push( new Date(inputValue.value) )
             else if(operator.value === "!=") daysToExclude.push( new Date(inputValue.value) )
-            else daysToIncludeAux.push( ...gDays(inputValue.value,operator.value === ">=" ) ) 
+            else if (operator.value === "<=")finishDate = new Date(inputValue.value);
+            else  startDate = new Date(inputValue.value); 
         }
+        if(daysToIncludeAux.length < 1){
+            daysToIncludeAux.push( ...getDaysFromRange(startDate,finishDate) )
+        }
+
         daysToExclude.length ? 
             daysToInclude.push(  ...(
                 daysToIncludeAux.filter((element) => daysToExclude.every((excludedDay) => excludedDay.getTime() !== element.getTime()) )
             )  ) :
             daysToInclude.push(...daysToIncludeAux)
     }
-
-    return daysToInclude;
+    return [...(new Set(daysToInclude))];
 }
-
-function gDays(dateString : string, greaterThen : boolean ) : Date[] { 
-    let currentDate : Date = new Date();
-    const finalDate : Date = greaterThen ?  new Date(currentDate.setMonth(currentDate.getMonth()+1)) : new Date(dateString);
-    const dates = [];
-    let iteratingDate = greaterThen ? new Date(dateString) : new Date();   
-    while (iteratingDate.getTime() <= finalDate.getTime()) {
-        if(iteratingDate.getDay()) // Adiciona data se não for domingo
-            dates.push(new Date(iteratingDate));  
-        iteratingDate.setDate(iteratingDate.getDate() + 1);
-    }
-    return dates;
-}
-
-
-function generateDays(initalDate?: string ) {
-    let list: String[] = [];
-    let date: Date;
-    date = (initalDate == null || initalDate == "") ? new Date() : dateStringFormatCToDate(initalDate) as Date;
-    const year = date.getFullYear();
-    let initalDay = date.getDate();
-    for (let month = date.getMonth() + 1; month < 12; month++) {
-        for (let day = initalDay; day != new Date(year, month, 0).getDate(); day++) {
-            list.push(fixFormat((day + "/" + month + "/" + year), "/"));
+function hoursBasedOnFilter(mainDiv: HTMLDivElement, classDuration:number = 90) : string[] {
+    const hours : string[]= [];
+    const filter: NodeListOf<Element> = mainDiv.querySelectorAll(".criteria-container");
+    for (let j = 0; j != filter.length; j++) {
+        const criteriaContainerComponents = filter[j].querySelectorAll(".criteria-container-components");
+        let initialHour = new Date("1 08:00");
+        let finalHour = new Date("1 22:00");
+        const hoursFromAnd : string[] = [];
+        const hoursToExclude : string[]= [];
+        for (let i = 0; i != criteriaContainerComponents.length; i++) {
+            const column: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-column-selector") as HTMLSelectElement;
+            const operator: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-filter-option-selector") as HTMLSelectElement;
+            const inputValue: HTMLInputElement = criteriaContainerComponents[i].querySelector(".criteria-input") as HTMLInputElement;
+            if(column.value!=="Hora início da aula" || new Date(`1 ${inputValue.value}`) > new Date("1 22:00") || new Date(`1 ${inputValue.value}`)< new Date("1 08:00") ) continue;
+            if(operator.value === "==" ) hoursFromAnd.push( (inputValue.value) )
+            else if(operator.value === "!=") hoursToExclude.push( inputValue.value )
+            else if (operator.value === "<=")finalHour = new Date(`1 ${inputValue.value}`);
+            else  initialHour = new Date(`1 ${inputValue.value}`); 
         }
-        initalDay = 1;
+       
+        if(hoursFromAnd.length < 1){
+            hoursFromAnd.push(...(getClassesStartingHours(initialHour,finalHour,classDuration)))
+        }
+        hours.push(...(hoursFromAnd.filter((hour) => hoursToExclude.indexOf(hour)< 0)))
+
     }
-    console.log(list);
-    return list;
+    return [...(new Set(hours))];
 }
 
-function generteHoraInicioHoraFim(miHoraInicial: string, maxHoraInicial: string) {
-    let list: string[] = [];
-    if (miHoraInicial == null || !(Number(miHoraInicial.slice(0, 2)) > 8 && Number(miHoraInicial.slice(3, 5)) % 30 == 0)) {
-        miHoraInicial = "08:00:00";
-    }
-    if (maxHoraInicial == null || !(Number(miHoraInicial.slice(0, 2)) > 21 && Number(miHoraInicial.slice(3, 5)) % 30 == 0)) {
-        maxHoraInicial = "22:30:00";
-    }
-    let minutes = Number(miHoraInicial.charAt(3));
-    const starTime = Number(miHoraInicial.slice(0, 2));
-    const endTime = Number(maxHoraInicial.slice(0, 2));
 
-    for (let hour = starTime; hour <= 13; hour++) {
-        list.push(fixFormat((hour + ":" + minutes + "0:00"), ":"));
-        minutes += 3;
-        if (minutes > 3) {
-            hour++;
-            minutes = 0;
-        }
-    }
-    for (let hour = Math.max(13, starTime); hour <= endTime; hour++) {
-        list.push(hour + ":" + minutes + "0:00");
-        minutes += 3;
-        if (minutes > 3) {
-            hour++;
-            minutes = 0;
-        }
-    }
-    console.log(list);
-    return list;
+function getFilteredDateHourCombination(mainDiv: HTMLDivElement){
+    const combinations : {day:string, hour:string}[] = [];
+    const hours= hoursBasedOnFilter(mainDiv);
+    daysBasedOnFilter(mainDiv).forEach((day) => {
+        hours.forEach((hour) => combinations.push({day:formatDateToDDMMYYYY(day),hour:hour}))
+    })
+    console.log(combinations);
 }
 
-function fixFormat(time: string, seperator: string) {
-    let list: string[] = time.split(seperator);
-    for (let i = 0; i != list.length; i++) {
-        if (list[i].length < 2) {
-            list[i] = "0" + list[i];
-        }
-    }
-    return list[0] + seperator + list[1] + seperator + list[2];
-}
+
+
+
+
+
+
+
+
+
