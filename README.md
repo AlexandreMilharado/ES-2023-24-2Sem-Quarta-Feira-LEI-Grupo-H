@@ -44,18 +44,6 @@ cd .\front-end\
 npm run dev
 ```
 
-### Rodar Servidor HTTP de para testes
-
-A partir do root do projeto ./ES-2023-24-2Sem-Quarta-Feira-LEI-Grupo-H
-
-``` bat
-cd .\front-end\others
-python3 -m http.server -b 127.0.0.42 8080
-```
-
-Irá iniciar um servidor HTTP para poder testar o upload de fixeiros por url.
-Escreva "<http://127.0.0.42:8080/>" para listar os ficheiros na diretoria.
-
 ## Abrir Docs (Windows)
 
 A partir do root do projeto ./ES-2023-24-2Sem-Quarta-Feira-LEI-Grupo-H

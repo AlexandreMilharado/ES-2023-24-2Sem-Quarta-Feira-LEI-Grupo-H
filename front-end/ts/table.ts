@@ -19,7 +19,7 @@ import { togglePopUpSave } from "./popUp";
  * See {@link TableRow}
  * @type {TableRow[]}
  */
-let tabledata: TableRow[] = [{ Message: "Dados ainda não inseridos" }];
+export let tabledata: TableRow[] = [{ Message: "Dados ainda não inseridos" }];
 
 /**
  * Tabela do Tabulator
@@ -310,91 +310,4 @@ function filterByOr(): void {
 		}
 	});
 	table.setFilter([listFilters]);
-}
-
-//TODO ADD TESTS
-/**
- * Cria e transfere um ficheiro com os dados(string) e o nome de ficheiro(string) especificados.
- * @param {string} data Dados a serem salvos(string pre formatada).
- * @param {string} filename Nome do ficheiro.
- */
-function saveToFile(data: string, filename: string): void {
-	//Cria e chama um link de download escondido.
-	//Adiciona \ufeff para denotar UTF8.
-	let file = new File(["\ufeff" + data], filename, {
-		type: "text/plain:charset?UTF8",
-	});
-	const url = window.URL.createObjectURL(file);
-	let hiddenLink = document.createElement("a");
-
-	hiddenLink.style.cssText = "display: none";
-	hiddenLink.href = url;
-	hiddenLink.download = file.name;
-	hiddenLink.click();
-}
-
-//TODO ADD TESTS
-/**
- * Cria e transfere o estado atual da tabela atual _tabledata_.
- * 
- * Este ficheiro será um ficheiro de texto formatado em JSON com o nome "save.json"
- */
-export function saveFileJSON(): void {
-	const formatedJSON = JSON.stringify(tabledata);
-	saveToFile(formatedJSON, "save.json");
-}
-
-//TODO ADD TESTS
-/**
- * Cria e transfere o estado atual da tabela atual _tabledata_.
- * 
- * Este ficheiro será um ficheiro de texto formatado em CSV com o nome "save.csv"
- * 
- * O separador por defeito será o ponto e virgula ";". Caso exista pelo menos um ponto e virgula nos dados, o separador será mudado para a virgula ",".
- * 
- * Ficheiros que contenham tanto "," como ";" não irão ser corretamente exportados e a sua importação não irá funcionar.
- */
-export function saveFileCSV(): void {
-	//Confirma se alguma das celulas de dados contem ";".
-	const hasSemicolins: boolean = tabledata.some((tableRow) =>
-		Object.entries(tableRow).some((tableCell) =>
-			tableCell[1].toString().includes(";")
-		)
-	);
-
-	let separator: string = ";";
-	//Se existirem ";" nos dados, muda o separador para ",".
-	if (hasSemicolins) {
-		separator = ",";
-	}
-
-	//Obtem os cabeçalhos.
-	const headers: string =
-		//Obtem os pares chave/valor de uma linha.
-		Object.entries(tabledata[0])
-			//Obtem as chaves (cabeçalhos).
-			.map((v) => v[0])
-			//Junta todos os cabeçalhos numa string separada com o separador.
-			.reduce((previous, current) => previous + separator + current);
-
-	//Obtem os dados.
-	const data: string =
-		//Começa com os dados todos.
-		tabledata
-			//Converte a lista de TableRow numa lista de string, juntando todas as TableCell de cada TableRow numa string com o separador.
-			.map((row) =>
-				//Obtem os pares chave/valor de uma linha.
-				Object.entries(row)
-					//Mantem apenas os valores(index 1) e transforma-os em strings.
-					.map((value) => value[1].toString())
-					//Junta todas as strings usando o separador.
-					.reduce((previous, value) => previous + separator + value)
-			)
-			//Junta todas as strings, separando-as por linhas.
-			.reduce((previous, current) => previous + "\n" + current);
-
-	// Junta os cabeçalhos aos dados.
-	const formatedCSV: string = headers + "\n" + data;
-
-	saveToFile(formatedCSV, "save.csv");
 }
