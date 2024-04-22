@@ -6,6 +6,7 @@ import {
 	getWeekNumber,
 } from "./dates";
 import { TableRow } from "./uploadCsv";
+import { togglePopUpSave } from "./popUp";
 
 /**
  * Funções da Tabela Module
@@ -47,6 +48,12 @@ let paginators: HTMLCollectionOf<Element> = document.getElementsByClassName(
  * @type {HTMLButtonElement}
  */
 let filterToggleButton: HTMLButtonElement;
+
+/**
+ * Botão para ativar/desativar o pop up de salvar a tabela.
+ * @type {HTMLButtonElement}
+ */
+let savePopUpButton: HTMLButtonElement;
 
 /**
  * Botão para editar/apagar colunas na tabela.
@@ -95,6 +102,10 @@ export function setData(file: TableRow[]): void {
 	editToggleButton = document.createElement("button");
 	editToggleButton.className = "tabulator-edit-toggle-button";
 	editToggleButton.setAttribute("toggled", "off");
+
+	savePopUpButton = document.createElement("button");
+	savePopUpButton.className = "tabulator-save-toggle-button";
+
 	list.innerHTML = "";
 	renderFilterProps();
 	addHiddenButtonsAndInputsToColumns();
@@ -111,6 +122,8 @@ function renderFilterProps(): void {
 		filterToggleButton.addEventListener("click", () => toggleFilter());
 		paginators.item(i)?.prepend(editToggleButton);
 		editToggleButton.addEventListener("click", () => toggleEdit());
+		paginators.item(i)?.prepend(savePopUpButton);
+		savePopUpButton.addEventListener("click", () => togglePopUpSave(true));
 	}
 
 	let horario: HTMLElement = document.getElementById(
