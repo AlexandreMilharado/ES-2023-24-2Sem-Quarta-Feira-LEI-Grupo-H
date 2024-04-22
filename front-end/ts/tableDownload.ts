@@ -1,6 +1,5 @@
 import { TableRow } from "./uploadCsv";
 
-//TODO ADD TESTS
 /**
  * Cria e transfere um ficheiro com os dados(string) e o nome de ficheiro(string) especificados.
  * @param {string} data Dados a serem salvos(string pre formatada).
@@ -21,18 +20,22 @@ export function saveToFile(data: string, filename: string): void {
 	hiddenLink.click();
 }
 
-//TODO ADD TESTS
-//TODO FIX DOCS (mention download return)
 /**
- * Cria e transfere o estado atual da tabela atual _tabledata_.
+ * Cria e transfere o estado atual da tabela atual _tabledata_ (passada por argumentos).
  *
  * Este ficheiro será um ficheiro de texto formatado em JSON com o nome "save.json"
- *
+ * 
+ * Retorna o output da função de download.
+ * 
+ * Se não houverem dados não efetua download.
+ * 
  * @param {TableRow[]} data Dados a serem salvos
+ * @param downlaod Função que recebe os dados como string e o nome do ficheiro e efetua o download.
+ * @returns O output da função download
  */
 export function saveFileJSON(
 	data: TableRow[],
-	downlaod: (data: string, filename: string) => void = saveToFile
+	downlaod: (data: string, filename: string) => void | any = saveToFile
 ): void | any {
 	if (JSON.stringify(data) === JSON.stringify([{ Message: "Dados ainda não inseridos" }])) {
 		return;
@@ -41,22 +44,26 @@ export function saveFileJSON(
 	return downlaod(formatedJSON, "save.json");
 }
 
-//TODO ADD TESTS
-//TODO FIX DOCS (mention download return)
 /**
- * Cria e transfere o estado atual da tabela atual _tabledata_.
+ * Cria e transfere o estado atual da tabela atual _tabledata_ (passada por argumentos).
  *
  * Este ficheiro será um ficheiro de texto formatado em CSV com o nome "save.csv"
  *
  * O separador por defeito será o ponto e virgula ";". Caso exista pelo menos um ponto e virgula nos dados, o separador será mudado para a virgula ",".
  *
  * Ficheiros que contenham tanto "," como ";" não irão ser corretamente exportados e a sua importação não irá funcionar.
- * @param {TableRow[]} data Dados a serem salvos
-
-*/
+ * 
+ * Retorna o output da função de download.
+ * 
+ * Se não houverem dados não efetua download.
+ * 
+ * @param {TableRow[]} inputData Dados a serem salvos
+ * @param downlaod Função que recebe os dados como string e o nome do ficheiro e efetua o download.
+ * @returns O output da função download
+ */
 export function saveFileCSV(
 	inputData: TableRow[],
-	downlaod: (data: string, filename: string) => void = saveToFile
+	downlaod: (data: string, filename: string) => void | any = saveToFile
 ): void | any {
 	if (JSON.stringify(inputData) === JSON.stringify([{ Message: "Dados ainda não inseridos" }])) {
 		return;

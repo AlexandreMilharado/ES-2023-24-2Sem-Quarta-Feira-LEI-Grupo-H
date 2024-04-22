@@ -12,19 +12,13 @@ import { TableRow } from "./uploadCsv";
  * @module Tabela
  */
 
-
-//TODO Explain why duplicate
-const emptyTable:TableRow[] = [{ Message: "Dados ainda não inseridos" }]
-
-
 /**
  * Dados provenientes do .CSV file
  *
  * See {@link TableRow}
  * @type {TableRow[]}
  */
-export let tabledata: TableRow[] = emptyTable;
-
+export let tabledata: TableRow[] = [{ Message: "Dados ainda não inseridos" }];
 
 /**
  * Tabela do Tabulator
