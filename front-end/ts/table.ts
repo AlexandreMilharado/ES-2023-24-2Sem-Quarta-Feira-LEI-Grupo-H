@@ -2,6 +2,7 @@ import Tabulator from "tabulator-tables";
 import ColumnDefinition from "tabulator-tables";
 import {
 	dateStringFormatCToDate,
+  getSemesterStarts,
 	getSemesterWeekNumber,
 	getWeekNumber,
 } from "./dates";
@@ -140,29 +141,21 @@ function renderFilterProps(): void {
  * See {@link dateStringFormatCToDate} | {@link getWeekNumber} | {@link getSemesterWeekNumber}.
  */
 function addSemanasColumns(): void {
-	//Confirma se já existem semanas do ano e semanas do semestre
-	if (
-		tabledata.some(
-			(value) =>
-				Object.keys(value).includes("Semana do Ano") ||
-				Object.keys(value).includes("Semana do Semestre")
-		)
-	) {
-		return;
-	}
-
-	tabledata.forEach((row) => {
-		let dateObject: Date;
-		try {
-			dateObject = dateStringFormatCToDate(
-				row["Data da aula"] as string
-			) as Date;
-		} catch (error) {
-			return;
-		}
-		row["Semana do Ano"] = getWeekNumber(dateObject);
-		row["Semana do Semestre"] = getSemesterWeekNumber(dateObject);
-	});
+  if( !tabledata.some(row => row.hasOwnProperty('Data da aula'))) return;
+  
+  const startSemesterDates = getSemesterStarts(tabledata.map((row) => row['Data da aula'] as string));
+  tabledata.forEach((row) => {
+    let dateObject: Date;
+    try {
+      dateObject = dateStringFormatCToDate(
+        row["Data da aula"] as string
+      ) as Date;
+    } catch (error) {
+      return;
+    }
+    row["Semana do Ano"] = getWeekNumber(dateObject);
+    row["Semana do Semestre"] = getSemesterWeekNumber(dateObject,startSemesterDates);
+  });
 }
 
 /**
