@@ -17,43 +17,48 @@ import {
   needToDownloadCsv,
 } from "../ts/uploadCsv";
 
+//TODO REMAKE THE TESTS
+
 /**
  * Para testar é recomendado ligar o servidor backend.
  * @vitest-environment jsdom
  */
 describe("handleSubmit", () => {
-  // it("devolve uma mensagem de erro caso o link do .CSV for inválido", async () => {
-  //   let event: any = getTestEventWithUrl(
-  //     "https://rw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeTeste.csv"
-  //   );
-  //   const result: string | void = await handleSubmit(event, (file) => file);
-  //   const isMatch: boolean =
-  //     result === `{"error":"Failed to fetch CSV file"}` ||
-  //     result === "Não conseguiu conectar-se ao servidor.";
-  //   expect(isMatch).toBe(true);
-  // });
+  it("devolve uma mensagem de erro caso o link do ficheiro for inválido", async () => {
+    let event: any = getTestEventWithUrl(
+      "https://rw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeTeste.csv"
+    );
+    const result: string | void = await handleSubmit(event, (file) => file);
+    const isMatch: boolean =
+    result === `{"error":"Failed to fetch CSV/JSON file"}` ||
+    result === "Não conseguiu conectar-se ao servidor.";
+    expect(isMatch).toBe(true);
+  });
 
+  //TODO COMPLEMENT WITH JSON
   // it("devolve uma mensagem de erro caso o link do ficheiro não acabar em .CSV", async () => {
   //   let event: any = getTestEventWithUrl(
   //     "https://rw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeTeste.cs"
   //   );
-  //   const result: string | void = await handleSubmit(event, (file) => file);
+  //   const result: string | void = await handleSubmit(event, (file) => file,()=>{});
+  //   // console.log(result)
   //   const isMatch: boolean =
   //     result === `{"error":"Failed to fetch CSV file"}` ||
   //     result === "Não conseguiu conectar-se ao servidor.";
   //   expect(isMatch).toBe(true);
   // });
 
-  // it("devolve o .CSV com formato correto dado um link para fazer o download", async () => {
-  //   let event: any = getTestEventWithUrl(
-  //     "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeTeste.csv"
-  //   );
-  //   const result: string | void = await handleSubmit(event, (file) => file);
-  //   const isMatch: boolean =
-  //     result === "Não conseguiu conectar-se ao servidor." ||
-  //     JSON.stringify(result) === JSON.stringify(getTestFileJSON());
-  //   expect(isMatch).toBe(true);
-  // });
+  //TODO ADD A JSON VARIANT
+  it("devolve o .CSV com formato correto dado um link para fazer o download", async () => {
+    let event: any = getTestEventWithUrl(
+      "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeTeste.csv"
+    );
+    const result: string | void = await handleSubmit(event, (file) => file);
+    const isMatch: boolean =
+      result === "Não conseguiu conectar-se ao servidor." ||
+      JSON.stringify(result) === JSON.stringify(getTestFileJSON());
+    expect(isMatch).toBe(true);
+  });
 
   it('devolve "Forms não preenchido." caso o Forms não esteja preenchido', async () => {
     let event: any = getTestEventWithEmptyValues();

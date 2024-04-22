@@ -61,10 +61,12 @@ export interface FormDataJson {
  * See {@link setData}.
  * @param {SubmitEvent} event - Evento para buscar forms
  * @param {Function} [handleData] - Função a executar após a transformação do ficheiro
+ * @param alertFunction - Possibilidade de substituir a função de alert para possibilitar testes.
  */
 export async function handleSubmit(
 	event: SubmitEvent,
-	handleData: (file: TableRow[]) => void = setData
+	handleData: (file: TableRow[]) => void = setData,
+	alertFunction: (message?: any) => void = alert
 ): Promise<string | void> {
 	if (!event) return;
 
@@ -102,7 +104,7 @@ export async function handleSubmit(
 	} else if (extension == "json") {
 		fileTable = fileString.then((formatedFile) => JSON.parse(formatedFile));
 	} else {
-		alert("Invalid file extension found: " + extension);
+		alertFunction("Invalid file extension found: " + extension);
 		return;
 	}
 	return fileTable

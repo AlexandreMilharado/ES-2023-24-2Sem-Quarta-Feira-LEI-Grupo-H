@@ -46,6 +46,7 @@ npm run dev
 
 ### Rodar Servidor HTTP de para testes
 
+//TODO REMOVER E ADICIONAR OS FICHEIROS
 A partir do root do projeto ./ES-2023-24-2Sem-Quarta-Feira-LEI-Grupo-H
 
 ``` bat
