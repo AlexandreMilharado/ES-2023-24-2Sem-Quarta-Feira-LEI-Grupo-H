@@ -97,11 +97,20 @@ export async function handleSubmit(
 			.post(`${SERVER}/uploadHorario`, {
 				url: remoteFile,
 			})
-			.then((data) => data.data.csvData);
+			.then((data) => data.data.csvData)
+			.catch((e) => {
+				return e;
+			});
 	}
-	if (extension == "csv") {
+
+	//@ts-ignore
+	if ((await fileString)?.response?.data?.error)
+		//@ts-ignore
+		return (await fileString).response.data;
+
+	if (extension === "csv") {
 		fileTable = fileString.then((formatedFile) => formatCsv(formatedFile));
-	} else if (extension == "json") {
+	} else if (extension === "json") {
 		fileTable = fileString.then((formatedFile) => JSON.parse(formatedFile));
 	} else {
 		alertFunction("Invalid file extension found: " + extension);
@@ -109,11 +118,31 @@ export async function handleSubmit(
 	}
 	return fileTable
 		.then((file) => handleData(file))
-		.catch((e) =>
-			e.response?.data
+		.catch((e) => {
+			return e.response?.data
 				? JSON.stringify(e.response.data)
-				: "Não conseguiu conectar-se ao servidor."
-		);
+				: "Não conseguiu conectar-se ao servidor.";
+		});
+}
+
+/**
+ * Função para saber se é possivel contactar com o backend.
+ * @returns
+ */
+export async function checkBackendStatus(): Promise<string> {
+	const response = axios
+		.get(`${SERVER}/uploadHorario`)
+		.catch((e) => e.code)
+		.then((a) => {
+			if (a === "ERR_NETWORK") {
+				return "OFFLINE";
+			}
+			if (a === "ERR_BAD_REQUEST") {
+				return "ONLINE";
+			}
+			return "UNDEFINED";
+		});
+	return await response ;
 }
 
 /**
