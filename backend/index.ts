@@ -11,27 +11,27 @@ app.use(cors({ origin: true }));
  * faz download do ficheiro e envia para o cliente.
  */
 app.post("/uploadHorario", async (req: Request, res: Response) => {
-  const { url } = req.body;
-  try {
-    const csvData: string = await getFile(url);
-    return res.json({ csvData });
-  } catch (error) {
-    return res.status(500).json({ error: "Failed to fetch CSV file" });
-  }
+	const { url } = req.body;
+	try {
+		const csvData: string = await getFile(url);
+		return res.json({ csvData });
+	} catch (error) {
+		return res.status(500).json({ error: "Failed to fetch CSV/JSON file" });
+	}
 });
 
 /**
- * Faz download do .csv e retorna-o.
+ * Faz download do .csv ou .json e retorna-o como string.
  * @param {string} url
- * @returns {Promise<string>} Dados do ficheiro .CSV
+ * @returns {Promise<string>} Dados do ficheiro de dados.
  */
 async function getFile(url: string): Promise<string> {
-  if (!url.endsWith(".csv")) throw Error();
+	if (!(url.endsWith(".csv") || url.endsWith(".json"))) throw Error();
 
-  const response: AxiosResponse = await axios.get(url, {
-    responseType: "text",
-  });
-  return response.data;
+	const response: AxiosResponse = await axios.get(url, {
+		responseType: "text",
+	});
+	return response.data;
 }
 
 // Escuta na porta:3001
