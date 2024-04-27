@@ -2,13 +2,19 @@
 import axios from "axios";
 import { setData } from "./table";
 import { togglePopUp } from "./popUp";
+import {
+  GetCarateristicas,
+  GetHorario,
+  addFile,
+  getFiles,
+  sortFiles,
+} from "./variables";
 
 /**
  * Server's Path
  * @type {String}
  */
 const SERVER: string = "http://localhost:3001";
-
 /**
  * Upload .CSV Module
  * @module UploadCSV
@@ -40,8 +46,8 @@ export type TableRow = Record<string, TableCell>;
  * TODO
  */
 export interface FormDataJson {
-	localFile: File;
-	remoteFile: string;
+  localFile: File;
+  remoteFile: string;
 }
 
 /**
@@ -64,65 +70,65 @@ export interface FormDataJson {
  * @param alertFunction - Possibilidade de substituir a função de alert para possibilitar testes.
  */
 export async function handleSubmit(
-	event: SubmitEvent,
-	handleData: (file: TableRow[]) => void = setData,
-	alertFunction: (message?: any) => void = alert
+  event: SubmitEvent,
+  handleData: (file: TableRow[]) => void = setData,
+  alertFunction: (message?: any) => void = alert
 ): Promise<string | void> {
-	if (!event) return;
+  if (!event) return;
 
-	event.preventDefault();
+  event.preventDefault();
 
-	const form: HTMLFormElement = event.currentTarget as HTMLFormElement;
+  const form: HTMLFormElement = event.currentTarget as HTMLFormElement;
 
-	const { localFile, remoteFile }: FormDataJson = formDataToJson(
-		new FormData(form)
-	);
+  const { localFile, remoteFile }: FormDataJson = formDataToJson(
+    new FormData(form)
+  );
 
-	if (remoteFile === "" && localFile?.size === 0)
-		return "Forms não preenchido.";
+  if (remoteFile === "" && localFile?.size === 0)
+    return "Forms não preenchido.";
 
-	form.reset();
-	togglePopUp(false);
+  form.reset();
+  togglePopUp(false);
 
-	let fileString: Promise<string>;
-	let fileTable: Promise<TableRow[]>;
-	let extension: string | undefined;
+  let fileString: Promise<string>;
+  let fileTable: Promise<TableRow[]>;
+  let extension: string | undefined;
 
-	if (!needToDownloadCsv(localFile, remoteFile)) {
-		extension = localFile.name.split(".").pop();
-		fileString = formatToString(localFile);
-	} else {
-		extension = remoteFile.split(".").pop();
-		fileString = axios
-			.post(`${SERVER}/uploadHorario`, {
-				url: remoteFile,
-			})
-			.then((data) => data.data.csvData)
-			.catch((e) => {
-				return e;
-			});
-	}
+  if (!needToDownloadCsv(localFile, remoteFile)) {
+    extension = localFile.name.split(".").pop();
+    fileString = formatToString(localFile);
+  } else {
+    extension = remoteFile.split(".").pop();
+    fileString = axios
+      .post(`${SERVER}/uploadHorario`, {
+        url: remoteFile,
+      })
+      .then((data) => data.data.csvData)
+      .catch((e) => {
+        return e;
+      });
+  }
 
-	//@ts-ignore
-	if ((await fileString)?.response?.data?.error)
-		//@ts-ignore
-		return (await fileString).response.data;
+  //@ts-ignore
+  if ((await fileString)?.response?.data?.error)
+    //@ts-ignore
+    return (await fileString).response.data;
 
-	if (extension === "csv") {
-		fileTable = fileString.then((formatedFile) => formatCsv(formatedFile));
-	} else if (extension === "json") {
-		fileTable = fileString.then((formatedFile) => JSON.parse(formatedFile));
-	} else {
-		alertFunction("Invalid file extension found: " + extension);
-		return;
-	}
-	return fileTable
-		.then((file) => handleData(file))
-		.catch((e) => {
-			return e.response?.data
-				? JSON.stringify(e.response.data)
-				: "Não conseguiu conectar-se ao servidor.";
-		});
+  if (extension === "csv") {
+    fileTable = fileString.then((formatedFile) => formatCsv(formatedFile));
+  } else if (extension === "json") {
+    fileTable = fileString.then((formatedFile) => JSON.parse(formatedFile));
+  } else {
+    alertFunction("Invalid file extension found: " + extension);
+    return;
+  }
+  return fileTable
+    .then((file) => handleData(file))
+    .catch((e) => {
+      return e.response?.data
+        ? JSON.stringify(e.response.data)
+        : "Não conseguiu conectar-se ao servidor.";
+    });
 }
 
 /**
@@ -130,19 +136,19 @@ export async function handleSubmit(
  * @returns
  */
 export async function checkBackendStatus(): Promise<string> {
-	const response = axios
-		.get(`${SERVER}/uploadHorario`)
-		.catch((e) => e.code)
-		.then((a) => {
-			if (a === "ERR_NETWORK") {
-				return "OFFLINE";
-			}
-			if (a === "ERR_BAD_REQUEST") {
-				return "ONLINE";
-			}
-			return "UNDEFINED";
-		});
-	return await response ;
+  const response = axios
+    .get(`${SERVER}/uploadHorario`)
+    .catch((e) => e.code)
+    .then((a) => {
+      if (a === "ERR_NETWORK") {
+        return "OFFLINE";
+      }
+      if (a === "ERR_BAD_REQUEST") {
+        return "ONLINE";
+      }
+      return "UNDEFINED";
+    });
+  return await response;
 }
 
 /**
@@ -156,10 +162,10 @@ export async function checkBackendStatus(): Promise<string> {
  * @returns {FormDataJson} FormData em JSON
  */
 export function formDataToJson(formData: FormData): FormDataJson {
-	return {
-		localFile: formData.get("localFile") as File,
-		remoteFile: formData.get("remoteFile") as string,
-	};
+  return {
+    localFile: formData.get("localFile") as File,
+    remoteFile: formData.get("remoteFile") as string,
+  };
 }
 
 /**
@@ -172,10 +178,10 @@ export function formDataToJson(formData: FormData): FormDataJson {
  * @returns {Boolean} - Boolean para saber se é preciso fazer download do ficheiro .CSV
  */
 export function needToDownloadCsv(
-	localFile: File,
-	remoteFile: string
+  localFile: File,
+  remoteFile: string
 ): boolean {
-	return localFile?.size == 0 && remoteFile !== null && remoteFile !== "";
+  return localFile?.size == 0 && remoteFile !== null && remoteFile !== "";
 }
 
 /**
@@ -184,14 +190,14 @@ export function needToDownloadCsv(
  * @returns {Promise<string>} Local File em string
  */
 export async function formatToString(localFile: File): Promise<string> {
-	return new Promise<string>((resolve, reject) => {
-		const reader = new FileReader();
-		reader.onload = (event) => {
-			const text = event.target?.result as string;
-			resolve(text);
-		};
-		reader.readAsText(localFile);
-	});
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      resolve(text);
+    };
+    reader.readAsText(localFile);
+  });
 }
 
 /**
@@ -200,7 +206,7 @@ export async function formatToString(localFile: File): Promise<string> {
  * Assume-se que existe headers no texto passado.
  * Se conter ";" no header, assume-se uma separação de linhas com ";",
  * caso contrário usa-se o delimitador ",".
- * Se existir alguma linha sem dados ignora-a não devolvendo-a no CsvRow[].
+ * Se existir alguma linha sem dados ignora-a não devolvendo-a no TableRow[].
  * Ver {@link TableCell} | {@link TableRow}
  *
  * @param {String} text - Ficheiro de texto do .CSV
@@ -208,25 +214,69 @@ export async function formatToString(localFile: File): Promise<string> {
  * @returns {TableRow[]} Ficheiro .CSV formatado
  */
 export function formatCsv(
-	text: string,
-	enableHeaders: boolean = true
+  text: string,
+  enableHeaders: boolean = true
 ): TableRow[] {
-	const splitedText: string[] = text.split(new RegExp("\r\n|\n|\r"));
-	const delimiter: string =
-		splitedText.length > 0 && splitedText[0].includes(";") ? ";" : ",";
+  const splitedText: string[] = text.split(new RegExp("\r\n|\n|\r"));
+  const delimiter: string =
+    splitedText.length > 0 && splitedText[0].includes(";") ? ";" : ",";
 
-	const headers: TableCell[] = enableHeaders
-		? splitedText[0].split(delimiter)
-		: splitedText[0].split(delimiter).map((_element, index) => index);
+  const headers: TableCell[] = enableHeaders
+    ? splitedText[0].split(delimiter)
+    : splitedText[0].split(delimiter).map((_element, index) => index);
 
-	const dataRows: string[] = splitedText
-		.slice(1)
-		.filter((row) => row.length != 0);
+  const dataRows: string[] = splitedText
+    .slice(1)
+    .filter((row) => row.length != 0);
 
-	return dataRows.map((linha) =>
-		linha.split(delimiter).reduce((json, currentCell, coluna) => {
-			json[headers[coluna]] = currentCell;
-			return json;
-		}, {} as TableRow)
-	);
+  return dataRows.map((linha) =>
+    linha.split(delimiter).reduce((json, currentCell, coluna) => {
+      json[headers[coluna]] = currentCell;
+      return json;
+    }, {} as TableRow)
+  );
+}
+
+/**
+ * Função para receber o ficheiro remoto.
+ * @param {String} remoteFileUrl - URL a fazer upload do ficheiro
+ * @param {Function} handleData - função a executar após a transformação do ficheiro
+ * @returns {Promise<string | void>} - resultado do server
+ */
+async function getRemoteFile(
+  remoteFileUrl: string,
+  handleData: (file: TableRow[]) => void
+): Promise<string | void> {
+  return axios
+    .post(`${SERVER}/uploadHorario`, {
+      url: remoteFileUrl,
+    })
+    .then((r) => formatCsv(r.data.csvData))
+    .then((file) => handleData(file))
+    .catch((e) => e);
+}
+
+/**
+ * Carregar ficheiros iniciais para o cálculo de sugestões.
+ * @param {Function} handleData - função a executar após a transformação do ficheiro
+ */
+export function loadInitialCsvFiles(
+  handleData: (file: TableRow[], index: number) => void
+): void {
+  const urls: string[] = [
+    "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/Caracteriza%C3%A7%C3%A3oDasSalas.csv",
+    "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemplo.csv",
+  ];
+  urls.forEach(async (url, index) => {
+    await getRemoteFile(url, (file) => {
+      if (JSON.stringify(file) !== JSON.stringify([{}]))
+        handleData(file, index);
+    });
+  });
+}
+
+export function TEST() {
+  sortFiles();
+  console.table(GetHorario());
+  console.table(GetCarateristicas());
 }
