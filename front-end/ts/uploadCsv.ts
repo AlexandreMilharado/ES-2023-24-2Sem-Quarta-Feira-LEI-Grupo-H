@@ -2,6 +2,13 @@
 import axios from "axios";
 import { setData } from "./table";
 import { togglePopUp } from "./popUp";
+import {
+  GetCarateristicas,
+  GetHorario,
+  addFile,
+  getFiles,
+  sortFiles,
+} from "./variables";
 
 /**
  * Server's Path
@@ -199,7 +206,7 @@ export async function formatToString(localFile: File): Promise<string> {
  * Assume-se que existe headers no texto passado.
  * Se conter ";" no header, assume-se uma separação de linhas com ";",
  * caso contrário usa-se o delimitador ",".
- * Se existir alguma linha sem dados ignora-a não devolvendo-a no CsvRow[].
+ * Se existir alguma linha sem dados ignora-a não devolvendo-a no TableRow[].
  * Ver {@link TableCell} | {@link TableRow}
  *
  * @param {String} text - Ficheiro de texto do .CSV
@@ -231,14 +238,14 @@ export function formatCsv(
 }
 
 /**
- *
- * @param remoteFileUrl
- * @param handleData
- * @returns
+ * Função para receber o ficheiro remoto.
+ * @param {String} remoteFileUrl - URL a fazer upload do ficheiro
+ * @param {Function} handleData - função a executar após a transformação do ficheiro
+ * @returns {Promise<string | void>} - resultado do server
  */
 async function getRemoteFile(
   remoteFileUrl: string,
-  handleData: (file: CsvRow[]) => void
+  handleData: (file: TableRow[]) => void
 ): Promise<string | void> {
   return axios
     .post(`${SERVER}/uploadHorario`, {
@@ -246,30 +253,30 @@ async function getRemoteFile(
     })
     .then((r) => formatCsv(r.data.csvData))
     .then((file) => handleData(file))
-    .catch((e) =>
-      e.response?.data
-        ? JSON.stringify(e.response.data)
-        : "Não conseguiu conectar-se ao servidor."
-    );
+    .catch((e) => e);
 }
 
-export async function loadInitialCsvFiles(): Promise<CsvRow[][]> {
+/**
+ * Carregar ficheiros iniciais para o cálculo de sugestões.
+ * @param {Function} handleData - função a executar após a transformação do ficheiro
+ */
+export function loadInitialCsvFiles(
+  handleData: (file: TableRow[], index: number) => void
+): void {
   const urls: string[] = [
-    "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemplo.csv",
     "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/Caracteriza%C3%A7%C3%A3oDasSalas.csv",
+    "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemplo.csv",
   ];
-  const files: CsvRow[][] = [];
-  urls.forEach(async (url) => {
-    let remoteFile: CsvRow[] = [{}];
-    const message: void | string = (await getRemoteFile(
-      url,
-      (file) => (remoteFile = file)
-    )) as string;
-    if (
-      message !== "Não conseguiu conectar-se ao servidor." &&
-      JSON.stringify(remoteFile) !== JSON.stringify([{}])
-    )
-      files.push(remoteFile);
+  urls.forEach(async (url, index) => {
+    await getRemoteFile(url, (file) => {
+      if (JSON.stringify(file) !== JSON.stringify([{}]))
+        handleData(file, index);
+    });
   });
-  return files;
+}
+
+export function TEST() {
+  sortFiles();
+  console.table(GetHorario());
+  console.table(GetCarateristicas());
 }
