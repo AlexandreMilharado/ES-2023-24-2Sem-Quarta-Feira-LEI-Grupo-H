@@ -26,20 +26,20 @@ Aplicação de suporte à gestão de horários.
 
 ## Rodar Servidores
 
-### Rodar Servidor back-end:
+### Rodar Servidor back-end
 
 A partir do root do projeto ./ES-2023-24-2Sem-Quarta-Feira-LEI-Grupo-H
 
-```
+``` bat
 cd .\backend\
 npm start
 ```
 
-### Rodar Servidor front-end:
+### Rodar Servidor front-end
 
 A partir do root do projeto ./ES-2023-24-2Sem-Quarta-Feira-LEI-Grupo-H
 
-```
+``` bat
 cd .\front-end\
 npm run dev
 ```
@@ -48,7 +48,7 @@ npm run dev
 
 A partir do root do projeto ./ES-2023-24-2Sem-Quarta-Feira-LEI-Grupo-H
 
-```
+``` bat
 cd .\front-end\docs\
 start index.html
 ```
@@ -57,7 +57,7 @@ start index.html
 
 A partir do root do projeto ./ES-2023-24-2Sem-Quarta-Feira-LEI-Grupo-H
 
-```
+``` bat
 cd .\front-end\
 npm run coverage
 ```
@@ -66,7 +66,7 @@ npm run coverage
 
 A partir do root do projeto ./ES-2023-24-2Sem-Quarta-Feira-LEI-Grupo-H
 
-```
+``` bat
 cd .\front-end\
 npm run ui
 ```

@@ -20,10 +20,10 @@
     <section id="PopUpUpload">
         <script type="module" src="ts/uploadCsv.ts"></script>
         <div>
-            <button id="ClosePopUp"></button>
+            <button id="ClosePopUp" type="close"></button>
             <h3>UPLOAD .CSV</h3>
             <form id="localUpload" method="post">
-                <input name="localFile" type="file" multiple accept=".csv">
+                <input name="localFile" type="file" accept=".csv,.json">
                 <h6 class="line-border">or</h6>
 
                 <input name="remoteFile" type="text" id="fileInput">
@@ -33,12 +33,21 @@
             </form>
         </div>
     </section>
+    <section id="PopUpSave" class="hidden">
+        <div>
+            <button id="ClosePopUpSave" type="close"></button>
+            <h3>SAVE TABLE</h3>
+            <div class="form">
+                <button id="SaveFileCSV" type="save">SAVE .CSV</button>
+                <button id="SaveFileJSON" type="save">SAVE .JSON</button>
+            </div>
+        </div>
+    </section>
     <section id="HeroBanner">
         <img src="graphics/images/HeroBanner.png">
         <button id="OpenPopUp" type="file" accept=".csv">
             <img src="graphics/svg/CloudUpload.svg">
-            <span>UPLOAD .CSV</span>
-        </button>
+            <span>UPLOAD .CSV or .JSON</span>
     </section>
     <section id="MainTable">
         <div id="HorarioPrincipal" class="tabela"></div>

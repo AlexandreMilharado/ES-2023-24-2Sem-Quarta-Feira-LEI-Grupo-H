@@ -6,7 +6,8 @@ import {
   getSemesterWeekNumber,
   getWeekNumber,
 } from "./dates";
-import { CsvRow } from "./uploadCsv";
+import { TableRow } from "./uploadCsv";
+import { togglePopUpSave } from "./popUp";
 import { createHtmlElements } from "./suggestSlotst"
 
 /**
@@ -17,10 +18,10 @@ import { createHtmlElements } from "./suggestSlotst"
 /**
  * Dados provenientes do .CSV file
  *
- * See {@link CsvRow}
- * @type {CsvRow[]}
+ * See {@link TableRow}
+ * @type {TableRow[]}
  */
-let tabledata: CsvRow[] = [{ Message: "Dados ainda não inseridos" }];
+export let tabledata: TableRow[] = [{ Message: "Dados ainda não inseridos" }];
 
 /**
  * Tabela do Tabulator
@@ -51,6 +52,12 @@ let paginators: HTMLCollectionOf<Element> = document.getElementsByClassName(
 let filterToggleButton: HTMLButtonElement;
 
 /**
+ * Botão para ativar/desativar o pop up de salvar a tabela.
+ * @type {HTMLButtonElement}
+ */
+let savePopUpButton: HTMLButtonElement;
+
+/**
  * Botão para editar/apagar colunas na tabela.
  * @type {HTMLButtonElement}
  */
@@ -69,11 +76,11 @@ let list: HTMLUListElement = document
  * juntamente com as colunsa do número das semanas.
  * Também é adicionado à tabela os filtros personalizados e a opção de removoção de colunas.
  *
- * See {@link addSemanasColumns} | {@link addHiddenButtonsAndInputsToColumns} | {@link renderFilterProps} | {@link CsvRow}.
+ * See {@link addSemanasColumns} | {@link addHiddenButtonsAndInputsToColumns} | {@link renderFilterProps} | {@link TableRow}.
  *
- * @param {CsvRow[]} file - dados do ficheiro .CSV importado
+ * @param {TableRow[]} file - dados do ficheiro .CSV importado
  */
-export function setData(file: CsvRow[]): void {
+export function setData(file: TableRow[]): void {
   tabledata = file;
   addSemanasColumns();
 
@@ -97,6 +104,10 @@ export function setData(file: CsvRow[]): void {
   editToggleButton = document.createElement("button");
   editToggleButton.className = "tabulator-edit-toggle-button";
   editToggleButton.setAttribute("toggled", "off");
+
+  savePopUpButton = document.createElement("button");
+  savePopUpButton.className = "tabulator-save-toggle-button";
+
   list.innerHTML = "";
   renderFilterProps();
   addHiddenButtonsAndInputsToColumns();
@@ -113,6 +124,8 @@ function renderFilterProps(): void {
     filterToggleButton.addEventListener("click", () => toggleFilter());
     paginators.item(i)?.prepend(editToggleButton);
     editToggleButton.addEventListener("click", () => toggleEdit());
+    paginators.item(i)?.prepend(savePopUpButton);
+    savePopUpButton.addEventListener("click", () => togglePopUpSave(true));
   }
 
   let horario: HTMLElement = document.getElementById(
@@ -126,12 +139,13 @@ function renderFilterProps(): void {
 /**
  * Adiciona em todas as linhas os atributos "Semana do Ano" e "Semana do Semestre".
  * Se a tabledata não tiver o atributo "Data da aula" a função é completamente ignorada.
+ * Se já existir pelo menos uma semana do ano ou semana do semestre, esta função é ignorada.
  *
  * See {@link dateStringFormatCToDate} | {@link getWeekNumber} | {@link getSemesterWeekNumber}.
  */
 function addSemanasColumns(): void {
-  if( !tabledata.some(row => row.hasOwnProperty('Data da aula'))) return;
-  
+  if (!tabledata.some(row => row.hasOwnProperty('Data da aula'))) return;
+
   const startSemesterDates = getSemesterStarts(tabledata.map((row) => row['Data da aula'] as string));
   tabledata.forEach((row) => {
     let dateObject: Date;
@@ -143,7 +157,7 @@ function addSemanasColumns(): void {
       return;
     }
     row["Semana do Ano"] = getWeekNumber(dateObject);
-    row["Semana do Semestre"] = getSemesterWeekNumber(dateObject,startSemesterDates);
+    row["Semana do Semestre"] = getSemesterWeekNumber(dateObject, startSemesterDates);
   });
 }
 
@@ -161,20 +175,26 @@ function toggleFilter(): void {
 
   if (toggled == "off") {
     table.setAttribute("filters", "and");
-    document.querySelectorAll(".tabulator-header-filter").forEach((element) => {
-      element.querySelector("input")?.classList.remove("hidden");
-    });
+    document
+      .querySelectorAll(".tabulator-header-filter")
+      .forEach((element) => {
+        element.querySelector("input")?.classList.remove("hidden");
+      });
   } else if (toggled == "and") {
     table.setAttribute("filters", "or");
-    document.querySelectorAll(".tabulator-header-filter").forEach((element) => {
-      element.querySelector("input")?.classList.add("hidden");
-      element.querySelector(".filter-OR")?.classList.remove("hidden");
-    });
+    document
+      .querySelectorAll(".tabulator-header-filter")
+      .forEach((element) => {
+        element.querySelector("input")?.classList.add("hidden");
+        element.querySelector(".filter-OR")?.classList.remove("hidden");
+      });
   } else {
     table.setAttribute("filters", "off");
-    document.querySelectorAll(".tabulator-header-filter").forEach((element) => {
-      element.querySelector(".filter-OR")?.classList.add("hidden");
-    });
+    document
+      .querySelectorAll(".tabulator-header-filter")
+      .forEach((element) => {
+        element.querySelector(".filter-OR")?.classList.add("hidden");
+      });
   }
 }
 
@@ -195,7 +215,9 @@ function addHiddenButtonsAndInputsToColumns(): void {
     input.className = "hidden filter-OR";
 
     column.querySelector(".tabulator-col-sorter")?.appendChild(button);
-    const nameColumn: string = column.getAttribute("tabulator-field") as string;
+    const nameColumn: string = column.getAttribute(
+      "tabulator-field"
+    ) as string;
     button.addEventListener("click", () => hideColumn(column, nameColumn));
     column.querySelector(".tabulator-header-filter")?.appendChild(input);
     input.addEventListener("keypress", () => filterByOr());
@@ -206,37 +228,31 @@ function addHiddenButtonsAndInputsToColumns(): void {
  * Esconde/mostra os botões para apagar cada coluna na tabela.
  */
 function toggleEdit(): void {
-  table.setFilter([
-    // { field: "curso", type: "like", value: "ME" }, //filter by age greater than 52
-    [
-      [
-        { field: "Inscritos no turno", type: "=", value: "30" }, //and by height less than 142
-        { field: "Semana do Ano", type: "=", value: "48" },
-      ],
-      [
-        { field: "Semana do Ano", type: "=", value: "49" },
-      ]
-
-    ]
-  ]);
-  console.log(table.getFilters());
-  // if (editToggleButton.getAttribute("toggled") == "on") {
-  //   editToggleButton.setAttribute("toggled", "off");
-  //   document.querySelectorAll(".tabulator-col-sorter").forEach((element) => {
-  //     element.querySelector(".tabulator-arrow")?.classList.remove("hidden");
-  //     element
-  //       .querySelector(".tabulator-hideColumn-toggle-button")
-  //       ?.classList.add("hidden");
-  //   });
-  // } else {
-  //   editToggleButton.setAttribute("toggled", "on");
-  //   document.querySelectorAll(".tabulator-col-sorter").forEach((element) => {
-  //     element.querySelector(".tabulator-arrow")?.classList.add("hidden");
-  //     element
-  //       .querySelector(".tabulator-hideColumn-toggle-button")
-  //       ?.classList.remove("hidden");
-  //   });
-  // }
+  if (editToggleButton.getAttribute("toggled") == "on") {
+    editToggleButton.setAttribute("toggled", "off");
+    document
+      .querySelectorAll(".tabulator-col-sorter")
+      .forEach((element) => {
+        element
+          .querySelector(".tabulator-arrow")
+          ?.classList.remove("hidden");
+        element
+          .querySelector(".tabulator-hideColumn-toggle-button")
+          ?.classList.add("hidden");
+      });
+  } else {
+    editToggleButton.setAttribute("toggled", "on");
+    document
+      .querySelectorAll(".tabulator-col-sorter")
+      .forEach((element) => {
+        element
+          .querySelector(".tabulator-arrow")
+          ?.classList.add("hidden");
+        element
+          .querySelector(".tabulator-hideColumn-toggle-button")
+          ?.classList.remove("hidden");
+      });
+  }
 }
 
 /**
@@ -261,7 +277,9 @@ function hideColumn(column: ColumnDefinition, nameColumn: string): void {
 function addHiddenColumns(column: ColumnDefinition, nameColumn: string): void {
   const button: HTMLButtonElement = document.createElement("button");
   button.className = "tabulator-hiddenColumn-toggle-button";
-  button.textContent = column.querySelector(".tabulator-col-title").textContent;
+  button.textContent = column.querySelector(
+    ".tabulator-col-title"
+  ).textContent;
   list?.appendChild(button);
   button.addEventListener("click", () => {
     button.remove();

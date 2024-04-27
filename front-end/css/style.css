@@ -78,7 +78,7 @@ header {
 }
 
 /* ===== POP UP UPLOAD ===== */
-#PopUpUpload {
+#PopUpUpload,#PopUpSave {
     position: fixed;
     top: 0;
     left: 0;
@@ -87,7 +87,6 @@ header {
     width: 100vw;
     background-color: rgba(0, 0, 0, 0.5);
     font-family: Karla;
-
     &>div {
         border-radius: 1.5vw;
         position: fixed;
@@ -96,18 +95,13 @@ header {
         flex-direction: column;
         align-items: center;
         justify-content: space-between;
-        width: 40%;
+        width: 30%;
         height: auto;
         aspect-ratio: 4/3;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-
-        &>h3 {
-            font-size: 1.4vw;
-        }
-
-        &>button {
+        & > button[type="close"] {
             position: absolute;
             top: 1%;
             right: 1%;
@@ -119,9 +113,30 @@ header {
             background-size: contain;
             border: none;
         }
-
+        & button[type="submit"],  button[type="save"]{
+            margin-top: 20px;
+            border-radius: 10px;
+            height: 50px;
+            font-weight: bolder;
+            width: 100%;
+            box-shadow: 0px 9px 15px -1px rgba(56, 30, 0, 0.2);
+            background-color: #33cab8;
+            border: none;
+            color: whitesmoke;
+        }
         &>form {
             position: absolute;
+            min-width:60%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+            &>div {
+                display: flex;
+            }
+        }&>.form {
+            position: absolute;
+            min-width:60%;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -130,6 +145,15 @@ header {
                 display: flex;
             }
         }
+    }
+}
+
+#PopUpUpload{
+    &>div {
+        &>h3 {
+            font-size: 1.4vw;
+        }
+        
 
         & input[type="text"] {
             background-image: url("https://upload.wikimedia.org/wikipedia/commons/5/56/Chain_link_icon_slanted.png");
@@ -140,7 +164,7 @@ header {
             border: none;
             box-shadow: 0px 9px 15px -1px rgba(56, 30, 0, 0.2);
             height: 50px;
-            width: 83%;
+            width: 100%;
             border-radius: 10px;
             padding-left: 17%;
         }
@@ -165,17 +189,7 @@ header {
         }
     }
 
-    & button[type="submit"] {
-        margin-top: 20px;
-        border-radius: 10px;
-        height: 50px;
-        font-weight: bolder;
-        width: 100%;
-        box-shadow: 0px 9px 15px -1px rgba(56, 30, 0, 0.2);
-        background-color: #33cab8;
-        border: none;
-        color: whitesmoke;
-    }
+    
 }
 
 .hidden {
@@ -376,7 +390,7 @@ header {
     }
 }
 
-.tabulator-filter-toggle-button, .tabulator-edit-toggle-button {
+.tabulator-filter-toggle-button, .tabulator-edit-toggle-button, .tabulator-save-toggle-button {
     border: none;
     background-color: transparent;
     background-image: url("../graphics/images/Filter.png");
@@ -385,7 +399,7 @@ header {
     opacity: 65%;
 }
 .tabulator-edit-toggle-button { background-image: url("../graphics/images/Bin.png"); }
-
+.tabulator-save-toggle-button { background-image: url("../graphics/images/Save.png");}
 .tabulator-footer {
     height: 50%;
     min-height: 50px;
