@@ -1,19 +1,18 @@
 import Tabulator from "tabulator-tables";
-import { CsvRow } from "./uploadCsv";
-import { formatDateToDDMMYYYY, getClassesStartingHours, getDaysFromRange } from "./dates";
-import { customFilter, table } from "./table";
+import { TableRow } from "./uploadCsv";
+import { formatDateToDDMMYYYY, getClassesStartingHours, getDayOfWeek, getDaysFromRange } from "./dates";
+import { customFilter } from "./table";
+import { GetCarateristicas, GetHorario, sortFiles } from "./variables";
 
 //Variaveis globais
-let tableSala: Tabulator;
-let tableSuggestSlot;
-let tableSala2;
-let tableSuggestSlots;
+// let tableSuggestCharacteristics: Tabulator = null;
+let tableSuggestSlot: Tabulator;
 let filter: string[] = [];
 let incrmenet: number = 0;
 ////
 
-function createAndSetDataToTable(tabledata: CsvRow[]): void {
-    tableSala = new Tabulator("#HorarioSala", {
+function createAndSetDataToTable(timeTableID: string, tabledata: TableRow[]): void {
+    const table = new Tabulator(timeTableID, {
         data: tabledata,
         layout: "fitDataFill",
         pagination: "local",
@@ -22,49 +21,114 @@ function createAndSetDataToTable(tabledata: CsvRow[]): void {
         movableColumns: false,
         autoColumns: true,
     });
+    return table;
 }
 
+function getCharacteristics(mainDiv: HTMLDivElement, characteristicsTableID: string, tabledata: TableRow[]): any[] {
+    const table = new Tabulator(characteristicsTableID, {
+        data: tabledata,
+        autoColumns: true,
+    });
+    const criteriaInputs = getCriteriaInputs(table, mainDiv, "criteria-container-characteristics");
+    const usedColumns = criteriaInputs["usedColumns"];
+    table.setFilter(customFilter, criteriaInputs["finalFilter"]);
+
+    let filteredRow: any[] = [];
+    table.getRows(true).forEach((row: any) => {
+        const object: any = {};
+        object["Nome sala"] = row.getData()["Nome sala"];
+        for (let i = 0; i != usedColumns.length; i++) {
+            object[usedColumns[i]] = row.getData()[usedColumns[i]];
+        }
+        filteredRow.push(object);
+    });
+    console.log(filteredRow);
+    return filteredRow;
+}
+//Cria os botões que mostram a UI para sugerir slots das aulas de substituição e de UC.
 export function createHtmlElements(): void {
-    const suggestSlotReplaceDiv: HTMLDivElement = document.querySelector("#SuggestSlotToReplacementClass") as HTMLDivElement;
-    const suggestSlotUcDiv: HTMLDivElement = document.querySelector("#SuggestSlotToUcClass") as HTMLDivElement;
+    sortFiles();//Para garantir que a ordem dos ficheiros encontra-se coerente.
+    const replacementClassCriteriaContainer: HTMLDivElement = document.querySelector("#ReplacementClassCriteria") as HTMLDivElement;
+    const suggestSlotUcDiv: HTMLDivElement = document.querySelector("#UcClassCriteria") as HTMLDivElement;
+    const replacementClassContainer = document.getElementById("ReplacementClass") as HTMLDivElement;
+    const ucClassContainer = document.getElementById("UcClass") as HTMLDivElement;
 
+    //Criação do botão para sugerir slots as aulas de substituição
     const suggestSlotReplaceButton: HTMLButtonElement = document.createElement("button");
-    suggestSlotReplaceButton.addEventListener("click", () => showCriteriaSuggestSlots(suggestSlotReplaceDiv));
-    suggestSlotReplaceButton.textContent = "Sugerir slots para alocação da aula de substituição"
-    suggestSlotReplaceDiv.appendChild(suggestSlotReplaceButton);
+    suggestSlotReplaceButton.textContent = "Sugerir slots para alocação da aula de substituição";
+    suggestSlotReplaceButton.addEventListener("click", () => {
+        if (suggestSlotReplaceButton.value == "On") {
+            suggestSlotReplaceButton.value = "Off"
+            replacementClassContainer.style.display = "none";
+        } else {
+            suggestSlotReplaceButton.value = "On";
+            replacementClassContainer.style.display = "block";
+        }
+    });
+    //
+    /*Cria um container para se puder inserir os criteiros para sugerir slots as aulas de substituição, mas enquanto não for clicado 
+    no botão esse container vai se encontrar invisivel
+    */
+    showCriteriaSuggestSlots(replacementClassCriteriaContainer, "#ReplacementClassCharacteristicsTable", "#ReplacementClassTimeTable");
+    replacementClassContainer.style.display = "none";
+    document.getElementById("SuggestSlots")?.prepend(suggestSlotReplaceButton);
+    //
 
+    //Criação do botão para sugerir slots das aulas de UC
     const suggestSlotUcButton: HTMLButtonElement = document.createElement("button");
-    suggestSlotUcButton.addEventListener("click", () => showCriteriaSuggestSlots(suggestSlotUcDiv));
-    suggestSlotUcButton.textContent = "Sugerir slots para alocação das aulas UC"
-    suggestSlotUcDiv.appendChild(suggestSlotUcButton);
+    suggestSlotUcButton.textContent = "Sugerir slots para alocação das aulas UC";
+    suggestSlotUcButton.addEventListener("click", () => {
+        if (suggestSlotUcButton.value == "On") {
+            suggestSlotUcButton.value = "Off"
+            ucClassContainer.style.display = "none";
+        } else {
+            suggestSlotUcButton.value = "On";
+            ucClassContainer.style.display = "block";
+        }
+    });
+    //
+
+    /*Cria um container para se puder inserir os criteiros para sugerir slots das aulas de UC, mas enquanto não for clicado 
+    no botão esse container vai se encontrar invisivel
+    */
+    showCriteriaSuggestSlots(suggestSlotUcDiv, "#UcClassCharacteristicsTable", "#UcClassTimeTable");
+    ucClassContainer.style.display = "none";
+    document.getElementById("SuggestSlots")?.prepend(suggestSlotUcButton);
+    //
 }
 /**
  * Cria um container com um criterio, e um botão de crirar novo container.
 */
-function showCriteriaSuggestSlots(mainDiv: HTMLDivElement): void {
-    const buttonAddNewCriteriaDiv: HTMLButtonElement = document.createElement("button");
-    buttonAddNewCriteriaDiv.textContent = "Or"
-    buttonAddNewCriteriaDiv.addEventListener("click", () => addNewCriteriaContainer(mainDiv, buttonAddNewCriteriaDiv));
-    mainDiv.appendChild(buttonAddNewCriteriaDiv);
+function showCriteriaSuggestSlots(mainDiv: HTMLDivElement, characteristicsTableID: string, timeTableID: string): void {
+    const buttonAddNewCriteriaDivTimeTable: HTMLButtonElement = document.createElement("button");
+    buttonAddNewCriteriaDivTimeTable.textContent = "Or"
+    buttonAddNewCriteriaDivTimeTable.addEventListener("click", () => addNewCriteriaContainer(mainDiv, buttonAddNewCriteriaDivTimeTable, true));
+    mainDiv.appendChild(buttonAddNewCriteriaDivTimeTable);
 
-    createCriteriaContainer(mainDiv, buttonAddNewCriteriaDiv);
+    createCriteriaContainer(mainDiv, buttonAddNewCriteriaDivTimeTable, true);
+
+    const buttonAddNewCriteriaDivCharacteristics: HTMLButtonElement = document.createElement("button");
+    buttonAddNewCriteriaDivCharacteristics.textContent = "Or"
+    buttonAddNewCriteriaDivCharacteristics.addEventListener("click", () => addNewCriteriaContainer(mainDiv, buttonAddNewCriteriaDivCharacteristics, false));
+    mainDiv.appendChild(buttonAddNewCriteriaDivCharacteristics);
+
+    createCriteriaContainer(mainDiv, buttonAddNewCriteriaDivCharacteristics, false);
 
     const labelDiv: HTMLDivElement = document.createElement("div");
-    labelDiv.className = "criteira-label-container"
+    labelDiv.className = "criteria-label-container"
 
     const textLabel: HTMLLabelElement = document.createElement("label");
-    textLabel.className = "criteira-label";
+    textLabel.className = "criteria-label";
 
     labelDiv.appendChild(textLabel);
     mainDiv.appendChild(textLabel);
 
     const buttonCreateTable: HTMLButtonElement = document.createElement("button");
-    // buttonCreateTable.addEventListener("click", () => updateLabel(mainDiv, textLabel));
-    // buttonCreateTable.addEventListener("click", () => getCriteriaInputs(mainDiv));
-    //APAGAR ISTO!!!
-    buttonCreateTable.addEventListener("click", () => getFilteredDateHourCombination(mainDiv));
-    // buttonCreateTable.addEventListener("click", () => generteHoraInicioHoraFim("09:30:00", "21:00:00"));
-    ///
+    buttonCreateTable.addEventListener("click", () => {
+        tableSuggestSlot = createAndSetDataToTable(timeTableID, GetHorario());
+        tableSuggestSlot.setFilter(customFilter, getCriteriaInputs(tableSuggestSlot, mainDiv, "criteria-container-timeTable")["finalFilter"]);
+        generateSugestions(mainDiv, tableSuggestSlot, characteristicsTableID);
+    });
     buttonCreateTable.textContent = "Gerar tabela"
     mainDiv.appendChild(buttonCreateTable);
 }
@@ -72,38 +136,38 @@ function showCriteriaSuggestSlots(mainDiv: HTMLDivElement): void {
  * Cria um novo container com um criterio inserido adicionando tambem um botão de apagar o cotnainer e escolher
  * o tipo de filtro a ser aplicado ("and" ou "or").
 */
-function addNewCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaContainer: HTMLButtonElement) {
-    const criteriaContainer: HTMLDivElement = createCriteriaContainer(mainDiv, buttonAddNewCriteriaContainer);
-    criteriaContainer.appendChild(createRemoveButton(criteriaContainer, "criteira-container-remove-button"));
+function addNewCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaContainer: HTMLButtonElement, isRooms: boolean) {
+    const criteriaContainer: HTMLDivElement = createCriteriaContainer(mainDiv, buttonAddNewCriteriaContainer, isRooms);
+    criteriaContainer.appendChild(createRemoveButton(criteriaContainer, "criteria-container-remove-button"));
 }
 /**
  * Cria um novo container com um criterio inserido.
 */
-function createCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaContainer: HTMLButtonElement): HTMLDivElement {
+function createCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaContainer: HTMLButtonElement, isRooms: boolean): HTMLDivElement {
     const criteriaContainer: HTMLDivElement = document.createElement('div');
-    criteriaContainer.className = "criteria-container";
+    if (isRooms) criteriaContainer.className = "criteria-container criteria-container-timeTable";
+    else criteriaContainer.className = "criteria-container criteria-container-characteristics"
 
     mainDiv.insertBefore(criteriaContainer, buttonAddNewCriteriaContainer);
 
-    const buttonAddNewCriteria: HTMLButtonElement = createNewCriteriaButton(mainDiv, criteriaContainer);
+    const buttonAddNewCriteria: HTMLButtonElement = createNewCriteriaButton(mainDiv, criteriaContainer, isRooms);
     criteriaContainer.appendChild(buttonAddNewCriteria);
-
-    const element: HTMLDivElement = addNewCriteriaOptionToSuggestSlots(mainDiv);
+    if (!isRooms) criteriaContainer.prepend(createRadioToggleButton());
+    const element: HTMLDivElement = addNewCriteriaOptionToSuggestSlots(mainDiv, isRooms);
     criteriaContainer.insertBefore(element, buttonAddNewCriteria);
 
-    mainDiv.querySelector(".criteira-label")
-    // criteriaContainer.prepend(createRadioToggleButton());
+    mainDiv.querySelector(".criteria-label")
     return criteriaContainer;
 }
 /**
  * Cria um botão que permite criar um novo criterio ao respetivo container.
 */
-function createNewCriteriaButton(mainDiv: HTMLDivElement, container: HTMLDivElement): HTMLButtonElement {
+function createNewCriteriaButton(mainDiv: HTMLDivElement, container: HTMLDivElement, isRooms: boolean): HTMLButtonElement {
     const buttonAddNewCriteria: HTMLButtonElement = document.createElement("button");
     buttonAddNewCriteria.textContent = "And"
     buttonAddNewCriteria.addEventListener("click", () => {
-        const element: HTMLDivElement = addNewCriteriaOptionToSuggestSlots(mainDiv);
-        element.appendChild(createRemoveButton(element, "criteira-remove-button"));
+        const element: HTMLDivElement = addNewCriteriaOptionToSuggestSlots(mainDiv, isRooms);
+        element.appendChild(createRemoveButton(element, "criteria-remove-button"));
         container.insertBefore(element, buttonAddNewCriteria);
     });
     return buttonAddNewCriteria;
@@ -115,7 +179,7 @@ function createNewCriteriaButton(mainDiv: HTMLDivElement, container: HTMLDivElem
  * 
  * @returns {HTMLDivElement} HTMLDivElement
  */
-function addNewCriteriaOptionToSuggestSlots(mainDiv: HTMLDivElement): HTMLDivElement {
+function addNewCriteriaOptionToSuggestSlots(mainDiv: HTMLDivElement, isRooms: boolean): HTMLDivElement {
     const criteriaContainerElements: string =
         `
             <div class="criteria-column-container">
@@ -139,10 +203,10 @@ function addNewCriteriaOptionToSuggestSlots(mainDiv: HTMLDivElement): HTMLDivEle
     criteriaContainerComponents.className = "criteria-container-components";
     criteriaContainerComponents.innerHTML = criteriaContainerElements;
     //Adciona no inicio uma select box com as colunas da tabela
-    criteriaContainerComponents.querySelector(".criteria-column-container")?.appendChild(createSelectWithOptionsToColumns(criteriaContainerComponents, true));
+    criteriaContainerComponents.querySelector(".criteria-column-container")?.appendChild(createSelectWithOptionsToColumns(criteriaContainerComponents, isRooms));
     ///
     criteriaContainerComponents.querySelector("input")?.addEventListener("focusout", () => {
-        updateLabel(mainDiv, mainDiv.querySelector(".criteira-label") as HTMLLabelElement);
+        updateLabel(mainDiv, mainDiv.querySelector(".criteria-label") as HTMLLabelElement);
     });
     return criteriaContainerComponents;
 }
@@ -155,14 +219,14 @@ function addNewCriteriaOptionToSuggestSlots(mainDiv: HTMLDivElement): HTMLDivEle
  */
 function createSelectWithOptionsToColumns(div: HTMLDivElement, isRooms: boolean): HTMLSelectElement {
     const select: HTMLSelectElement = document.createElement('select');
-    select.className = "criteria-column-container";
+    select.className = "criteria-column-selector";
     let options: string;
     if (isRooms) {
         options =
             `
                 <select class="criteria-column-selector">
-                    <option value="Dia da semana">Dia da semana</option>
                     <option value="Hora início da aula">Hora início da aula</option>
+                    <option value="Dia da semana">Dia da semana</option>
                     <option value="Data da aula">Data da aula</option>
                 </select>
         `
@@ -181,6 +245,7 @@ function createSelectWithOptionsToColumns(div: HTMLDivElement, isRooms: boolean)
 
     select.innerHTML = options;
     select.addEventListener("change", () => showExtraOptions(div, select.value));
+    showExtraOptions(div, select.value);
     return select;
 }
 /**
@@ -222,15 +287,17 @@ function createRemoveButton(criteriaContainer: HTMLDivElement, className: string
 }
 
 /**
- * Cria um radioToggle para escolher o tipo de filtro ("and" ou "or").
+ * Cria um radioToggle para escolher a duração da aula.
 */
 function createRadioToggleButton(): HTMLDivElement {
     const radioOption: string =
-        `
-            <input type="radio" id="radio-option-and-${incrmenet}" name="radio-option-${incrmenet}" value="and" checked/>
-            <label for="radio-option-and-${incrmenet}">and</label>
-            <input type="radio" id="radio-option-or-${incrmenet}" name="radio-option-${incrmenet}" value="or" />
-            <label for="radio-option-or-${incrmenet}">or</label>
+        `   <label>
+                Duração da aula:
+                <input type="radio" id="radio-option-1h30-${incrmenet}" name="radio-option-${incrmenet}" value="1h30" checked/>
+                <label for="radio-option-and-${incrmenet}">1h30</label>
+                <input type="radio" id="radio-option-2h00-${incrmenet}" name="radio-option-${incrmenet}" value="2h00" />
+                <label for="radio-option-or-${incrmenet}">2h00</label>
+            </label>
         `
     incrmenet++;
     const div: HTMLDivElement = document.createElement('div');
@@ -249,27 +316,39 @@ export interface criteria {
  * 
  * 
 */
-function getCriteriaInputs(mainDiv: HTMLDivElement): string {
+function getCriteriaInputs(table: Tabulator, mainDiv: HTMLDivElement, criteriaContainerName: string): { usedColumns: string[]; finalFilter: string; } {
     let finalFilter: string = "";
-    const temp = table.getHeaderFilters();
-    const filter: NodeListOf<Element> = mainDiv.querySelectorAll(".criteria-container");
+    let usedColumns: string[] = [];
+    table.clearFilter();
+    const filter: NodeListOf<Element> = mainDiv.querySelectorAll("." + criteriaContainerName);
     for (let i = 0; i != filter.length; i++) {
         let criteriaString: string = "";
         const criteriaContainerComponents = filter[i].querySelectorAll(".criteria-container-components");
         for (let i = 0; i != criteriaContainerComponents.length; i++) {
             const column: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-column-selector") as HTMLSelectElement;
-            const filter: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-filter-option-selector") as HTMLSelectElement;
-            const inputValue: HTMLInputElement = criteriaContainerComponents[i].querySelector(".criteria-input") as HTMLInputElement;
-            if (i != criteriaContainerComponents.length - 1) criteriaString += `${column.value} ${filter.value} ${inputValue.value.trim()} && `;
-            else criteriaString += `${column.value} ${filter.value} ${inputValue.value.trim()}`;
+            const operator: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-filter-option-selector") as HTMLSelectElement;
+            const input: HTMLInputElement = criteriaContainerComponents[i].querySelector(".criteria-input") as HTMLInputElement;
+            let columnValue: string = column.value;
+            let inputValue: string = input.value.trim();
+
+            console.log("inputValue " + inputValue)
+            if (inputValue == "") continue;
+            if (columnValue == "Características") {
+                columnValue = inputValue;
+                inputValue = "X";
+            }
+
+            usedColumns.push(columnValue);
+
+            if (criteriaString == "") criteriaString += `data["${columnValue}"] ${operator.value} "${inputValue}"`;
+            else criteriaString += ` && data["${columnValue}"] ${operator.value} "${inputValue}"`;
         }
         if (i != filter.length - 1) finalFilter += "( " + criteriaString + " )" + " || "
         else finalFilter += "( " + criteriaString + " )";
     }
     console.log(finalFilter);
-    console.log(temp);
-    table.setFilter(customFilter, finalFilter);
-    return finalFilter;
+    if (finalFilter == "(  )") finalFilter = "";
+    return { usedColumns, finalFilter };
 }
 
 
@@ -281,10 +360,10 @@ function updateLabel(mainDiv: HTMLDivElement, label: HTMLLabelElement) {
         const criteriaContainerComponents = filter[i].querySelectorAll(".criteria-container-components");
         for (let i = 0; i != criteriaContainerComponents.length; i++) {
             const column: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-column-selector") as HTMLSelectElement;
-            const filter: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-filter-option-selector") as HTMLSelectElement;
+            const operator: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-filter-option-selector") as HTMLSelectElement;
             const inputValue: HTMLInputElement = criteriaContainerComponents[i].querySelector(".criteria-input") as HTMLInputElement;
-            if (i == 0) criteriaString += ` ${column.value} ${filter.options[filter.selectedIndex].text} ${inputValue.value.trim()}`
-            else criteriaString += ` and ${column.value} ${filter.options[filter.selectedIndex].text} ${inputValue.value.trim()}`
+            if (i == 0) criteriaString += ` ${column.value} ${operator.options[operator.selectedIndex].text} ${inputValue.value.trim()}`
+            else criteriaString += ` and ${column.value} ${operator.options[operator.selectedIndex].text} ${inputValue.value.trim()}`
         }
         if (i % 2 == 0) labelText += `(${criteriaString})`;
         else labelText += ` or (${criteriaString})`
@@ -313,15 +392,49 @@ function getCriteriaAndSubmit(mainDiv: HTMLDivElement, table: Tabulator): void {
     // console.log(listFilters);
     table.setFilter(listFilters);
 }
-
-function generateSugestions() {
-    let sugestions: { horaInicio: string, horaFim: string, data: string, sala: string }[] = [];
-    const miHoraInicial = "08:00:00";
-    const maxHoraInicial = "21:00:00";
-
+//Funçao que gera todas as possiveis suggestoes
+function generateSugestions(mainDiv: HTMLDivElement, table: Tabulator, characteristicsTableID: string) {
+    const characteristics = getCharacteristics(mainDiv, characteristicsTableID, GetCarateristicas());
+    const timeTable = getFilteredDateHourCombination(mainDiv);
+    // let sugestions: { "Sala": string, "Data da aula": string, "Dia da semana": string, "Hora início da aula": string, "Hora fim da aula": string }[] = [];
+    let sugestions: { "Nome sala": string, "Data da aula": string, "Dia da semana": string, "Hora início da aula": string }[] = [];
+    let temp: any = {};
+    console.log("characteristics " + characteristics.length);
+    for (let i = 0; i != characteristics.length; i++) {
+        for (let j = 0; j != timeTable.length; j++) {
+            // sugestions.push({
+            //     "Nome sala": characteristics[i]["Nome sala"], "Data da aula": timeTable[j].day,
+            //     "Dia da semana": timeTable[j].dayWeek, "Hora início da aula": timeTable[j].hour
+            // });
+            temp[timeTable[j].day + timeTable[j].hour] = {
+                "Nome sala": characteristics[i]["Nome sala"], "Data da aula": timeTable[j].day,
+                "Dia da semana": timeTable[j].dayWeek, "Hora início da aula": timeTable[j].hour
+            };
+        }
+        console.log(temp);
+    }
+    console.log("temp " + temp);
+    // const ola = removeConflicts(temp, table);
+    // console.log("ola" + ola);
+    // console.log(temp);
+    table.setData(sugestions);
 
 }
 
+function removeConflicts(temp: any, table: Tabulator) {
+    let conflitData: any = {};
+    table.getRows(true).forEach((row: any) => {
+        // const object: any = {};
+        const s = row.getData()["Nome sala"] + row.getData()["Hora início da aula"];
+        // object[s] = {};
+        conflitData[s] = {};
+    });
+    let rowsWithoutConflicts: any = [];
+    temp.forEach((key: any) => {
+        if (conflitData[key] === undefined) rowsWithoutConflicts.push(temp[key]);
+    });
+    return rowsWithoutConflicts;
+}
 function daysBasedOnFilter(mainDiv: HTMLDivElement): Date[] {
     const daysToInclude: Date[] = [];
 
@@ -387,10 +500,11 @@ function hoursBasedOnFilter(mainDiv: HTMLDivElement, classDuration: number = 90)
 
 
 function getFilteredDateHourCombination(mainDiv: HTMLDivElement) {
-    const combinations: { day: string, hour: string }[] = [];
+    const combinations: { day: string, dayWeek: string, hour: string }[] = [];
     const hours = hoursBasedOnFilter(mainDiv);
     daysBasedOnFilter(mainDiv).forEach((day) => {
-        hours.forEach((hour) => combinations.push({ day: formatDateToDDMMYYYY(day), hour: hour }))
+        hours.forEach((hour) => combinations.push({ day: formatDateToDDMMYYYY(day), dayWeek: getDayOfWeek(day), hour: hour }))
     })
-    console.log(combinations);
+    // console.log(combinations);
+    return combinations;
 }
