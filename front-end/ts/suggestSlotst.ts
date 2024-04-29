@@ -469,7 +469,15 @@ function daysBasedOnFilter(mainDiv: HTMLDivElement): Date[] {
     return [...(new Set(daysToInclude))];
 }
 
-function hoursBasedOnFilter(mainDiv: HTMLDivElement, classDuration: number = 90): string[] {
+
+
+/**
+ * Gerar hórarios possiveis baseados nos filtros aplicados
+ *
+ * @param {number} classDuration - Duração em minutos das aulas
+ * @returns {{startHour:string, endHour:string}[]} - Lista de objetos que contêm hora inicial e hora final possivel do filtro
+ */
+function hoursBasedOnFilter(mainDiv: HTMLDivElement, classDuration: number = 90): {startHour:string, endHour:string}[] {
     const hours: string[] = [];
     const filter: NodeListOf<Element> = mainDiv.querySelectorAll(".criteria-container");
     for (let j = 0; j != filter.length; j++) {
@@ -495,7 +503,11 @@ function hoursBasedOnFilter(mainDiv: HTMLDivElement, classDuration: number = 90)
         hours.push(...(hoursFromAnd.filter((hour) => hoursToExclude.indexOf(hour) < 0)))
 
     }
-    return [...(new Set(hours))];
+    return [...(new Set(hours))].map((startingHour) => {
+        const endingHourDate = new Date(`1 ${startingHour}`)
+        endingHourDate.setMinutes(endingHourDate.getMinutes() + classDuration);
+        return {startHour:startingHour,endHour:`${String(endingHourDate.getHours()).padStart(2, '0')}:${String(endingHourDate.getMinutes()).padStart(2, '0')}`}
+    });
 }
 
 
@@ -503,7 +515,7 @@ function getFilteredDateHourCombination(mainDiv: HTMLDivElement) {
     const combinations: { day: string, dayWeek: string, hour: string }[] = [];
     const hours = hoursBasedOnFilter(mainDiv);
     daysBasedOnFilter(mainDiv).forEach((day) => {
-        hours.forEach((hour) => combinations.push({ day: formatDateToDDMMYYYY(day), dayWeek: getDayOfWeek(day), hour: hour }))
+        hours.forEach((hour) => combinations.push({ day: formatDateToDDMMYYYY(day), dayWeek: getDayOfWeek(day), hour: hour.startHour }))
     })
     // console.log(combinations);
     return combinations;

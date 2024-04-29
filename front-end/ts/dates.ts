@@ -153,7 +153,9 @@ export function getClassesStartingHours(startTime: Date, finishStartTime: Date, 
       );
     }
 
-    if (currentHour.getHours() === 11) {
+    if ((currentHour.getHours() === 11 && classDuration >= 90) || 
+    (currentHour.getHours() === 11 && currentHour.getMinutes()>30 && classDuration >= 60) ||
+    (currentHour.getHours() === 12)) {
       currentHour.setHours(13);
       currentHour.setMinutes(0);
     } else {
