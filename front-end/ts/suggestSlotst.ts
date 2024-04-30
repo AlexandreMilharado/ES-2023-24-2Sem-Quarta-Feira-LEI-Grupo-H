@@ -1,18 +1,19 @@
 import Tabulator from "tabulator-tables";
 import { TableRow } from "./uploadCsv";
 import { formatDateToDDMMYYYY, getClassesStartingHours, getDayOfWeek, getDaysFromRange } from "./dates";
-import { customFilter } from "./table";
+import { customFilter, setData } from "./table";
 import { GetCarateristicas, GetHorario, sortFiles } from "./variables";
 
 //Variaveis globais
-// let tableSuggestCharacteristics: Tabulator = null;
 let tableSuggestSlot: Tabulator;
-let filter: string[] = [];
 let incrmenet: number = 0;
 ////
 
-function createAndSetDataToTable(timeTableID: string, tabledata: TableRow[]): void {
-    const table = new Tabulator(timeTableID, {
+/**
+ * Cria uma nova tabela com os dados inseridos.
+*/
+function createAndSetDataToTable(timeTableElement: HTMLDivElement, tabledata: TableRow[]): Tabulator {
+    const table = new Tabulator("#" + timeTableElement.id, {
         data: tabledata,
         layout: "fitDataFill",
         pagination: "local",
@@ -23,16 +24,20 @@ function createAndSetDataToTable(timeTableID: string, tabledata: TableRow[]): vo
     });
     return table;
 }
-
-function getCharacteristics(mainDiv: HTMLDivElement, characteristicsTableID: string, tabledata: TableRow[]): any[] {
-    const table = new Tabulator(characteristicsTableID, {
+createHtmlElements();
+/**
+ * Cria uma nova tabela, com menos features, com os dados inseridos, aplica sobre a tablea os filtros inseridos
+ * pelo utilizador, o resultado da aplicação dos filtros sera então o retorno da função, o motivo de ser um any
+ * é que não se sabe qual vao ser os criterios utilizados pelo utilizador.
+*/
+function getCharacteristics(mainDiv: HTMLDivElement, characteristicsTableElement: HTMLDivElement, tabledata: TableRow[]): any[] {
+    const table = new Tabulator("#" + characteristicsTableElement.id, {
         data: tabledata,
         autoColumns: true,
     });
     const criteriaInputs = getCriteriaInputs(table, mainDiv, "criteria-container-characteristics");
     const usedColumns = criteriaInputs["usedColumns"];
     table.setFilter(customFilter, criteriaInputs["finalFilter"]);
-
     let filteredRow: any[] = [];
     table.getRows(true).forEach((row: any) => {
         const object: any = {};
@@ -45,7 +50,9 @@ function getCharacteristics(mainDiv: HTMLDivElement, characteristicsTableID: str
     console.log(filteredRow);
     return filteredRow;
 }
-//Cria os botões que mostram a UI para sugerir slots das aulas de substituição e de UC.
+/**
+ * Cria os botões que mostram a UI para sugerir slots das aulas de substituição e de UC.
+ */
 export function createHtmlElements(): void {
     sortFiles();//Para garantir que a ordem dos ficheiros encontra-se coerente.
     const replacementClassCriteriaContainer: HTMLDivElement = document.querySelector("#ReplacementClassCriteria") as HTMLDivElement;
@@ -66,10 +73,12 @@ export function createHtmlElements(): void {
         }
     });
     //
-    /*Cria um container para se puder inserir os criteiros para sugerir slots as aulas de substituição, mas enquanto não for clicado 
-    no botão esse container vai se encontrar invisivel
+    /**Cria um container para se puder inserir os criteiros para sugerir slots as aulas de substituição, mas enquanto não for clicado 
+    *no botão esse container vai se encontrar invisivel
     */
-    showCriteriaSuggestSlots(replacementClassCriteriaContainer, "#ReplacementClassCharacteristicsTable", "#ReplacementClassTimeTable");
+    showCriteriaSuggestSlots(replacementClassCriteriaContainer,
+        document.getElementById("ReplacementClassCharacteristicsTable") as HTMLDivElement,
+        document.getElementById("ReplacementClassTimeTable") as HTMLDivElement);
     replacementClassContainer.style.display = "none";
     document.getElementById("SuggestSlots")?.prepend(suggestSlotReplaceButton);
     //
@@ -88,10 +97,10 @@ export function createHtmlElements(): void {
     });
     //
 
-    /*Cria um container para se puder inserir os criteiros para sugerir slots das aulas de UC, mas enquanto não for clicado 
-    no botão esse container vai se encontrar invisivel
+    /**Cria um container para se puder inserir os criteiros para sugerir slots das aulas de UC, mas enquanto não for clicado 
+    *no botão esse container vai se encontrar invisivel
     */
-    showCriteriaSuggestSlots(suggestSlotUcDiv, "#UcClassCharacteristicsTable", "#UcClassTimeTable");
+    showCriteriaSuggestSlots(suggestSlotUcDiv, document.getElementById("UcClassCharacteristicsTable") as HTMLDivElement, document.getElementById("UcClassTimeTable") as HTMLDivElement);
     ucClassContainer.style.display = "none";
     document.getElementById("SuggestSlots")?.prepend(suggestSlotUcButton);
     //
@@ -99,7 +108,7 @@ export function createHtmlElements(): void {
 /**
  * Cria um container com um criterio, e um botão de crirar novo container.
 */
-function showCriteriaSuggestSlots(mainDiv: HTMLDivElement, characteristicsTableID: string, timeTableID: string): void {
+function showCriteriaSuggestSlots(mainDiv: HTMLDivElement, characteristicsTableElement: HTMLDivElement, timeTableElement: HTMLDivElement): void {
     const buttonAddNewCriteriaDivTimeTable: HTMLButtonElement = document.createElement("button");
     buttonAddNewCriteriaDivTimeTable.textContent = "Or"
     buttonAddNewCriteriaDivTimeTable.addEventListener("click", () => addNewCriteriaContainer(mainDiv, buttonAddNewCriteriaDivTimeTable, true));
@@ -125,9 +134,7 @@ function showCriteriaSuggestSlots(mainDiv: HTMLDivElement, characteristicsTableI
 
     const buttonCreateTable: HTMLButtonElement = document.createElement("button");
     buttonCreateTable.addEventListener("click", () => {
-        tableSuggestSlot = createAndSetDataToTable(timeTableID, GetHorario());
-        tableSuggestSlot.setFilter(customFilter, getCriteriaInputs(tableSuggestSlot, mainDiv, "criteria-container-timeTable")["finalFilter"]);
-        generateSugestions(mainDiv, tableSuggestSlot, characteristicsTableID);
+        generateSugestions(mainDiv, timeTableElement, characteristicsTableElement);
     });
     buttonCreateTable.textContent = "Gerar tabela"
     mainDiv.appendChild(buttonCreateTable);
@@ -249,7 +256,7 @@ function createSelectWithOptionsToColumns(div: HTMLDivElement, isRooms: boolean)
     return select;
 }
 /**
- * Dependendo qual é a opção escolhida pode ou não aparecer opções extra e pode ou não alterar o tipo do input
+ * Dependendo qual é a opção escolhida aparece as opções extra podendo alterar o tipo do input
 */
 function showExtraOptions(div: HTMLDivElement, column: string) {
     const extraOptions: NodeListOf<HTMLOptionElement> = div.querySelectorAll(".extra-options");
@@ -312,9 +319,8 @@ export interface criteria {
     value: string;
 }
 /**
- * Pega nos criterios do utilizador.
- * 
- * 
+ * Pega nos criterios do utilizador, devolvendo no primeiro return quais foram as colunas usadas e no 
+ * segundo return o filtro gerado.
 */
 function getCriteriaInputs(table: Tabulator, mainDiv: HTMLDivElement, criteriaContainerName: string): { usedColumns: string[]; finalFilter: string; } {
     let finalFilter: string = "";
@@ -351,7 +357,9 @@ function getCriteriaInputs(table: Tabulator, mainDiv: HTMLDivElement, criteriaCo
     return { usedColumns, finalFilter };
 }
 
-
+/**
+ * Pega nos criterios do utilizador, devolendo uma menssagem como feedback, o que vai ser aplicado sobre a tabela. 
+*/
 function updateLabel(mainDiv: HTMLDivElement, label: HTMLLabelElement) {
     let labelText: string = "";
     const filter: NodeListOf<Element> = mainDiv.querySelectorAll(".criteria-container");
@@ -392,49 +400,83 @@ function getCriteriaAndSubmit(mainDiv: HTMLDivElement, table: Tabulator): void {
     // console.log(listFilters);
     table.setFilter(listFilters);
 }
-//Funçao que gera todas as possiveis suggestoes
-function generateSugestions(mainDiv: HTMLDivElement, table: Tabulator, characteristicsTableID: string) {
-    const characteristics = getCharacteristics(mainDiv, characteristicsTableID, GetCarateristicas());
+
+/**
+ * Gera todas as possiveis suggestoes sem conflitos, aplicando os na tabela.
+*/
+function generateSugestions(mainDiv: HTMLDivElement, timeTableElement: HTMLDivElement, characteristicsTableElement: HTMLDivElement) {
+    const characteristics = getCharacteristics(mainDiv, characteristicsTableElement, GetCarateristicas());
+    if (characteristics.length == 0) {
+        window.alert("Não existem salas com esses criterios");
+        return;
+    }
+    const table = setData(timeTableElement, GetHorario(), false);
     const timeTable = getFilteredDateHourCombination(mainDiv);
     // let sugestions: { "Sala": string, "Data da aula": string, "Dia da semana": string, "Hora início da aula": string, "Hora fim da aula": string }[] = [];
     let sugestions: { "Nome sala": string, "Data da aula": string, "Dia da semana": string, "Hora início da aula": string }[] = [];
     let temp: any = {};
-    console.log("characteristics " + characteristics.length);
+    // let count = 0;
     for (let i = 0; i != characteristics.length; i++) {
+        // console.log("timeTable.lengt " + timeTable.length);
         for (let j = 0; j != timeTable.length; j++) {
             // sugestions.push({
             //     "Nome sala": characteristics[i]["Nome sala"], "Data da aula": timeTable[j].day,
             //     "Dia da semana": timeTable[j].dayWeek, "Hora início da aula": timeTable[j].hour
             // });
-            temp[timeTable[j].day + timeTable[j].hour] = {
+            // if (Object.keys(temp).length == 271) {
+            //     console.log("O tamanho antes do brek " + sugestions.length)
+            //     break;
+            // }
+            // count++;
+            const object = {
                 "Nome sala": characteristics[i]["Nome sala"], "Data da aula": timeTable[j].day,
                 "Dia da semana": timeTable[j].dayWeek, "Hora início da aula": timeTable[j].hour
             };
+            // delete characteristics[i]["Nome sala"];
+            const finalObject = Object.assign(object, characteristics[i]);
+            temp[characteristics[i]["Nome sala"] + timeTable[j].day + timeTable[j].hour] = finalObject;
         }
-        console.log(temp);
+        // console.log("temp " + Object.keys(temp).length);
+        // break;
+        console.log("olaaaaaaaaaaaa");
+        console.log(Object.keys(temp));
     }
-    console.log("temp " + temp);
-    // const ola = removeConflicts(temp, table);
-    // console.log("ola" + ola);
+    // console.log("Na posição " + count);
+    // console.log("sugestions " + sugestions.length);
+    // console.log(sugestions);
+    // console.log("temp " + Object.keys(temp).length);
+    // console.log(Object.keys(temp));
+    const filteredSugestions = removeConflicts(temp, table);
+    // console.log("ola" + filteredSugestions);
     // console.log(temp);
-    table.setData(sugestions);
+    table.setData(filteredSugestions);
 
 }
-
-function removeConflicts(temp: any, table: Tabulator) {
+/**
+ * Remove os conflitos das sugestoes geradas, retornando sugestoes sem conflitos.
+*/
+function removeConflicts(temp: any, table: Tabulator): any {
     let conflitData: any = {};
+    // console.log("Antes de obter conflitos " + table.getRows(true).length);
     table.getRows(true).forEach((row: any) => {
-        // const object: any = {};
-        const s = row.getData()["Nome sala"] + row.getData()["Hora início da aula"];
-        // object[s] = {};
+        const s = row.getData()["Sala atribuída à aula"] + row.getData()["Data da aula"] + row.getData()["Hora início da aula"];
         conflitData[s] = {};
     });
     let rowsWithoutConflicts: any = [];
-    temp.forEach((key: any) => {
+    // console.log("Depois de obter conflitos " + Object.keys(conflitData).length);
+    // console.log("Sugestoes antes de remover conflitos " + Object.keys(temp).length);
+    // console.log("Conteudo dos conflitos " + Object.keys(conflitData));
+    Object.keys(temp).forEach((key: any) => {
         if (conflitData[key] === undefined) rowsWithoutConflicts.push(temp[key]);
     });
+    // console.log("Sugestoes depois de remover conflitos " + rowsWithoutConflicts.length);
+
     return rowsWithoutConflicts;
 }
+
+/**
+ * Gera sugestoes dos dias em base dos criterios inseridos pelo utilizador.
+*/
 function daysBasedOnFilter(mainDiv: HTMLDivElement): Date[] {
     const daysToInclude: Date[] = [];
 
@@ -477,7 +519,7 @@ function daysBasedOnFilter(mainDiv: HTMLDivElement): Date[] {
  * @param {number} classDuration - Duração em minutos das aulas
  * @returns {{startHour:string, endHour:string}[]} - Lista de objetos que contêm hora inicial e hora final possivel do filtro
  */
-function hoursBasedOnFilter(mainDiv: HTMLDivElement, classDuration: number = 90): {startHour:string, endHour:string}[] {
+function hoursBasedOnFilter(mainDiv: HTMLDivElement, classDuration: number = 90): { startHour: string, endHour: string }[] {
     const hours: string[] = [];
     const filter: NodeListOf<Element> = mainDiv.querySelectorAll(".criteria-container");
     for (let j = 0; j != filter.length; j++) {
@@ -506,17 +548,19 @@ function hoursBasedOnFilter(mainDiv: HTMLDivElement, classDuration: number = 90)
     return [...(new Set(hours))].map((startingHour) => {
         const endingHourDate = new Date(`1 ${startingHour}`)
         endingHourDate.setMinutes(endingHourDate.getMinutes() + classDuration);
-        return {startHour:startingHour,endHour:`${String(endingHourDate.getHours()).padStart(2, '0')}:${String(endingHourDate.getMinutes()).padStart(2, '0')}`}
+        return { startHour: startingHour, endHour: `${String(endingHourDate.getHours()).padStart(2, '0')}:${String(endingHourDate.getMinutes()).padStart(2, '0')}` }
     });
 }
 
-
+/**
+ * Faz merge das sguestoes de horas com as sugestoes de data
+*/
 function getFilteredDateHourCombination(mainDiv: HTMLDivElement) {
     const combinations: { day: string, dayWeek: string, hour: string }[] = [];
     const hours = hoursBasedOnFilter(mainDiv);
     daysBasedOnFilter(mainDiv).forEach((day) => {
         hours.forEach((hour) => combinations.push({ day: formatDateToDDMMYYYY(day), dayWeek: getDayOfWeek(day), hour: hour.startHour }))
     })
-    // console.log(combinations);
+    console.log(combinations);
     return combinations;
 }
