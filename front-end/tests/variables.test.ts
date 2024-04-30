@@ -10,6 +10,11 @@ import {
   sortFiles,
 } from "../ts/variables";
 
+function loadPreconditons() {
+  addFile(getTestFileJSON(), 0);
+  addFile(getTestFileWithoutHeadersJSON(), 1);
+  sortFiles();
+}
 describe("addFile", () => {
   it("atualiza o array dos ficheiros corretamente", () => {
     addFile(getTestFileJSON(), 0);
@@ -34,9 +39,7 @@ describe("reset", () => {
 
 describe("GetHorario", () => {
   it("a carregar a précondições", () => {
-    addFile(getTestFileJSON(), 0);
-    addFile(getTestFileWithoutHeadersJSON(), 1);
-    sortFiles();
+    loadPreconditons();
   });
   it("retorna o ficheiro correto", () => {
     expect(GetHorario()).toStrictEqual(getTestFileWithoutHeadersJSON());
@@ -45,10 +48,7 @@ describe("GetHorario", () => {
 
 describe("GetHorario", () => {
   it("a carregar a précondições", () => {
-    reset();
-    addFile(getTestFileJSON(), 0);
-    addFile(getTestFileWithoutHeadersJSON(), 1);
-    sortFiles();
+    loadPreconditons();
   });
   it("retorna corretamente o ficheiro", () => {
     expect(GetHorario()).toStrictEqual(getTestFileWithoutHeadersJSON());
@@ -57,10 +57,7 @@ describe("GetHorario", () => {
 
 describe("GetCarateristicas", () => {
   it("a carregar a précondições", () => {
-    reset();
-    addFile(getTestFileJSON(), 0);
-    addFile(getTestFileWithoutHeadersJSON(), 1);
-    sortFiles();
+    loadPreconditons();
   });
   it("retorna corretamente o ficheiro", () => {
     expect(GetCarateristicas()).toStrictEqual(getTestFileJSON());
