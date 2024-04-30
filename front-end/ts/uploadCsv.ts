@@ -274,9 +274,3 @@ export function loadInitialCsvFiles(
     });
   });
 }
-
-export function TEST() {
-  sortFiles();
-  console.table(GetHorario());
-  console.table(GetCarateristicas());
-}
