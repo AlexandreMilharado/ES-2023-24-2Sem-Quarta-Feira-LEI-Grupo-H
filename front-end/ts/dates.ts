@@ -144,7 +144,8 @@ export function getSemesterWeekNumber(
 export function getClassesStartingHours(startTime: Date, finishStartTime: Date, classDuration = 90) {
   const hours = [];
   let currentHour = new Date('1 08:00:00');
-  const finishHour = new Date('1 22:00:00');
+  let finishHour = new Date('1 22:00:00');
+  finishHour.setMinutes(finishHour.getMinutes() - classDuration);
 
   while (currentHour <= finishHour && currentHour <= finishStartTime) {
     if (currentHour >= startTime) {

@@ -473,13 +473,11 @@ function hoursBasedOnFilter(mainDiv: HTMLDivElement): { startHour: string, endHo
         hours.push(...(hoursFromAnd.filter((hour) => hoursToExclude.indexOf(hour) < 0)))
 
     }
-    const r = [...(new Set(hours))].map((startingHour) => {
+    return [...(new Set(hours))].map((startingHour) => {
         const endingHourDate = new Date(`1 ${startingHour}`)
         endingHourDate.setMinutes(endingHourDate.getMinutes() + classDuration);
         return { startHour: startingHour, endHour: `${String(endingHourDate.getHours()).padStart(2, '0')}:${String(endingHourDate.getMinutes()).padStart(2, '0')}` }
     });
-    console.log(r);
-    return r;
 }
 
 /**
