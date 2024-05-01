@@ -12,6 +12,7 @@ function createHtmlElements(): void {
     //Criação do botão para sugerir slots das aulas de UC
     const suggestSlotUcButton: HTMLButtonElement = document.createElement("button");
     suggestSlotUcButton.textContent = "Sugerir slots para alocação das aulas UC";
+    suggestSlotUcButton.classList.add("styled-button");
     suggestSlotUcButton.addEventListener("click", () => {
         if (suggestSlotUcButton.value == "On") {
             suggestSlotUcButton.value = "Off"

@@ -47,6 +47,7 @@ export function createHtmlElements(): void {
     //Criação do botão para sugerir slots as aulas de substituição
     const suggestSlotReplaceButton: HTMLButtonElement = document.createElement("button");
     suggestSlotReplaceButton.textContent = "Sugerir slots para alocação da aula de substituição";
+    suggestSlotReplaceButton.classList.add("styled-button");
     suggestSlotReplaceButton.addEventListener("click", () => {
         if (suggestSlotReplaceButton.value == "On") {
             suggestSlotReplaceButton.value = "Off"
@@ -94,6 +95,7 @@ export function showCriteriaSuggestSlots(mainDiv: HTMLDivElement, characteristic
         generateSugestions(mainDiv, timeTableElement, characteristicsTableElement);
     });
     buttonCreateTable.textContent = "Gerar tabela"
+    buttonCreateTable.classList.add("styled-button");
     mainDiv.appendChild(buttonCreateTable);
 }
 /**
