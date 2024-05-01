@@ -45,7 +45,7 @@ header {
 
     &>button {
         font-family: Karla;
-        font-size: 1.2vw;
+        font-size: 1vw;
         color: rgba(0, 0, 0, 0.5);
         display: flex;
         flex-direction: column;
@@ -95,7 +95,8 @@ header {
         flex-direction: column;
         align-items: center;
         justify-content: space-between;
-        width: 30%;
+        width: 50vw;
+        max-width: 55vh;
         height: auto;
         aspect-ratio: 4/3;
         top: 50%;
@@ -479,3 +480,117 @@ header {
         transform: translateY(-3px);
     }
 }
+
+#SuggestSlots{
+    display: grid;
+    justify-content: center;    
+}
+.styled-button{
+    margin:0.5vw;
+    border: none;
+    background-image: linear-gradient(225deg, #A989ED, #5C6AE3);
+    color:whitesmoke;
+    
+    padding: 0.5vw;
+    border-radius: 50px;
+    box-shadow: 0px 9px 15px -1px rgba(56, 30, 0, 0.07);
+    transition: all 0.2s ease;
+    &:hover{
+        transform: translateY(-3px);
+    }
+}
+
+#ReplacementClass, #UcClass{
+    width: 50vw;
+    &>#UcClassInformation{
+        display: flex; justify-content: center;
+    }
+    &>#ReplacementClassCriteria,#UcClassCriteria{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        box-shadow: 0px 9px 15px -1px rgba(56, 30, 0, 0.07);
+        border-radius: 15px;
+
+        &>.criteria-container{
+            width:70%;
+            display: flex; flex-direction: column; align-items: center;
+            margin-bottom: 1vw;
+
+            &>.criteria-container-components{
+                position: relative;
+                margin-bottom: 0.25vw;
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                justify-items: center;
+                &>*{
+                    margin: 0 1vw;
+                    width: 90%;
+                }
+            }
+            &>button{
+                background-color: #33cab8;
+                width:15%;
+                border-radius: 15px;
+                padding: 0.5vw;
+            }
+            &+button{
+                background-color: pink;
+                border-radius: 500px;
+                aspect-ratio: 1;
+                width:6%;
+                padding: 1vw 0;
+            }
+            &+button,>button{
+                background-image: linear-gradient(225deg, #A989ED, #5C6AE3);
+                font-weight: bolder;
+                color: whitesmoke;
+                border:none;
+                
+            }
+            &>label{
+                display: flex;
+                align-items: center;
+                margin-bottom: 0.5vw;
+                &>select{margin-left: 0.5vw;}
+            }
+        }
+    }
+    
+}
+.criteria-input,.criteria-filter-option-selector,.criteria-column-selector, .criteria-duration-selector{
+    height: 100%;
+    width:100%;
+    border: none;
+    box-shadow: 0px 9px 15px -1px rgba(56, 30, 0, 0.07);
+    border-radius: 5px;
+    padding: 0.75vw;
+
+}
+.criteria-remove-button{
+    position: absolute;
+    width: 1.5vw !important;
+    left: -2.5vw;
+    top:50%;
+    transform: translate(0,-50%);
+    aspect-ratio: 1;
+    border: none;
+    border-radius: 500px;
+    background-color: #F36A6A;
+    color: whitesmoke;
+    font-weight: bolder;
+
+}
+.criteria-container-remove-button{
+    width: 5% !important;
+    height: 1.7vw !important;
+    border: none;
+    border-radius: 0 0 500px 500px !important;
+    background-image: linear-gradient(10deg, #A989ED, #5C6AE3) !important;
+   
+    color: whitesmoke;
+    font-weight: bolder;
+}
+
+
