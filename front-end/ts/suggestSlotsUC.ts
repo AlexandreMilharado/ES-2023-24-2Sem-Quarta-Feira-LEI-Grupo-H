@@ -1,6 +1,9 @@
 import { showCriteriaSuggestSlots } from "./suggestSlotst";
 import { sortFiles } from "./variables";
 createHtmlElements();
+/**
+ * Cria os botões que mostram a UI para sugerir slots das aulas de UC.
+ */
 function createHtmlElements(): void {
     sortFiles();//Para garantir que a ordem dos ficheiros encontra-se coerente.
     const suggestSlotUcDiv: HTMLDivElement = document.querySelector("#UcClassCriteria") as HTMLDivElement;
@@ -28,7 +31,9 @@ function createHtmlElements(): void {
     extraElements();
     //
 }
-
+/**
+ * Acrecenta uma label com um input sobre quantas aulas se pretende marcar
+*/
 function extraElements() {
     const UcClassInformation = document.getElementById("UcClassInformation") as HTMLDivElement;
     const element =
