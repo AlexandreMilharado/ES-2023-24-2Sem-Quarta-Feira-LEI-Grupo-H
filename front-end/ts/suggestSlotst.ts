@@ -59,7 +59,8 @@ export function createHtmlElements(): void {
         document.getElementById("ReplacementClassCharacteristicsTable") as HTMLDivElement,
         document.getElementById("ReplacementClassTimeTable") as HTMLDivElement);
     replacementClassContainer.style.display = "none";
-    document.getElementById("SuggestSlots")?.prepend(suggestSlotReplaceButton);
+    document.getElementById("SuggestSlots")?.insertBefore(suggestSlotReplaceButton,
+        document.getElementById("ReplacementClass") as HTMLDivElement);
     //
 
 }
@@ -104,18 +105,27 @@ export function showCriteriaSuggestSlots(mainDiv: HTMLDivElement, characteristic
 */
 function addNewCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaContainer: HTMLButtonElement, isRooms: boolean) {
     const criteriaContainer: HTMLDivElement = createCriteriaContainer(mainDiv, buttonAddNewCriteriaContainer, isRooms);
-    criteriaContainer.appendChild(createRemoveButton(criteriaContainer, "criteria-container-remove-button"));
+    const label = document.createElement("label");
+    label.textContent = "___________Or___________";
+    mainDiv.insertBefore(label, criteriaContainer);
+    criteriaContainer.appendChild(createRemoveButton(mainDiv, criteriaContainer, criteriaContainer.className.split(" ")[1],
+        "criteria-container-remove-button", label));
 }
+
 /**
- * Cria um novo container com um criterio inserido.
+ * Cria um novo container (de "and") com um criterio inserido.
+ * @param {HTMLDivElement} mainDiv -Container principal
+ * @param  {HTMLButtonElement} buttonAddNewCriteriaContainer -Botão que permite criar um novo container de criterio 
+ * @param  {boolean} isRooms -Se rooms é true representa o horario das caracteristicas caso contrario representa o horario
+ * @returns {HTMLDivElement} -Retorna um container onde todos os criterios entre sí fazem "and"
 */
 function createCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaContainer: HTMLButtonElement, isRooms: boolean): HTMLDivElement {
     const criteriaContainer: HTMLDivElement = document.createElement('div');
     if (isRooms) criteriaContainer.className = "criteria-container criteria-container-timeTable";
-    else criteriaContainer.className = "criteria-container criteria-container-characteristics"
+    else criteriaContainer.className = "criteria-container criteria-container-characteristics";
 
     const labelDiv: HTMLDivElement = document.createElement("div");
-    labelDiv.className = "criteria-label-container"
+    labelDiv.className = "criteria-label-container";
     const textLabel: HTMLLabelElement = document.createElement("label");
     textLabel.className = "criteria-label";
     labelDiv.appendChild(textLabel);
@@ -127,9 +137,7 @@ function createCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaCo
     const element: HTMLDivElement = addNewCriteriaOptionToSuggestSlots(mainDiv, criteriaContainer.className.split(" ")[1], isRooms);
     criteriaContainer.insertBefore(element, buttonAddNewCriteria);
     criteriaContainer.appendChild(labelDiv);
-    mainDiv.querySelector(".criteria-label")
-
-
+    mainDiv.querySelector(".criteria-label");
 
     return criteriaContainer;
 }
@@ -138,22 +146,26 @@ function createCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaCo
 */
 function createNewCriteriaButton(mainDiv: HTMLDivElement, container: HTMLDivElement, isRooms: boolean): HTMLButtonElement {
     const buttonAddNewCriteria: HTMLButtonElement = document.createElement("button");
-    buttonAddNewCriteria.textContent = "And"
+    buttonAddNewCriteria.textContent = "+And";
     buttonAddNewCriteria.addEventListener("click", () => {
-        const element: HTMLDivElement = addNewCriteriaOptionToSuggestSlots(mainDiv, container.className.split(" ")[1], isRooms);
-        element.appendChild(createRemoveButton(element, "criteria-remove-button"));
-        container.insertBefore(element, buttonAddNewCriteria);
+        const label = document.createElement("label");
+        label.textContent = "___________And___________";
+        const criteriaContainerComponents: HTMLDivElement = addNewCriteriaOptionToSuggestSlots(mainDiv, container.className.split(" ")[1], isRooms);
+        criteriaContainerComponents.appendChild(createRemoveButton(mainDiv, criteriaContainerComponents,
+            container.className.split(" ")[1], "criteria-remove-button", label));
+        container.insertBefore(criteriaContainerComponents, buttonAddNewCriteria);
+        // container.insertBefore(label, criteriaContainerComponents);
     });
     return buttonAddNewCriteria;
 }
 /**
- * Cria um criterio.
-*/
-/**
- * 
- * @returns {HTMLDivElement} HTMLDivElement
+ * Cria um criterio com as opções inseridas.
+ * @param {HTMLDivElement} mainDiv -Container principal
+ * @param  {string} criteriaContainerName -O nome do container filho
+ * @param  {boolean} isRooms -Se rooms é true representa o horario das caracteristicas caso contrario representa o horario
+ * @returns {HTMLDivElement} -Retorna um criterio
  */
-function addNewCriteriaOptionToSuggestSlots(mainDiv: HTMLDivElement, nameCriteia: string, isRooms: boolean): HTMLDivElement {
+function addNewCriteriaOptionToSuggestSlots(mainDiv: HTMLDivElement, criteriaContainerName: string, isRooms: boolean): HTMLDivElement {
     const criteriaContainerElements: string =
         `
             <div class="criteria-column-container">
@@ -180,15 +192,15 @@ function addNewCriteriaOptionToSuggestSlots(mainDiv: HTMLDivElement, nameCriteia
     criteriaContainerComponents.querySelector(".criteria-column-container")?.appendChild(createSelectWithOptionsToColumns(criteriaContainerComponents, isRooms));
     ///
     //Sempre que seja alterado o input ou o select vai ser atualizado o filtro de feedback
-    criteriaContainerComponents.querySelector("input")?.addEventListener("focusout", () => {
-        updateLabel(mainDiv, nameCriteia, mainDiv.querySelector(" ." + nameCriteia + " .criteria-label") as HTMLLabelElement);
-    });
+    // criteriaContainerComponents.querySelector("input")?.addEventListener("input", () => {
+    //     updateLabel(mainDiv, criteriaContainerName, mainDiv.querySelector(" ." + criteriaContainerName + " .criteria-label") as HTMLLabelElement);
+    // });
 
-    criteriaContainerComponents.querySelectorAll("select")?.forEach((select) => {
-        select.addEventListener("focusout", () => {
-            updateLabel(mainDiv, nameCriteia, mainDiv.querySelector(" ." + nameCriteia + " .criteria-label") as HTMLLabelElement);
-        });
-    });
+    // criteriaContainerComponents.querySelectorAll("select")?.forEach((select) => {
+    //     select.addEventListener("change", () => {
+    //         updateLabel(mainDiv, criteriaContainerName, mainDiv.querySelector(" ." + criteriaContainerName + " .criteria-label") as HTMLLabelElement);
+    //     });
+    // });
     //
     return criteriaContainerComponents;
 }
@@ -274,13 +286,21 @@ function showExtraOptions(div: HTMLDivElement, column: string) {
 }
 
 /**
- * Cria um botão que permite remover o elemento associado.
+ * Cria um botão que permite remover o criterio associado.
+ * @param {HTMLDivElement} mainDiv -Container principal
+ * @param  {HTMLDivElement} criteriaContainerComponents -Container
+ * @param {string} criteriaContainerName -Nome do container, ao qual vai se buscar os criterios
+ * @param  {string} className -Nome da classe do botão
+ * @param  {HTMLLabelElement} label -Label
+ * @returns {HTMLButtonElement} -Retorna um botão
 */
-function createRemoveButton(criteriaContainer: HTMLDivElement, className: string): HTMLButtonElement {
+function createRemoveButton(mainDiv: HTMLDivElement, criteriaContainer: HTMLDivElement, criteriaContainerName: string, className: string, label: HTMLLabelElement): HTMLButtonElement {
     const removeButton: HTMLButtonElement = document.createElement("button");
     removeButton.className = className;
     removeButton.addEventListener("click", () => {
         criteriaContainer.remove();
+        label.remove();
+        updateLabel(mainDiv, criteriaContainerName, mainDiv.querySelector(" ." + criteriaContainerName + " .criteria-label") as HTMLLabelElement);
     });
     removeButton.textContent = "X"
     return removeButton;
@@ -331,7 +351,10 @@ function getCriteriaInputs(table: Tabulator, mainDiv: HTMLDivElement, criteriaCo
 }
 
 /**
- * Pega nos criterios do utilizador, devolendo uma menssagem como feedback, o que vai ser aplicado sobre a tabela. 
+ * Pega nos criterios do utilizador, devolendo um texto na label como feedback, o que vai ser aplicado sobre a tabela. 
+ * @param {HTMLDivElement} mainDiv -Container principal
+ * @param {string} criteriaContainerName -Nome do container, ao qual vai se buscar os criterios
+ * @param {HTMLLabelElement} label -Label onde vai se introduzir o feedback
 */
 function updateLabel(mainDiv: HTMLDivElement, nameCriteia: string, label: HTMLLabelElement) {
     console.log(mainDiv)
