@@ -106,7 +106,8 @@ export function showCriteriaSuggestSlots(mainDiv: HTMLDivElement, characteristic
 function addNewCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaContainer: HTMLButtonElement, isRooms: boolean) {
     const criteriaContainer: HTMLDivElement = createCriteriaContainer(mainDiv, buttonAddNewCriteriaContainer, isRooms);
     const label = document.createElement("label");
-    label.textContent = "___________Or___________";
+    label.textContent = "or";
+    label.classList.add("line-border");
     mainDiv.insertBefore(label, criteriaContainer);
     criteriaContainer.appendChild(createRemoveButton(mainDiv, criteriaContainer, criteriaContainer.className.split(" ")[1],
         "criteria-container-remove-button", label));
