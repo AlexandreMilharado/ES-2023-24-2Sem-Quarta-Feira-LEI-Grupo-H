@@ -79,23 +79,29 @@ export function createHtmlElements(): void {
 export function showCriteriaSuggestSlots(mainDiv: HTMLDivElement, characteristicsTableElement: HTMLDivElement, timeTableElement: HTMLDivElement): void {
     const buttonAddNewCriteriaDivTimeTable: HTMLButtonElement = document.createElement("button");
     buttonAddNewCriteriaDivTimeTable.textContent = "Or"
-    buttonAddNewCriteriaDivTimeTable.addEventListener("click", () => addNewCriteriaContainer(mainDiv, buttonAddNewCriteriaDivTimeTable, true));
-    mainDiv.appendChild(buttonAddNewCriteriaDivTimeTable);
+    const timeTableContainer = mainDiv.querySelector(".ContainerTimeTable") as HTMLDivElement;
+    buttonAddNewCriteriaDivTimeTable.addEventListener("click", () => addNewCriteriaContainer(timeTableContainer, buttonAddNewCriteriaDivTimeTable, true));
 
-    createCriteriaContainer(mainDiv, buttonAddNewCriteriaDivTimeTable, true);
+
+    timeTableContainer.appendChild(buttonAddNewCriteriaDivTimeTable);
+
+    createCriteriaContainer(timeTableContainer, buttonAddNewCriteriaDivTimeTable, true).prepend(createSelectWithOptionsToClassDuration());
 
     const buttonAddNewCriteriaDivCharacteristics: HTMLButtonElement = document.createElement("button");
     buttonAddNewCriteriaDivCharacteristics.textContent = "Or"
-    buttonAddNewCriteriaDivCharacteristics.addEventListener("click", () => addNewCriteriaContainer(mainDiv, buttonAddNewCriteriaDivCharacteristics, false));
-    mainDiv.appendChild(buttonAddNewCriteriaDivCharacteristics);
+    const characteristicsContainer = mainDiv.querySelector(".ContainerCharacteristics") as HTMLDivElement;
+    buttonAddNewCriteriaDivCharacteristics.addEventListener("click", () => addNewCriteriaContainer(characteristicsContainer, buttonAddNewCriteriaDivCharacteristics, false));
 
-    createCriteriaContainer(mainDiv, buttonAddNewCriteriaDivCharacteristics, false);
+
+    characteristicsContainer.appendChild(buttonAddNewCriteriaDivCharacteristics);
+
+    createCriteriaContainer(characteristicsContainer, buttonAddNewCriteriaDivCharacteristics, false);
 
     const buttonCreateTable: HTMLButtonElement = document.createElement("button");
+    buttonCreateTable.textContent = "Gerar tabela"
     buttonCreateTable.addEventListener("click", () => {
         generateSugestions(mainDiv, timeTableElement, characteristicsTableElement);
     });
-    buttonCreateTable.textContent = "Gerar tabela"
     buttonCreateTable.classList.add("styled-button");
     mainDiv.appendChild(buttonCreateTable);
 }
@@ -124,6 +130,9 @@ function addNewCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaCo
  * @returns {HTMLDivElement} -Retorna um container onde todos os criterios entre sí fazem "and"
 */
 function createCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaContainer: HTMLButtonElement, isRooms: boolean): HTMLDivElement {
+    console.log(mainDiv);
+    console.log(buttonAddNewCriteriaContainer);
+
     const criteriaContainer: HTMLDivElement = document.createElement('div');
     if (isRooms) criteriaContainer.className = "criteria-container criteria-container-timeTable";
     else criteriaContainer.className = "criteria-container criteria-container-characteristics";
@@ -139,7 +148,6 @@ function createCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaCo
     mainDiv.insertBefore(criteriaContainer, buttonAddNewCriteriaContainer);
     const buttonAddNewCriteria: HTMLButtonElement = createNewCriteriaButton(mainDiv, criteriaContainer, isRooms);
     criteriaContainer.appendChild(buttonAddNewCriteria);
-    if (!isRooms) criteriaContainer.prepend(createSelectWithOptionsToClassDuration());
     const element: HTMLDivElement = addNewCriteriaOptionToSuggestSlots(mainDiv, criteriaContainer.className.split(" ")[1], isRooms);
     criteriaContainer.insertBefore(element, buttonAddNewCriteria);
     criteriaContainer.appendChild(labelDiv);
@@ -317,7 +325,7 @@ function createRemoveButton(mainDiv: HTMLDivElement, criteriaContainer: HTMLDivE
     removeButton.addEventListener("click", () => {
         criteriaContainer.remove();
         label.remove();
-        updateLabel(mainDiv, criteriaContainerName, mainDiv.querySelector(" ." + criteriaContainerName + " .criteria-label") as HTMLLabelElement);
+        // updateLabel(mainDiv, criteriaContainerName, mainDiv.querySelector(" ." + criteriaContainerName + " .criteria-label") as HTMLLabelElement);
     });
     removeButton.textContent = "X"
     return removeButton;
@@ -358,11 +366,11 @@ function getCriteriaInputs(table: Tabulator, mainDiv: HTMLDivElement, criteriaCo
             if (criteriaString == "") criteriaString += `data["${columnValue}"] ${operator.value} "${inputValue}"`;
             else criteriaString += ` && data["${columnValue}"] ${operator.value} "${inputValue}"`;
         }
+        if (criteriaString == "") continue;
         if (i != filter.length - 1) finalFilter += "( " + criteriaString + " )" + " || "
         else finalFilter += "( " + criteriaString + " )";
     }
     console.log(finalFilter);
-    if (finalFilter == "(  )") finalFilter = "";
     return { usedColumns, finalFilter };
 }
 
@@ -500,7 +508,6 @@ function hoursBasedOnFilter(mainDiv: HTMLDivElement): { startHour: string, endHo
         let finalHour = new Date("1 22:00");
         const hoursFromAnd: string[] = [];
         const hoursToExclude: string[] = [];
-        console.log('oi')
         for (let i = 0; i != criteriaContainerComponents.length; i++) {
             const column: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-column-selector") as HTMLSelectElement;
             const operator: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-filter-option-selector") as HTMLSelectElement;
@@ -513,7 +520,6 @@ function hoursBasedOnFilter(mainDiv: HTMLDivElement): { startHour: string, endHo
         }
 
         if (hoursFromAnd.length < 1) {
-            console.log('entrou')
             hoursFromAnd.push(...(getClassesStartingHours(initialHour, finalHour, classDuration)))
         }
         hours.push(...(hoursFromAnd.filter((hour) => hoursToExclude.indexOf(hour) < 0)))
