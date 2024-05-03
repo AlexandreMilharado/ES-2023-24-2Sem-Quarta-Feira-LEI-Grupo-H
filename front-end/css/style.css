@@ -206,12 +206,14 @@ header {
     grid-template-columns: 1fr auto 1fr;
     grid-template-rows: 20px 0;
     grid-gap: 20px;
+    opacity: 0.5 !important;
 }
 
 .line-border::after,
 .line-border::before {
-    width: 100px;
-    height: 7px;
+    width: 100%;
+    min-width: 100px;
+    height: 50%;
     content: " ";
     display: block;
     border-bottom: 2px solid rgba(104, 104, 136, 0.5);
@@ -510,11 +512,16 @@ header {
         flex-direction: column;
         align-items: center;
 
-        box-shadow: 0px 9px 15px -1px rgba(56, 30, 0, 0.07);
+       
         border-radius: 15px;
 
         &>.criteria-container{
-            width:70%;
+            position: relative;
+            box-shadow: 0px 9px 15px -1px rgba(56, 30, 0, 0.07);
+            background-color: rgb(228, 228, 228);
+            border-radius: 15px;
+            padding: 2vw !important;
+            width:80%;
             display: flex; flex-direction: column; align-items: center;
             margin-bottom: 1vw;
 
@@ -541,6 +548,7 @@ header {
                 aspect-ratio: 1;
                 width:6%;
                 padding: 1vw 0;
+                margin-bottom: 1vw;
             }
             &+button,>button{
                 background-image: linear-gradient(225deg, #A989ED, #5C6AE3);
@@ -568,7 +576,7 @@ header {
     padding: 0.75vw;
 
 }
-.criteria-remove-button{
+.criteria-remove-button,.criteria-container-remove-button{
     position: absolute;
     width: 1.5vw !important;
     left: -2.5vw;
@@ -576,21 +584,20 @@ header {
     transform: translate(0,-50%);
     aspect-ratio: 1;
     border: none;
-    border-radius: 500px;
-    background-color: #F36A6A;
+    border-radius: 500px !important;
+    background-color: #F36A6A !important;
+    background-image: none !important;
     color: whitesmoke;
     font-weight: bolder;
 
 }
 .criteria-container-remove-button{
-    width: 5% !important;
-    height: 1.7vw !important;
-    border: none;
-    border-radius: 0 0 500px 500px !important;
-    background-image: linear-gradient(10deg, #A989ED, #5C6AE3) !important;
-   
-    color: whitesmoke;
-    font-weight: bolder;
+    top:0.5vw;
+    left:calc(100% - 1vw);
+    height: 1.5vw;
+    width: 1vw;
+    padding: 0.5vw .6vw 1.25vw .6vw !important;
 }
+
 
 

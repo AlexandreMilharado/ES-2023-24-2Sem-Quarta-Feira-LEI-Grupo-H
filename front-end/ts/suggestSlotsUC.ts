@@ -28,7 +28,7 @@ function createHtmlElements(): void {
     */
     showCriteriaSuggestSlots(suggestSlotUcDiv, document.getElementById("UcClassCharacteristicsTable") as HTMLDivElement, document.getElementById("UcClassTimeTable") as HTMLDivElement);
     ucClassContainer.style.display = "none";
-    document.getElementById("SuggestSlots")?.prepend(suggestSlotUcButton);
+    document.getElementById("SuggestSlots")?.insertBefore(suggestSlotUcButton, document.getElementById("UcClass") as HTMLDivElement);
     extraElements();
     //
 }
