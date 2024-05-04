@@ -335,9 +335,10 @@ header {
                             background-size: contain;
                             background-repeat: no-repeat;
                             background-position: 50%;
-                            height: 100%;
-                            width: 50%;
+                            width:0.75vw;
+                            height:0.75vw;
                         }
+                        
 
                         &>.tabulator-hideColumn-toggle-button {
                             background-image: url("../graphics/images/cross.png");
@@ -535,8 +536,7 @@ header {
 
 #ReplacementClass,
 #UcClass {
-    width: 50vw;
-
+    width: 100vw;
     &>#UcClassInformation {
         display: flex;
         justify-content: center;
@@ -546,9 +546,11 @@ header {
     #UcClassCriteria,
     .ContainerTimeTable,
     .ContainerCharacteristics {
+        width: 50vw;
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin:auto;
 
 
         border-radius: 15px;
@@ -653,4 +655,24 @@ header {
     height: 1.5vw;
     width: 1vw;
     padding: 0.5vw .6vw 1.25vw .6vw !important;
+}
+
+
+div>.tabulator{
+    & .tabulator-header {
+        color:whitesmoke;
+        background-image: linear-gradient(225deg, rgb(169, 137, 237), #5C6AE3);
+
+       
+    }
+    & .tabulator-row:hover{
+        background-color: rgba(237, 137, 232, 0.13) !important;
+        
+    }
+    & .tabulator-page.active {
+        translate: 0 -2px;
+        background-color: rgb(169, 137, 237) !important;
+    }
+              
+           
 }
