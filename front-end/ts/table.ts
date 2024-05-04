@@ -82,8 +82,8 @@ let savePopUpButton: HTMLButtonElement;
  * @param {TableRow[]} file - dados do ficheiro .CSV importado
  */
 export function setData(tableElement: HTMLDivElement, file: TableRow[], addSemana = true): Tabulator {
-  // tabledata = file;
-  if (addSemana) addSemanasColumns();
+  tabledata = file;
+  if (addSemana) addSemanasColumns(file);
   sortFiles();
   const table = new Tabulator("#" + tableElement.id, {
     headerFilterPlaceholder: "Filtrar 'AND'",
@@ -149,7 +149,7 @@ function renderFilterProps(tableElement: HTMLDivElement): void {
  *
  * See {@link dateStringFormatCToDate} | {@link getWeekNumber} | {@link getSemesterWeekNumber}.
  */
-function addSemanasColumns(): void {
+function addSemanasColumns(tabledata: TableRow[]): void {
   if (!tabledata.some(row => row.hasOwnProperty('Data da aula'))) return;
 
   const startSemesterDates = getSemesterStarts(tabledata.map((row) => row['Data da aula'] as string));

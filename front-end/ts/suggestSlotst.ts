@@ -405,7 +405,7 @@ function generateSugestions(mainDiv: HTMLDivElement, timeTableElement: HTMLDivEl
         window.alert("Não existem salas com esses criterios");
         return;
     }
-    const table = setData(timeTableElement, GetHorario(), false);
+    let table = setData(timeTableElement, GetHorario(), false);
     const timeTable = getFilteredDateHourCombination(mainDiv);
     const suggestions: any = {};
     for (let i = 0; i != characteristics.length; i++) {
@@ -420,7 +420,7 @@ function generateSugestions(mainDiv: HTMLDivElement, timeTableElement: HTMLDivEl
         }
     }
     const filteredSugestions = removeConflicts(suggestions, table);
-    table.setData(filteredSugestions);
+    table = setData(timeTableElement, filteredSugestions, false);
 
 }
 /**
