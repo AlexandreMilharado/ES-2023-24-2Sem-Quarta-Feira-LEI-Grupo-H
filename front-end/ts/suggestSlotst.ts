@@ -144,13 +144,10 @@ export function createCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCri
     mainDiv.insertBefore(criteriaContainer, buttonAddNewCriteriaContainer);
     const buttonAddNewCriteria: HTMLButtonElement = createNewCriteriaButton(mainDiv, criteriaContainer, isRooms);
     criteriaContainer.appendChild(buttonAddNewCriteria);
-    if (isRooms) criteriaContainer.prepend(createSelectWithOptionsToClassDuration());
     const element: HTMLDivElement = addNewCriteriaOptionToSuggestSlots(mainDiv, criteriaContainer.className.split(" ")[1], isRooms);
     criteriaContainer.insertBefore(element, buttonAddNewCriteria);
     criteriaContainer.appendChild(labelDiv);
     mainDiv.querySelector(".criteria-label")
-
-
 
     return criteriaContainer;
 }
@@ -207,18 +204,6 @@ function addNewCriteriaOptionToSuggestSlots(mainDiv: HTMLDivElement, criteriaCon
     criteriaContainerComponents.innerHTML = criteriaContainerElements;
     //Adciona no inicio uma select box com as colunas da tabela
     criteriaContainerComponents.querySelector(".criteria-column-container")?.appendChild(createSelectWithOptionsToColumns(criteriaContainerComponents, isRooms));
-    //
-
-    //Sempre que seja alterado o input ou o select vai ser atualizado o filtro de feedback
-    // criteriaContainerComponents.querySelector("input")?.addEventListener("input", () => {
-    //     updateLabel(mainDiv, criteriaContainerName, mainDiv.querySelector(" ." + criteriaContainerName + " .criteria-label") as HTMLLabelElement);
-    // });
-
-    // criteriaContainerComponents.querySelectorAll("select")?.forEach((select) => {
-    //     select.addEventListener("change", () => {
-    //         updateLabel(mainDiv, criteriaContainerName, mainDiv.querySelector(" ." + criteriaContainerName + " .criteria-label") as HTMLLabelElement);
-    //     });
-    // });
     //
     return criteriaContainerComponents;
 }
@@ -318,7 +303,6 @@ function createRemoveButton(mainDiv: HTMLDivElement, criteriaContainer: HTMLDivE
     removeButton.addEventListener("click", () => {
         criteriaContainer.remove();
         label.remove();
-        // updateLabel(mainDiv, criteriaContainerName, mainDiv.querySelector(" ." + criteriaContainerName + " .criteria-label") as HTMLLabelElement);
     });
     removeButton.textContent = "X"
     return removeButton;
@@ -368,33 +352,6 @@ export function getCriteriaInputs(table: Tabulator, mainDiv: HTMLDivElement, cri
 }
 
 /**
- * Pega nos criterios do utilizador, devolendo um texto na label como feedback, o que vai ser aplicado sobre a tabela. 
- * @param {HTMLDivElement} mainDiv -Container principal
- * @param {string} nameCriteria -Nome do container, ao qual vai se buscar os criterios
- * @param {HTMLLabelElement} label -Label onde vai se introduzir o feedback
-*/
-function updateLabel(mainDiv: HTMLDivElement, criteriaContainerName: string, label: HTMLLabelElement): void {
-    let labelText: string = "";
-    const filter: NodeListOf<Element> = mainDiv.querySelectorAll("." + criteriaContainerName);
-    for (let i = 0; i != filter.length; i++) {
-        let criteriaString: string = "";
-        const criteriaContainerComponents = filter[i].querySelectorAll(".criteria-container-components");
-        for (let i = 0; i != criteriaContainerComponents.length; i++) {
-            const column: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-column-selector") as HTMLSelectElement;
-            const operator: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-filter-option-selector") as HTMLSelectElement;
-            const input: HTMLInputElement = criteriaContainerComponents[i].querySelector(".criteria-input") as HTMLInputElement;
-            let inputValue: string = input.value.trim();
-            if (inputValue == "") inputValue = "undefined";
-            if (i == 0) criteriaString += ` ${column.value} ${operator.options[operator.selectedIndex].text} ${inputValue}`
-            else criteriaString += ` and ${column.value} ${operator.options[operator.selectedIndex].text} ${inputValue}`
-        }
-        if (i % 2 == 0) labelText += `(${criteriaString})`;
-        else labelText += ` or (${criteriaString})`
-    }
-    label.textContent = labelText;
-}
-
-/**
  * Gera todas as possiveis suggestoes sem conflitos, aplicando os na tabela.
  * @param {HTMLDivElement} mainDiv -Container principal
  * @param {HTMLDivElement} timeTableElement -Container da tabela dos horarios
@@ -406,7 +363,7 @@ function generateSugestions(mainDiv: HTMLDivElement, timeTableElement: HTMLDivEl
         window.alert("Não existem salas com esses criterios");
         return;
     }
-    const table = setData(timeTableElement, GetHorario(), false);
+    let table = setData(timeTableElement, GetHorario(), false);
     const timeTable = getFilteredDateHourCombination(mainDiv);
     const suggestions: any = {};
     console.log(Object.keys(characteristics));
