@@ -3,7 +3,6 @@ import { TableRow } from "./uploadCsv";
 import { formatDateToDDMMYYYY, getClassesStartingHours, getDayOfWeek, getDaysFromRange } from "./dates";
 import { customFilter, setData } from "./table";
 import { GetCarateristicas, GetHorario, sortFiles } from "./variables";
-
 createHtmlElements();
 /**
  * Cria uma nova tabela que é utilizada para fazer operações sobre ela, desta forma tem menos features e não se encontra visivel
@@ -16,7 +15,7 @@ createHtmlElements();
  * @returns {any[]} -Retorna as linhas da tabela caracteristicas da sala, com o nome da sala e com os criterios que o utilizador
  * usou sobre a tabela
  */
-function getCharacteristics(mainDiv: HTMLDivElement, characteristicsTableElement: HTMLDivElement, tabledata: TableRow[]): any[] {
+export function getCharacteristics(mainDiv: HTMLDivElement, characteristicsTableElement: HTMLDivElement, tabledata: TableRow[]): any[] {
     const table = new Tabulator("#" + characteristicsTableElement.id, {
         data: tabledata,
         autoColumns: true,
@@ -24,14 +23,14 @@ function getCharacteristics(mainDiv: HTMLDivElement, characteristicsTableElement
     const criteriaInputs = getCriteriaInputs(table, mainDiv, "criteria-container-characteristics");
     const usedColumns = criteriaInputs["usedColumns"];
     table.setFilter(customFilter, criteriaInputs["finalFilter"]);
-    let filteredRow: any[] = [];
+    let filteredRow: any = {};
     table.getRows(true).forEach((row: any) => {
         const object: any = {};
-        object["Nome sala"] = row.getData()["Nome sala"];
         for (let i = 0; i != usedColumns.length; i++) {
             object[usedColumns[i]] = row.getData()[usedColumns[i]];
         }
-        filteredRow.push(object);
+        filteredRow[row.getData()["Nome sala"]] = object;
+        // filteredRow.push(object);
     });
     console.log(filteredRow);
     return filteredRow;
@@ -112,7 +111,7 @@ export function showCriteriaSuggestSlots(mainDiv: HTMLDivElement, characteristic
  * @param  {HTMLButtonElement} buttonAddNewCriteriaContainer -Botão que permite criar um novo container de criterio 
  * @param  {boolean} isRooms -Se rooms é true representa o horario das caracteristicas caso contrario representa o horario
 */
-function addNewCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaContainer: HTMLButtonElement, isRooms: boolean): void {
+export function addNewCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaContainer: HTMLButtonElement, isRooms: boolean): void {
     const criteriaContainer: HTMLDivElement = createCriteriaContainer(mainDiv, buttonAddNewCriteriaContainer, isRooms);
     const label = document.createElement("label");
     label.textContent = "or";
@@ -129,10 +128,7 @@ function addNewCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaCo
  * @param  {boolean} isRooms -Se rooms é true representa o horario das caracteristicas caso contrario representa o horario
  * @returns {HTMLDivElement} -Retorna um container onde todos os criterios entre sí fazem "and"
 */
-function createCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaContainer: HTMLButtonElement, isRooms: boolean): HTMLDivElement {
-    console.log(mainDiv);
-    console.log(buttonAddNewCriteriaContainer);
-
+export function createCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaContainer: HTMLButtonElement, isRooms: boolean): HTMLDivElement {
     const criteriaContainer: HTMLDivElement = document.createElement('div');
     if (isRooms) criteriaContainer.className = "criteria-container criteria-container-timeTable";
     else criteriaContainer.className = "criteria-container criteria-container-characteristics";
@@ -148,6 +144,7 @@ function createCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCriteriaCo
     mainDiv.insertBefore(criteriaContainer, buttonAddNewCriteriaContainer);
     const buttonAddNewCriteria: HTMLButtonElement = createNewCriteriaButton(mainDiv, criteriaContainer, isRooms);
     criteriaContainer.appendChild(buttonAddNewCriteria);
+    if (isRooms) criteriaContainer.prepend(createSelectWithOptionsToClassDuration());
     const element: HTMLDivElement = addNewCriteriaOptionToSuggestSlots(mainDiv, criteriaContainer.className.split(" ")[1], isRooms);
     criteriaContainer.insertBefore(element, buttonAddNewCriteria);
     criteriaContainer.appendChild(labelDiv);
@@ -238,22 +235,18 @@ function createSelectWithOptionsToColumns(criteriaContainerComponents: HTMLDivEl
     if (isRooms) {
         options =
             `
-                <select class="criteria-column-selector">
                     <option value="Hora início da aula">Hora início da aula</option>
                     <option value="Dia da semana">Dia da semana</option>
                     <option value="Data da aula">Data da aula</option>
-                </select>
         `
     } else {
         options =
             `
-                <select class="criteria-column-selector">
                     <option value="Edifício">Edifício</option>
                     <option value="Nome sala">Nome sala</option>
                     <option value="Capacidade Normal">Capacidade Normal</option>
                     <option value="Capacidade Exame">Capacidade Exame</option>
                     <option value="Características">Características</option>
-                </select>
         `
     }
 
@@ -339,7 +332,7 @@ function createRemoveButton(mainDiv: HTMLDivElement, criteriaContainer: HTMLDivE
  * @returns { usedColumns: string[]; finalFilter: string; } -Retorna um objeto onde o primeiro indice representa o nome das
  * colunas que foram usadas nos criterios, e no segundo indice o filtro que vai ser aplicado sobre a tabela
 */
-function getCriteriaInputs(table: Tabulator, mainDiv: HTMLDivElement, criteriaContainerName: string): { usedColumns: string[]; finalFilter: string; } {
+export function getCriteriaInputs(table: Tabulator, mainDiv: HTMLDivElement, criteriaContainerName: string): { usedColumns: string[]; finalFilter: string; } {
     let finalFilter: string = "";
     let usedColumns: string[] = [];
     table.clearFilter();
@@ -416,21 +409,23 @@ function generateSugestions(mainDiv: HTMLDivElement, timeTableElement: HTMLDivEl
     const table = setData(timeTableElement, GetHorario(), false);
     const timeTable = getFilteredDateHourCombination(mainDiv);
     const suggestions: any = {};
-    for (let i = 0; i != characteristics.length; i++) {
+    console.log(Object.keys(characteristics));
+    Object.keys(characteristics).forEach((room) => {
         for (let j = 0; j != timeTable.length; j++) {
             const object = {
-                "Nome sala": characteristics[i]["Nome sala"], "Data da aula": timeTable[j].day,
-                "Dia da semana": timeTable[j].dayWeek, "Hora início da aula": timeTable[j].startHour,
-                "Hora fim da aula": timeTable[j].endHour
-            };
-            const finalObject = Object.assign(object, characteristics[i]);
-            suggestions[characteristics[i]["Nome sala"] + timeTable[j].day + timeTable[j].startHour] = finalObject;
+                "Sala atribuída à aula": room, "Data da aula": timeTable[j].day,
+                "Dia da semana": timeTable[j].dayWeek, "Hora início da aula": timeTable[j].startHour + ":00",
+                "Hora fim da aula": timeTable[j].endHour + ":00"
+            }
+            const finalObject = Object.assign(object, { "Sala atribuída à aula": room });
+            suggestions[room + timeTable[j].day + timeTable[j].endHour + ":00"] = finalObject;
         }
-    }
+    });
+    console.log(Object.keys(suggestions));
     const filteredSugestions = removeConflicts(suggestions, table);
-    table.setData(filteredSugestions);
-
+    table = setData(timeTableElement, filteredSugestions, false);
 }
+
 /**
  * Remove os conflitos das sugestoes geradas.
  * @param {any} suggestions -Todas possiveis sugestões podendo ter conflitos
@@ -440,14 +435,30 @@ function generateSugestions(mainDiv: HTMLDivElement, timeTableElement: HTMLDivEl
 function removeConflicts(suggestions: any, table: Tabulator): any {
     let conflitData: any = {};
     table.getRows(true).forEach((row: any) => {
-        const s = row.getData()["Sala atribuída à aula"] + row.getData()["Data da aula"] + row.getData()["Hora início da aula"];
+        const s = row.getData()["Sala atribuída à aula"] + row.getData()["Data da aula"] + row.getData()["Hora fim da aula"];
         conflitData[s] = {};
     });
     let rowsWithoutConflicts: any = [];
-    Object.keys(suggestions).forEach((key: any) => {
-        if (conflitData[key] === undefined) rowsWithoutConflicts.push(suggestions[key]);
-    });
+    Object.values(suggestions).forEach((data: any) => {
+        let hours = Number(data["Hora início da aula"].substring(0, 2));
+        let minutes = Number(data["Hora início da aula"].substring(3, 4));
+        let time = "";
+        while (true) {
+            if (hours < 10) time = `0${hours}:${minutes}0:00`;
+            else time = `${hours}:${minutes}0:00`;
+            if (data["Hora fim da aula"] == time) break;
+            const key: string = data["Sala atribuída à aula"] + data["Data da aula"] + time;
+            if (!(key in conflitData))
+                if (key in suggestions)
+                    rowsWithoutConflicts.push(suggestions[key]);
 
+            if (minutes == 3) {
+                minutes = 0;
+                hours++;
+            } else minutes = 3;
+        }
+    });
+    console.log(rowsWithoutConflicts)
     return rowsWithoutConflicts;
 }
 
