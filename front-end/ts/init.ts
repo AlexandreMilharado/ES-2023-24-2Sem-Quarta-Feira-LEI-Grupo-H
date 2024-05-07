@@ -1,7 +1,7 @@
 import { togglePopUp, togglePopUpSave } from "./popUp";
 import { saveFileCSV, saveFileJSON } from "./tableDownload";
 import { tabledata } from "./table";
-import { TEST, loadInitialCsvFiles } from "./uploadCsv";
+import { loadInitialCsvFiles } from "./uploadCsv";
 import { addFile } from "./variables";
 
 /**
@@ -26,6 +26,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   document.getElementById("SaveFileJSON")?.addEventListener("click", () => {
     saveFileJSON(tabledata);
-    TEST(); // Retirar
   });
 });
