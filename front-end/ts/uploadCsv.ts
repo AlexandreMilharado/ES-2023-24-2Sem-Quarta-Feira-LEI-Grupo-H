@@ -69,10 +69,7 @@ export interface FormDataJson {
  * @param {Function} [handleData] - Função a executar após a transformação do ficheiro
  * @param alertFunction - Possibilidade de substituir a função de alert para possibilitar testes.
  */
-export async function handleSubmit(
-  event: SubmitEvent,
-  handleData: (file: TableRow[]) => void = setData,
-  alertFunction: (message?: any) => void = alert
+export async function handleSubmit(event: SubmitEvent, handleData: (tableElement: HTMLDivElement, file: TableRow[]) => void = setData, alertFunction: (message?: any) => void = alert
 ): Promise<string | void> {
   if (!event) return;
 
@@ -123,7 +120,7 @@ export async function handleSubmit(
     return;
   }
   return fileTable
-    .then((file) => handleData(file))
+    .then((file) => handleData(document.getElementById("HorarioPrincipal") as HTMLDivElement, file))
     .catch((e) => {
       return e.response?.data
         ? JSON.stringify(e.response.data)
