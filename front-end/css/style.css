@@ -146,6 +146,9 @@ header {
             }
         }
     }
+    & select{
+        width:100%;
+    }
 }
 
 #PopUpUpload{
