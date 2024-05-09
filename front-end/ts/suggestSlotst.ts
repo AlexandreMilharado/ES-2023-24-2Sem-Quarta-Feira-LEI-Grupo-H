@@ -441,9 +441,10 @@ function daysBasedOnFilter(mainDiv: HTMLDivElement): Date[] {
             if (column.value !== "Data da aula" && column.value !== "Dia da semana") continue;
 
             if (operator.value === "==") 
-                column.value === "Data da aula" ? 
-                daysToIncludeAux.push( new Date(inputValue.value) ) : 
-                dayOfWeek = inputValue.value;            
+                if (column.value === "Data da aula")
+                    daysToIncludeAux.push( new Date(inputValue.value) ) 
+                else
+                    dayOfWeek = inputValue.value;            
             else if (operator.value === "!=")  
                 column.value === "Data da aula" ? 
                 daysToExclude.push(new Date(inputValue.value)) :
