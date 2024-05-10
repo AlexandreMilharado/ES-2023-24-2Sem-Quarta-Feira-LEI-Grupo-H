@@ -79,6 +79,11 @@ export function sortFiles(): void {
   }
 }
 
+/**
+ * Atualizar a tabela para cálculo de sugestões de slots.
+ * @param {string} name - categoria da tabela a adicionar
+ * @param {TableRow[]} table - tabela a adionar ao array
+ */
 export function setUserTable(name: string, table: TableRow[]) {
   switch (name) {
     case "Características":
