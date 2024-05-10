@@ -274,10 +274,8 @@ function hideColumn(table: Tabulator, tableElement: HTMLDivElement, column: Colu
 function addHiddenColumns(table: Tabulator, tableElement: HTMLDivElement, column: ColumnDefinition, nameColumn: string): void {
   const button: HTMLButtonElement = document.createElement("button");
   button.className = "tabulator-hiddenColumn-toggle-button";
-  button.textContent = column.querySelector(
-    ".tabulator-col-title"
-  ).textContent;
-  document.getElementById(tableElement.id + "HiddenColumns")?.getElementsByTagName("ul")[0]?.appendChild(button);
+  button.textContent = column.querySelector(".tabulator-col-title").textContent;
+  document.getElementById(tableElement.id + "HiddenColumns")?.querySelector("ul")?.appendChild(button);
   button.addEventListener("click", () => {
     button.remove();
     table.showColumn(nameColumn);

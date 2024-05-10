@@ -76,11 +76,10 @@ function getHeat(rooms: any, isOccupation: boolean, isDayOfWeek: boolean): any {
     table.setFilter(customFilter, filter);
     let dataHeat: any = {};
     table.setSort("Data da aula", "asc");
-    createDataHeat(rooms, dataHeat, isDayOfWeek);
+    const numberOfRoomsPerDay = createDataHeat(rooms, dataHeat, isDayOfWeek);
     if (!isOccupation) {
-        const numerOfClassRooms: number = table.getRows(true).length;
         Object.values(dataHeat).forEach((data: any) => {
-            data["heat"] = numerOfClassRooms - data["heat"];
+            data["heat"] = numberOfRoomsPerDay[data["Data da aula"]] - data["heat"];
         });
     }
     return dataHeat;
@@ -91,27 +90,29 @@ function getHeat(rooms: any, isOccupation: boolean, isDayOfWeek: boolean): any {
  * @param {any} rooms -Salas que vão ser usadas nos dados para criar o heat map
  * @param {any} dataHeat -Dados que vão ser usados para criar o heat map
  * @param {boolean} isDayOfWeek- Indica se esta em modo de dia da semana 
- * @returns {any} -Retorna os dados que vão ser usados para criar o heat map
+ * @returns {numberOfRoomsPerDay: any} -Retorna o numero de salas por dia 
 */
 function createDataHeat(rooms: any, dataHeat: any, isDayOfWeek: boolean): any {
     let hours: number;
     let minutes: number;
     let time: string;
     let date: string;
+    const numberOfRoomsPerDay: any = {};
     console.log("Numero de salas " + table.getRows(true).length.toString());
     table.getRows(true).forEach((row: any) => {
         if (row.getData()["Sala atribuída à aula"].trim() == "" || row.getData()["Data da aula"].trim() == "") return;
         if ((row.getData()["Sala atribuída à aula"] in rooms)) {
             hours = Number(row.getData()["Hora início da aula"].substring(0, 2));
             minutes = Number(row.getData()["Hora início da aula"].substring(3, 4));
+            if (isDayOfWeek) date = getDayOfWeekFromDate(new Date(formatStringToMMDDYYY(row.getData()["Data da aula"])));
+            else date = row.getData()["Data da aula"];
             while (true) {
                 if (hours < 10) time = `0${hours}:${minutes}0:00`;
                 else time = `${hours}:${minutes}0:00`;
                 if (row.getData()["Hora fim da aula"] == time) break;
-                if (isDayOfWeek) date = getDayOfWeekFromDate(new Date(formatStringToMMDDYYY(row.getData()["Data da aula"])));
-                else date = row.getData()["Data da aula"];
                 const key: string = date + time;
-                if (key in dataHeat) Object.assign(dataHeat[key], { heat: dataHeat[key]["heat"] + 1 });
+                if (key in dataHeat)
+                    Object.assign(dataHeat[key], { heat: dataHeat[key]["heat"] + 1 });
                 else {
                     dataHeat[key] =
                     {
@@ -125,9 +126,12 @@ function createDataHeat(rooms: any, dataHeat: any, isDayOfWeek: boolean): any {
                     hours++;
                 } else minutes = 3;
             }
+            if (date in numberOfRoomsPerDay) numberOfRoomsPerDay[date] = 1 + numberOfRoomsPerDay[date];
+            else numberOfRoomsPerDay[date] = 1;
         }
     });
-    return dataHeat;
+    console.log(numberOfRoomsPerDay);
+    return numberOfRoomsPerDay;
 }
 
 /**
@@ -137,7 +141,7 @@ function createDataHeat(rooms: any, dataHeat: any, isDayOfWeek: boolean): any {
 function criteria(criteriaDiv: HTMLDivElement) {
     const buttonAddNewCriteriaDivTimeTable: HTMLButtonElement = document.createElement("button");
     buttonAddNewCriteriaDivTimeTable.textContent = "Or"
-    buttonAddNewCriteriaDivTimeTable.addEventListener("click", () => addNewCriteriaContainer(criteriaDiv, buttonAddNewCriteriaDivTimeTable, "timeTable"));
+    buttonAddNewCriteriaDivTimeTable.addEventListener("click", () => addNewCriteriaContainer(criteriaDiv, buttonAddNewCriteriaDivTimeTable, "characteristics"));
     criteriaDiv.appendChild(buttonAddNewCriteriaDivTimeTable);
     createCriteriaContainer(criteriaDiv, buttonAddNewCriteriaDivTimeTable, "characteristics");
 }
@@ -157,7 +161,7 @@ function templateData(firstDay: string, isDayOfWeek: boolean): { "x": string, "y
         const lastDay = new Date(lastDayElement.value);
         const differenceInDays = Math.round((lastDay.getTime() - firstDay.getTime()) / (1000 * 3600 * 24));
         let day = firstDay.getDay();
-        for (let i: number = 1; i != Math.min(differenceInDays, 6); i++) {
+        for (let i: number = 1; i <= Math.min(differenceInDays, 6); i++) {
             if (day == 0) day = 1;
             templateData.push({ x: getDayOfWeek(day), y: `08:00:00`, heat: "" });
             day++;
