@@ -20,6 +20,14 @@ export function addFile(table: TableRow[], order: number): void {
 }
 
 /**
+ * Clears Tables from arrays.
+ */
+export function reset() {
+  filesToCalculateSugestions = [];
+  callingOrder = [];
+  orderedArrayByInsert = [];
+}
+/**
  * Buscar o Array.
  * @returns {TableRow[][]} - Array de tabelas
  */

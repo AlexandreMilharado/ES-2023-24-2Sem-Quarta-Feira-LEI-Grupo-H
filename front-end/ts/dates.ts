@@ -47,7 +47,7 @@ export function getWeekNumber(
 
   const firstDayOfTheYear: Date = new Date(date.getFullYear(), 0, 1); //January 1st of the same year as date
 
-  var weekStartOffset: number = firstDayOfTheYear.getDay() - firstDayOfTheWeek;
+  let weekStartOffset: number = firstDayOfTheYear.getDay() - firstDayOfTheWeek;
   weekStartOffset += weekStartOffset < 0 ? 7 : 0;
 
   const daysElapsedThisYear: number = Math.ceil(
@@ -138,7 +138,15 @@ export function getSemesterWeekNumber(date: Date, semesterStartingDates: Semeste
   return weekNumberOfDate + newYearCorrection - weekNumberOfSemesterStart + 1;
 }
 
-export function getClassesStartingHours(startTime: Date, finishStartTime: Date, classDuration = 90) {
+/**
+ * Gerar o conjunto de horas de começo de aula possiveis baseados no intervalo especificado (inclusivo)
+ * A função tem em conta a hora de almoço existente 12:30 - 13:00
+ * @param {Date} startTime - Hora mínima de começo de aula
+ * @param {Date} finishStartTime - Hora máxima de começo de aula
+ * @param {number} classDuration - Duração em minutos das aulas a considerar
+ * @returns {string[]} - Lista com as horas geradas no formato 'hh:mm'
+ */
+export function getClassesStartingHours(startTime: Date, finishStartTime: Date, classDuration = 90): string[] {
   const hours = [];
   let currentHour = new Date('1 08:00:00');
   let finishHour = new Date('1 22:30:00');
@@ -164,17 +172,31 @@ export function getClassesStartingHours(startTime: Date, finishStartTime: Date, 
   return hours;
 }
 
-export function getDaysFromRange(startDate: Date, finalDate: Date): Date[] {
-  let currentDate: Date = startDate;
+/**
+ * Gerar o conjunto de dias de aula possiveis baseados no intervalo especificado (inclusivo)
+ * A função tem em conta que não há aulas nos domingos
+ * @param {Date} startDate - Data mínima  
+ * @param {Date} finalDate - Data máxima 
+ * @param {string | undefined} dayOfWeek - Caso especificado só serão gerados dias das semana (Ex: "Seg") 
+ * @returns {Data[]} - Lista com os objectos representativos das datas geradas
+ */
+export function getDaysFromRange(startDate: Date, finalDate: Date, dayOfWeek?: string): Date[] {
+  let currentDate: Date = structuredClone(startDate);
   const dates = [];
   while (currentDate.getTime() <= finalDate.getTime()) {
-    if (currentDate.getDay()) // Adiciona data se não for domingo
+    if (currentDate.getDay() && (!dayOfWeek || getDayOfWeekFromDate(currentDate) == dayOfWeek))
+      // Adiciona data se não for domingo ou se for igual ao dia da semana caso especificado
       dates.push(new Date(currentDate));
     currentDate.setDate(currentDate.getDate() + 1);
   }
   return dates;
 }
 
+/**
+ * Devolve o dia da semana
+ * @param {Date} date -Data
+ * @returns {string} -Retorna o dia da semana
+*/
 export function getDayOfWeekFromDate(date: Date): string {
   const dayOfWeek: number = date.getDay();
   return getDayOfWeek(dayOfWeek);
@@ -195,6 +217,12 @@ export function getDayOfWeek(number: number): string {
     default: return "Sab";
   }
 }
+
+/**
+ * Converte a data no formato especificado
+ * @param {Date} date -Data
+ * @returns {string} -Retorna a data em formato de DD/MM/YYYYY
+*/
 export function formatDateToDDMMYYYY(date: Date): string {
   var day = String(date.getDate()).padStart(2, '0');
   var month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() returns 0-based index
@@ -210,4 +238,17 @@ export function formatDateToDDMMYYYY(date: Date): string {
 export function formatStringToMMDDYYY(date: string): string {
   const tempDate = date.split("/");
   return (Number(tempDate[1])) + "/" + tempDate[0] + "/" + tempDate[2];
+}
+
+
+/**
+ * Compara duas datas em função do dia, mês e ano
+ * @param {Date} date1 - 1ª Data da comparação
+ * @param {Date} date2 - 2ª Data da comparação
+ * @returns {boolean} - true se tiverem os mesmo ano, mês e dia, false caso contrário 
+ */
+export function dateComparator(date1: Date, date2: Date): boolean {
+  return date1.getDate() === date2.getDate() &&  //Dia
+    date1.getMonth() === date2.getMonth() &&  //Mes
+    date1.getFullYear() === date2.getFullYear() //Ano
 }

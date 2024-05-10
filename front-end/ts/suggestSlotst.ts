@@ -1,9 +1,8 @@
 import Tabulator from "tabulator-tables";
 import { TableRow } from "./uploadCsv";
-import { formatDateToDDMMYYYY, formatStringToMMDDYYY, getClassesStartingHours, getDayOfWeekFromDate, getDaysFromRange } from "./dates";
+import { dateComparator, formatDateToDDMMYYYY, formatStringToMMDDYYY, getClassesStartingHours, getDayOfWeekFromDate, getDaysFromRange } from "./dates";
 import { customFilter, setData } from "./table";
 import { GetCarateristicas, GetHorario, sortFiles } from "./variables";
-
 createHtmlElements();
 
 /**
@@ -66,6 +65,7 @@ export function showCriteriaSuggestSlots(mainDiv: HTMLDivElement, timeTableEleme
     createCriteriaContainer(characteristicsContainer, buttonAddNewCriteriaDivCharacteristics, "characteristics");
 
     const buttonCreateTable: HTMLButtonElement = document.createElement("button");
+    buttonCreateTable.textContent = "Gerar tabela"
     buttonCreateTable.textContent = "Gerar tabela"
     buttonCreateTable.addEventListener("click", () => {
         generateSugestions(mainDiv, timeTableElement);
@@ -378,6 +378,7 @@ function generateSugestions(mainDiv: HTMLDivElement, timeTableElement: HTMLDivEl
     });
     const filteredSugestions = removeConflicts(suggestions, table);
     table = setData(timeTableElement, filteredSugestions, false);
+    table = setData(timeTableElement, filteredSugestions, false);
 }
 
 /**
@@ -389,23 +390,25 @@ function generateSugestions(mainDiv: HTMLDivElement, timeTableElement: HTMLDivEl
 function removeConflicts(suggestions: any, table: Tabulator): any {
     let conflitData: any = {};
     // table.setFilter([{ field: "Sala atribuída à aula", type: "=", value: "AA2.25" }, { field: "Data da aula", type: "=", value: "02/12/2022" }])
+    console.log(suggestions);
     table.getRows(true).forEach((row: any) => {
         if (row.getData()["Sala atribuída à aula"] == "") return;
         let hours = Number(row.getData()["Hora início da aula"].substring(0, 2));
         let minutes = Number(row.getData()["Hora início da aula"].substring(3, 4));
         let time = "";
         while (true) {
+            if (minutes == 3) {
+                minutes = 0;
+                hours++;
+            } else minutes = 3;
             if (hours < 10) time = `0${hours}:${minutes}0:00`;
             else time = `${hours}:${minutes}0:00`;
             const key = row.getData()["Sala atribuída à aula"] + row.getData()["Data da aula"] + time;
             if (row.getData()["Hora fim da aula"] == time) break;
             conflitData[key] = {};
-            if (minutes == 3) {
-                minutes = 0;
-                hours++;
-            } else minutes = 3;
         }
     });
+    console.log(conflitData);
     let rowsWithoutConflicts: any = [];
     Object.values(suggestions).forEach((data: any) => {
         const key: string = data["Sala atribuída à aula"] + data["Data da aula"];
@@ -424,7 +427,6 @@ function removeConflicts(suggestions: any, table: Tabulator): any {
 */
 function daysBasedOnFilter(mainDiv: HTMLDivElement): Date[] {
     const daysToInclude: Date[] = [];
-
     const filter: NodeListOf<Element> = mainDiv.querySelectorAll(".criteria-container-timeTable");
     for (let j = 0; j != filter.length; j++) {
         const criteriaContainerComponents = filter[j].querySelectorAll(".criteria-container-components");
@@ -432,27 +434,38 @@ function daysBasedOnFilter(mainDiv: HTMLDivElement): Date[] {
         const daysToExclude: Date[] = [];
         let startDate: Date = new Date();
         let finishDate: Date = new Date();
+        let dayOfWeek: string | undefined = undefined;
         finishDate.setMonth(finishDate.getMonth() + 1);
         for (let i = 0; i != criteriaContainerComponents.length; i++) {
             const column: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-column-selector") as HTMLSelectElement;
             const operator: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-filter-option-selector") as HTMLSelectElement;
             const inputValue: HTMLInputElement = criteriaContainerComponents[i].querySelector(".criteria-input") as HTMLInputElement;
-            if (column.value !== "Data da aula") continue;
-            if (operator.value === "==") daysToIncludeAux.push(new Date(inputValue.value))
-            else if (operator.value === "!=") daysToExclude.push(new Date(inputValue.value))
+            if (column.value !== "Data da aula" && column.value !== "Dia da semana") continue;
+
+            if (operator.value === "==")
+                if (column.value === "Data da aula")
+                    daysToIncludeAux.push(new Date(inputValue.value))
+                else
+                    dayOfWeek = inputValue.value;
+            else if (operator.value === "!=")
+                column.value === "Data da aula" ?
+                    daysToExclude.push(new Date(inputValue.value)) :
+                    daysToExclude.push(...getDaysFromRange(startDate, finishDate, inputValue.value));
+
             else if (operator.value === "<=") finishDate = new Date(inputValue.value);
             else startDate = new Date(inputValue.value);
         }
-        if (daysToIncludeAux.length < 1) {
-            daysToIncludeAux.push(...getDaysFromRange(startDate, finishDate))
-        }
+
+        if (daysToIncludeAux.length < 1)
+            daysToIncludeAux.push(...getDaysFromRange(startDate, finishDate, dayOfWeek));
 
         daysToExclude.length ?
             daysToInclude.push(...(
-                daysToIncludeAux.filter((element) => daysToExclude.every((excludedDay) => excludedDay.getTime() !== element.getTime()))
+                daysToIncludeAux.filter((element) => daysToExclude.every((excludedDay) => !dateComparator(excludedDay, element)))
             )) :
             daysToInclude.push(...daysToIncludeAux)
     }
+
     return [...(new Set(daysToInclude))];
 }
 

@@ -210,7 +210,7 @@ function createHeatMap(dataHeat: any, isDayOfWeek: boolean) {
     } else {
         colorScale.ranges([
             { less: 100, color: "#CC333F" },
-            { from: 100, to: 250, color: "##FD8060" },
+            { from: 100, to: 250, color: "#FD8060" },
             { from: 250, to: 500, color: "#FEE191" },
             { greater: 500, color: "#ffffff" }
         ]);
