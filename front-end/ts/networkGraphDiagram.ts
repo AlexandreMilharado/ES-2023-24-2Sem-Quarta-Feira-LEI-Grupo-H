@@ -19,7 +19,7 @@ createHtmlElements()
  */
 function createHtmlElements(): void {
   const mainDiv: HTMLDivElement = document.getElementById("NetworkDiagram") as HTMLDivElement;
-  const criteriaDiv: HTMLDivElement = document.getElementById("NetworkDiagramCriteria") as HTMLDivElement;
+  const criteriaDiv: HTMLDivElement = document.getElementById("NetworkDiagramCriteria")?.querySelector(".ContainerTimeTable") as HTMLDivElement;
 
   const showConflitButton: HTMLButtonElement = document.createElement("button");
   showConflitButton.textContent = "Network conflit Graph";
@@ -38,7 +38,7 @@ function createHtmlElements(): void {
     criteria(criteriaDiv);
   }, { once: true });
   mainDiv.style.display = "none";
-  document.getElementById("conflitsNetork")?.insertBefore(showConflitButton, mainDiv);
+  document.getElementById("conflitsNetwork")?.insertBefore(showConflitButton, mainDiv);
   const buttonCreateGraph: HTMLButtonElement = document.createElement("button");
 
   buttonCreateGraph.addEventListener("click", () => {
@@ -48,7 +48,7 @@ function createHtmlElements(): void {
   });
   buttonCreateGraph.textContent = "Gerar grafo"
   buttonCreateGraph.classList.add("styled-button");
-  criteriaDiv.appendChild(buttonCreateGraph);
+  document.getElementById("NetworkDiagramCriteria")?.appendChild(buttonCreateGraph);
 }
 
 /**
@@ -95,6 +95,7 @@ function createGraph() {
     nodes.push({ "id": JSON.stringify(aula) });
   });
   const networkDiagramGraph: HTMLDivElement = document.getElementById("NetworkDiagramGraph") as HTMLDivElement;
+  networkDiagramGraph.classList.remove("hidden");
   networkDiagramGraph.innerHTML = "";
   var chart = anychart.graph({ nodes: nodes, edges: edges });
   chart.title("Conflito com as aulas");

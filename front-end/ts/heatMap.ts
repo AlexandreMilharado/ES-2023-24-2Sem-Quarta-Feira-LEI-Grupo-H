@@ -15,7 +15,7 @@ createHtmlElements();
 
 function createHtmlElements(): void {
     const mainDiv: HTMLDivElement = document.getElementById("HeatMap") as HTMLDivElement;
-    const criteriaDiv: HTMLDivElement = document.getElementById("HeatMapCriteria") as HTMLDivElement;
+    const criteriaDiv: HTMLDivElement = document.getElementById("HeatMapCriteria")?.querySelector(".ContainerCharacteristics") as HTMLDivElement;
 
     const showConflitButton: HTMLButtonElement = document.createElement("button");
     showConflitButton.textContent = "Heat Map conflit";
@@ -49,7 +49,7 @@ function createHtmlElements(): void {
         createHeatMap(dataHeat, isDayOfWeek);
     });
     buttonCreateGraph.classList.add("styled-button");
-    criteriaDiv.appendChild(buttonCreateGraph);
+    document.getElementById("HeatMapCriteria")?.appendChild(buttonCreateGraph);
 }
 
 /**
