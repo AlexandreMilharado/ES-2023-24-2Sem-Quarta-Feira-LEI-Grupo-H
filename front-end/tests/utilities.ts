@@ -451,3 +451,40 @@ export function getTestEventWithEmptyValues(): FakeEvent {
                 </form>`) as HTMLElement,
 	};
 }
+
+export function getPopUpUpload() {
+	return parseToDocument(`<section id="PopUpUpload">
+        <script type="module" src="ts/uploadCsv.ts"></script>
+        <div>
+            <button id="ClosePopUp" type="close"></button>
+            <h3>UPLOAD .CSV</h3>
+            <form id="localUpload" method="post">
+                <input name="localFile" type="file" accept=".csv,.json">
+                <h6 class="line-border">or</h6>
+
+                <input name="remoteFile" type="text" id="fileInput">
+
+
+                <button type="submit">UPLOAD</button>
+            </form>
+        </div>
+    </section>`);
+}
+
+export function getPopUpSave() {
+	return parseToDocument(`<section id="PopUpSave" class="hidden">
+        <div>
+            <button id="ClosePopUpSave" type="close"></button>
+            <h3>SAVE TABLE</h3>
+            <div class="form">
+                <button id="SaveFileCSV" type="save">SAVE .CSV</button>
+                <button id="SaveFileJSON" type="save">SAVE .JSON</button>
+            </div>
+        </div>
+    </section>`);
+}
+
+export function parseToDocument(html: string): Document {
+	let parser = new DOMParser();
+	return parser.parseFromString(html, "text/html");
+}

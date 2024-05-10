@@ -1,14 +1,32 @@
 import { describe, expect, it } from "vitest";
-import { togglePopUp } from "../ts/popUp";
-import { stringToHTMLElement } from "./utilities";
+import { togglePopUp, togglePopUpSave } from "../ts/popUp";
+import { getPopUpSave, getPopUpUpload, stringToHTMLElement } from "./utilities";
 
 //@vitest-environment jsdom
 describe("togglePopUp", () => {
-    it("atualiza o array dos ficheiros corretamente", () => {
-        expect(togglePopUp(false, new Document())).toStrictEqual(undefined);
+    it("fecha corretamente o popUp", () => {
+        let doc = getPopUpUpload();
+        togglePopUp(false, doc);
+        expect(doc.getElementById("PopUpUpload")?.classList.contains("hidden")).toBe(true);
     });
 
-    it("atualiza o tamanho do array corretamente", () => {
-        expect(togglePopUp(true, new Document())).toStrictEqual(undefined);
+    it("abre corretamente o popUp", () => {
+        let doc = getPopUpUpload();
+        togglePopUp(true, doc);
+        expect(doc.getElementById("PopUpUpload")?.classList.contains("hidden")).toBe(false);
+    });
+});
+
+describe("togglePopUpSave", () => {
+    it("fecha corretamente o popUp", () => {
+        let doc = getPopUpSave();
+        togglePopUpSave(false, doc);
+        expect(doc.getElementById("PopUpSave")?.classList.contains("hidden")).toBe(true);
+    });
+
+    it("abre corretamente o popUp", () => {
+        let doc = getPopUpSave();
+        togglePopUpSave(true, doc);
+        expect(doc.getElementById("PopUpSave")?.classList.contains("hidden")).toBe(false);
     });
 });
