@@ -1,4 +1,4 @@
-import { TableRow } from "../ts/uploadCsv";
+import { TableRow } from "../ts/interfaces";
 
 /**
  * Evento falso para testar funções.
@@ -147,8 +147,7 @@ export function getTestFileJSON(): TableRow[] {
 			"Hora início da aula": "09:30:00",
 			"Hora fim da aula": "12:30:00",
 			"Data da aula": "25/11/2022",
-			"Características da sala pedida para a aula":
-				"Não necessita de sala",
+			"Características da sala pedida para a aula": "Não necessita de sala",
 			"Sala atribuída à aula": "",
 		},
 		{
@@ -161,8 +160,7 @@ export function getTestFileJSON(): TableRow[] {
 			"Hora início da aula": "09:30:00",
 			"Hora fim da aula": "12:30:00",
 			"Data da aula": "18/11/2022",
-			"Características da sala pedida para a aula":
-				"Não necessita de sala",
+			"Características da sala pedida para a aula": "Não necessita de sala",
 			"Sala atribuída à aula": "",
 		},
 		{
@@ -175,8 +173,7 @@ export function getTestFileJSON(): TableRow[] {
 			"Hora início da aula": "09:30:00",
 			"Hora fim da aula": "12:30:00",
 			"Data da aula": "11/11/2022",
-			"Características da sala pedida para a aula":
-				"Não necessita de sala",
+			"Características da sala pedida para a aula": "Não necessita de sala",
 			"Sala atribuída à aula": "",
 		},
 		{
@@ -189,8 +186,7 @@ export function getTestFileJSON(): TableRow[] {
 			"Hora início da aula": "18:00:00",
 			"Hora fim da aula": "19:30:00",
 			"Data da aula": "20/09/2022",
-			"Características da sala pedida para a aula":
-				"Sala de Aulas normal",
+			"Características da sala pedida para a aula": "Sala de Aulas normal",
 			"Sala atribuída à aula": "1E06",
 		},
 		{
@@ -203,8 +199,7 @@ export function getTestFileJSON(): TableRow[] {
 			"Hora início da aula": "18:00:00",
 			"Hora fim da aula": "19:30:00",
 			"Data da aula": "13/09/2022",
-			"Características da sala pedida para a aula":
-				"Sala de Aulas normal",
+			"Características da sala pedida para a aula": "Sala de Aulas normal",
 			"Sala atribuída à aula": "1E06",
 		},
 		{
@@ -218,8 +213,7 @@ export function getTestFileJSON(): TableRow[] {
 			"Hora início da aula": "18:00:00",
 			"Hora fim da aula": "19:00:00",
 			"Data da aula": "02/11/2022",
-			"Características da sala pedida para a aula":
-				"Sala/anfiteatro aulas",
+			"Características da sala pedida para a aula": "Sala/anfiteatro aulas",
 			"Sala atribuída à aula": "C2.02",
 		},
 	];
@@ -423,8 +417,7 @@ export function getTestEventWithUrl(url: string): FakeEvent {
 		preventDefault: function () {
 			return;
 		},
-		currentTarget:
-			stringToHTMLElement(`<form id="localUpload" method="post">
+		currentTarget: stringToHTMLElement(`<form id="localUpload" method="post">
                     <input name="localFile" type="file" multiple accept=".csv">
                     <h6 class="line-border">or</h6>
                     <input name="remoteFile" type="text" id="fileInput" value=${url}>
@@ -442,8 +435,7 @@ export function getTestEventWithEmptyValues(): FakeEvent {
 		preventDefault: function () {
 			return;
 		},
-		currentTarget:
-			stringToHTMLElement(`<form id="localUpload" method="post">
+		currentTarget: stringToHTMLElement(`<form id="localUpload" method="post">
                     <input name="localFile" type="file" multiple accept=".csv">
                     <h6 class="line-border">or</h6>
                     <input name="remoteFile" type="text" id="fileInput">
