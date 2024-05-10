@@ -8,8 +8,6 @@
     <script type="module" src="ts/init.ts"></script>
     <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.8.4/dist/js/tabulator.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
-
-
 </head>
 
 <body>
@@ -60,12 +58,14 @@
     <section id="SuggestSlots">
         <div id="ReplacementClass">
             <div id="ReplacementClassCriteria">
-
+                <div class="ContainerTimeTable">
+                    <h3>Caracteristicas de Horario</h3>
+                </div>
+                <div class="ContainerCharacteristics">
+                    <h3>Caracteristicas de Sala</h3>
+                </div>
             </div>
             <div id="ReplacementClassTable">
-                <div id="ReplacementClassCharacteristicsTable" style="display: none;">
-
-                </div>
                 <div id="ReplacementClassTimeTable">
 
                 </div>
@@ -81,12 +81,14 @@
 
             </div>
             <div id="UcClassCriteria">
-
-            </div>
-            <div id="UcClassTable">
-                <div id="UcClassCharacteristicsTable" style="display: none;">
+                <div class="ContainerTimeTable">
 
                 </div>
+                <div class="ContainerCharacteristics">
+
+                </div>
+            </div>
+            <div id="UcClassTable">
                 <div id="UcClassTimeTable">
 
                 </div>
@@ -99,9 +101,68 @@
         </div>
         </div>
     </section>
+    <section id="conflitsNetork">
+        <div id="NetworkDiagram">
+            <div id="NetworkDiagramCriteria">
+
+            </div>
+            <div id="NetworkDiagramGraph" style="height: 850px;">
+
+            </div>
+        </div>
+    </section>
+    <section id="conflitsHeat">
+        <div id="HeatMap">
+            <label id="tipoHeatMap">
+                Tipo de Heat Map:
+                <select>
+                    <option value="Ocupação">
+                        Ocupação
+                    </option>
+                    <option value="Disponbilidade">
+                        Disponbilidade
+                    </option>
+                </select>
+            </label>
+            <br>
+            <label id="eixoXHeatMap">
+                Eixo X:
+                <select>
+                    <option value="Dia da semana">
+                        Dia da semana
+                    </option>
+                    <option value="Data da aula">
+                        Dia do mês
+                    </option>
+                </select>
+            </label>
+            <br>
+            <label>
+                Eixo Y: Horas
+            </label>
+            <br>
+            <label>
+                Periodo que pretende analisar:
+                <br>
+                Inicio:<input id="inicio" type="date">
+                Fim:<input id="fim" type="date">
+            </label>
+            <div id="HeatMapCriteria">
+
+            </div>
+            <div id="map" style="height: 850px;">
+
+            </div>
+        </div>
+    </section>
+    <div id="tempTable" class="hidden">
+
+    </div>
     <script type="module" src="ts/table.ts"></script>
     <!-- <script type="module" src="ts/suggestSlotst.ts"></script> -->
     <script type="module" src="ts/suggestSlotsUC.ts"></script>
+    <script type="module" src="ts/networkGraphDiagram.ts"></script>
+    <script type="module" src="ts/heatMap.ts"></script>
 </body>
 
 </html>

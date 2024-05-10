@@ -2,6 +2,7 @@ import Tabulator from "tabulator-tables";
 import ColumnDefinition from "tabulator-tables";
 import {
   dateStringFormatCToDate,
+  formatStringToMMDDYYY,
   getSemesterStarts,
   getSemesterWeekNumber,
   getWeekNumber,
@@ -307,3 +308,4 @@ function filterByOr(table: Tabulator, tableElement: HTMLDivElement): void {
 export function customFilter(data: Tabulator, filterParams: string) {
   return eval(filterParams);
 }
+formatStringToMMDDYYY

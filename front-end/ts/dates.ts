@@ -114,10 +114,7 @@ export function getSemesterStarts(datesList: string[]): SemesterStartDates {
  * @param {SemesterStartDates} semesterStartingDates - Objecto com o inicio dos semestres existentes na informação importada
  * @returns {number} - Número da semana consoante o semestre
  */
-export function getSemesterWeekNumber(
-  date: Date,
-  semesterStartingDates: SemesterStartDates
-): string | number {
+export function getSemesterWeekNumber(date: Date, semesterStartingDates: SemesterStartDates): string | number {
   if (date === null || date.toString() === "Invalid Date") return EMPTY_DATA;
 
   const month = date.getMonth() + 1;
@@ -144,7 +141,7 @@ export function getSemesterWeekNumber(
 export function getClassesStartingHours(startTime: Date, finishStartTime: Date, classDuration = 90) {
   const hours = [];
   let currentHour = new Date('1 08:00:00');
-  let finishHour = new Date('1 22:00:00');
+  let finishHour = new Date('1 22:30:00');
   finishHour.setMinutes(finishHour.getMinutes() - classDuration);
 
   while (currentHour <= finishHour && currentHour <= finishStartTime) {
@@ -154,9 +151,9 @@ export function getClassesStartingHours(startTime: Date, finishStartTime: Date, 
       );
     }
 
-    if ((currentHour.getHours() === 11 && classDuration >= 90) || 
-    (currentHour.getHours() === 11 && currentHour.getMinutes()>30 && classDuration >= 60) ||
-    (currentHour.getHours() === 12)) {
+    if ((currentHour.getHours() === 11 && classDuration >= 90) ||
+      (currentHour.getHours() === 11 && currentHour.getMinutes() > 30 && classDuration >= 60) ||
+      (currentHour.getHours() === 12)) {
       currentHour.setHours(13);
       currentHour.setMinutes(0);
     } else {
@@ -178,23 +175,39 @@ export function getDaysFromRange(startDate: Date, finalDate: Date): Date[] {
   return dates;
 }
 
-export function getDayOfWeek(date: Date): string {
+export function getDayOfWeekFromDate(date: Date): string {
   const dayOfWeek: number = date.getDay();
-  let dayOfWeekString: string;
-  if (dayOfWeek == 0) dayOfWeekString = "Dom";
-  else if (dayOfWeek == 1) dayOfWeekString = "Seg";
-  else if (dayOfWeek == 2) dayOfWeekString = "Ter";
-  else if (dayOfWeek == 3) dayOfWeekString = "Qua";
-  else if (dayOfWeek == 4) dayOfWeekString = "Qui";
-  else if (dayOfWeek == 5) dayOfWeekString = "Sex";
-  else dayOfWeekString = "Sab";
-
-  return dayOfWeekString;
+  return getDayOfWeek(dayOfWeek);
 }
-
-export function formatDateToDDMMYYYY(date: Date) {
+/**
+ * Devolve o dia da semana
+ * @param {number} number -Dia de semana
+ * @returns {string} -Retorna o dia da semana
+*/
+export function getDayOfWeek(number: number): string {
+  switch (number) {
+    case 0: return "Dom";
+    case 1: return "Seg";
+    case 2: return "Ter";
+    case 3: return "Qua";
+    case 4: return "Qui";
+    case 5: return "Sex";
+    default: return "Sab";
+  }
+}
+export function formatDateToDDMMYYYY(date: Date): string {
   var day = String(date.getDate()).padStart(2, '0');
   var month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() returns 0-based index
   var year = date.getFullYear();
   return day + '/' + month + '/' + year;
+}
+
+/**
+ * Converte a data no formato especificado
+ * @param {Date} date -Data
+ * @returns {string} -Retorna a data em formato de MM/DD/YYYYY
+*/
+export function formatStringToMMDDYYY(date: string): string {
+  const tempDate = date.split("/");
+  return (Number(tempDate[1])) + "/" + tempDate[0] + "/" + tempDate[2];
 }

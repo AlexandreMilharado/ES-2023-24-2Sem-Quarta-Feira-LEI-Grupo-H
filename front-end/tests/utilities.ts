@@ -20,6 +20,26 @@ export function stringToHTMLElement(htmlString: string): ChildNode | null {
 	return doc.body.firstChild;
 }
 
+export function getDocument(): Document {
+	const parser: DOMParser = new DOMParser();
+	const htmlContent = `
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>New Document</title>
+		</head>
+		<body>
+		<h1>Hello, World!</h1>
+		<p>This is a new HTML document created dynamically using JavaScript.</p>
+		</body>
+		</html>
+		`;
+	const doc: Document = parser.parseFromString(htmlContent, "text/html");
+	return doc;
+}
+
 /**
  * Receber Ficheiro com o conteúdo representado na função getTestFileText().
  *

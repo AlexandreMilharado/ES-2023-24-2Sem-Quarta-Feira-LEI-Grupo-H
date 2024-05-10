@@ -262,7 +262,8 @@ export function loadInitialCsvFiles(
 ): void {
   const urls: string[] = [
     "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/Caracteriza%C3%A7%C3%A3oDasSalas.csv",
-    "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemplo.csv",
+    // "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemplo.csv",
+    "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemploConflitos.csv",
   ];
   urls.forEach(async (url, index) => {
     await getRemoteFile(url, (file) => {

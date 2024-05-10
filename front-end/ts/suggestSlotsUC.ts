@@ -26,7 +26,7 @@ function createHtmlElements(): void {
     /**Cria um container para se puder inserir os criteiros para sugerir slots das aulas de UC, mas enquanto não for clicado 
     *no botão esse container vai se encontrar invisivel
     */
-    showCriteriaSuggestSlots(suggestSlotUcDiv, document.getElementById("UcClassCharacteristicsTable") as HTMLDivElement, document.getElementById("UcClassTimeTable") as HTMLDivElement);
+    showCriteriaSuggestSlots(suggestSlotUcDiv, document.getElementById("UcClassTimeTable") as HTMLDivElement);
     ucClassContainer.style.display = "none";
     document.getElementById("SuggestSlots")?.insertBefore(suggestSlotUcButton, document.getElementById("UcClass") as HTMLDivElement);
     extraElements();
