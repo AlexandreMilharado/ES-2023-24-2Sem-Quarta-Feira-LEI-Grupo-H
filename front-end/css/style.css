@@ -5,6 +5,7 @@
 
 html {
     height: 100vh;
+    overflow-x: hidden;
 }
 
 * {
@@ -518,13 +519,13 @@ h3{
     }
 }
 
-#SuggestSlots {
+#SuggestSlots, #conflitsNetwork, #conflitsHeat {
     display: grid;
     justify-content: center;
 }
 
 .styled-button {
-    margin: 0.5vw;
+    margin: 0.5vw auto;
     width:25vw;
     margin:1vw auto;
     border: none;
@@ -542,7 +543,9 @@ h3{
 }
 
 #ReplacementClass,
-#UcClass {
+#UcClass,
+#NetworkDiagram,
+#HeatMap {
     width: 100vw;
     &>#UcClassInformation {
         display: flex;
@@ -551,6 +554,8 @@ h3{
 
     &>#ReplacementClassCriteria,
     #UcClassCriteria,
+    #NetworkDiagramCriteria,
+    #HeatMapCriteria,
     .ContainerTimeTable,
     .ContainerCharacteristics {
         width: 50vw;
@@ -622,6 +627,7 @@ h3{
                 }
             }
         }
+        &>.styled-button{width:15vw;}
     }
 
 }
@@ -629,7 +635,8 @@ h3{
 .criteria-input,
 .criteria-filter-option-selector,
 .criteria-column-selector,
-.criteria-duration-selector {
+.criteria-duration-selector,
+.styled-selector {
     height: 100%;
     width: 100%;
     border: none;
@@ -683,3 +690,48 @@ div>.tabulator{
               
            
 }
+
+#HeatMapSettings{
+    width: 40vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin:auto; 
+    box-shadow: 0px 9px 15px -1px rgba(170, 131, 196, 0.25);
+            background-color: rgb(228, 228, 228);
+            border-radius: 15px;
+            padding: 2vw !important;
+
+    &>label {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 0.5vw;
+        min-width: 50%;
+        justify-content: center;
+
+        &>select {
+            width: 50%;
+            margin-left: 0.5vw;
+        }
+    }
+    &>div{
+        text-align: center;
+        &>div{
+            margin-top: 1vw;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 100%;
+            &>label{
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
+            }
+        }
+        & .styled-selector{
+            width:60%;
+        }
+    }
+}
+
