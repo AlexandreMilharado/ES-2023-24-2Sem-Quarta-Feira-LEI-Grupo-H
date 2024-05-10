@@ -7,8 +7,10 @@ import {
   GetHorario,
   addFile,
   getFiles,
+  setUserTable,
   sortFiles,
 } from "./variables";
+import { TableCell, TableRow } from "./interfaces";
 
 /**
  * Server's Path
@@ -29,25 +31,13 @@ const LOCAL_FORM: HTMLElement | null = document.getElementById("localUpload");
 LOCAL_FORM?.addEventListener("submit", handleSubmit);
 
 /**
- * TableCell - célula da tabela.
- * @type {string | number}
- */
-export type TableCell = string | number;
-
-/**
- * Linha de dados da tabela.
- * @type TableRow
- */
-export type TableRow = Record<string, TableCell>;
-
-/**
  * Dados do forms upload .CSV.
  * @interface FormDataJson
- * TODO
  */
 export interface FormDataJson {
   localFile: File;
   remoteFile: string;
+  fileType: string;
 }
 
 /**
@@ -80,7 +70,7 @@ export async function handleSubmit(
 
   const form: HTMLFormElement = event.currentTarget as HTMLFormElement;
 
-  const { localFile, remoteFile }: FormDataJson = formDataToJson(
+  const { localFile, remoteFile, fileType }: FormDataJson = formDataToJson(
     new FormData(form)
   );
 
@@ -123,7 +113,10 @@ export async function handleSubmit(
     return;
   }
   return fileTable
-    .then((file) => handleData(file))
+    .then((file) => {
+      handleData(file);
+      setUserTable(fileType, file);
+    })
     .catch((e) => {
       return e.response?.data
         ? JSON.stringify(e.response.data)
@@ -165,6 +158,7 @@ export function formDataToJson(formData: FormData): FormDataJson {
   return {
     localFile: formData.get("localFile") as File,
     remoteFile: formData.get("remoteFile") as string,
+    fileType: formData.get("fileType") as string,
   };
 }
 
