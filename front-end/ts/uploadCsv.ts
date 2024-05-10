@@ -61,7 +61,10 @@ export interface FormDataJson {
  */
 export async function handleSubmit(
   event: SubmitEvent,
-  handleData: (file: TableRow[]) => void = setData,
+  handleData: (
+    tableElement: HTMLDivElement,
+    file: TableRow[]
+  ) => void = setData,
   alertFunction: (message?: any) => void = alert
 ): Promise<string | void> {
   if (!event) return;
@@ -114,7 +117,10 @@ export async function handleSubmit(
   }
   return fileTable
     .then((file) => {
-      handleData(file);
+      handleData(
+        document.getElementById("HorarioPrincipal") as HTMLDivElement,
+        file
+      );
       setUserTable(fileType, file);
     })
     .catch((e) => {

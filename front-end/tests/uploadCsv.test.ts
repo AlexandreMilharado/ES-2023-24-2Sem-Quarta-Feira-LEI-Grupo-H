@@ -23,7 +23,7 @@ import {
  * @vitest-environment jsdom
  */
 describe("handleSubmit", () => {
-  const TESTBACKEND = true;
+	const TESTBACKEND = true;
 	// it.skip("SKIP A TEST");
 	// it.todo("ADD UNSPECIFIED TESTS");
 
@@ -49,7 +49,7 @@ describe("handleSubmit", () => {
 		let result: string | void = await handleSubmit(
 			event,
 			(file) => file,
-			() => {}
+			() => { }
 		);
 		expect(result).toEqual(expectedError);
 		event = getTestEventWithUrl(
@@ -58,7 +58,7 @@ describe("handleSubmit", () => {
 		result = await handleSubmit(
 			event,
 			(file) => file,
-			() => {}
+			() => { }
 		);
 		expect(result).toEqual(expectedError);
 		event = getTestEventWithUrl(
@@ -67,7 +67,7 @@ describe("handleSubmit", () => {
 		result = await handleSubmit(
 			event,
 			(file) => file,
-			() => {}
+			() => { }
 		);
 		expect(result).toEqual(expectedError);
 		event = getTestEventWithUrl(
@@ -76,7 +76,7 @@ describe("handleSubmit", () => {
 		result = await handleSubmit(
 			event,
 			(file) => file,
-			() => {}
+			() => { }
 		);
 		expect(result).toEqual(expectedError);
 		event = getTestEventWithUrl(
@@ -85,7 +85,7 @@ describe("handleSubmit", () => {
 		result = await handleSubmit(
 			event,
 			(file) => file,
-			() => {}
+			() => { }
 		);
 		expect(result).toEqual(expectedError);
 	});
@@ -94,7 +94,7 @@ describe("handleSubmit", () => {
 		let event: any = getTestEventWithUrl(
 			"https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeTeste.json"
 		);
-		const result: string | void = await handleSubmit(event, (file) => file);
+		const result: string | void = await handleSubmit(event, (_, file) => file);
 		expect(JSON.stringify(result)).toEqual(
 			JSON.stringify(getTestFileJSON())
 		);
@@ -104,7 +104,7 @@ describe("handleSubmit", () => {
 		let event: any = getTestEventWithUrl(
 			"https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeTeste.csv"
 		);
-		const result: string | void = await handleSubmit(event, (file) => file);
+		const result: string | void = await handleSubmit(event, (_, file) => file);
 		// const isMatch: boolean =
 		//   result === "Não conseguiu conectar-se ao servidor." ||
 		//   JSON.stringify(result) === JSON.stringify(getTestFileJSON());
