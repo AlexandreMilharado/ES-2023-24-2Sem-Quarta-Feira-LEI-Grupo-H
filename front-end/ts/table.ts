@@ -6,9 +6,9 @@ import {
   getSemesterWeekNumber,
   getWeekNumber,
 } from "./dates";
-import { TableRow } from "./uploadCsv";
+import { TableRow } from "./interfaces";
 import { togglePopUpSave } from "./popUp";
-import { createHtmlElements } from "./suggestSlotst"
+import { createHtmlElements } from "./suggestSlotst";
 import { GetHorario, sortFiles } from "./variables";
 
 /**
@@ -81,7 +81,11 @@ let savePopUpButton: HTMLButtonElement;
  *
  * @param {TableRow[]} file - dados do ficheiro .CSV importado
  */
-export function setData(tableElement: HTMLDivElement, file: TableRow[], addSemana = true): Tabulator {
+export function setData(
+  tableElement: HTMLDivElement,
+  file: TableRow[],
+  addSemana = true
+): Tabulator {
   // tabledata = file;
   if (addSemana) addSemanasColumns();
   sortFiles();
@@ -123,13 +127,18 @@ function renderFilterProps(tableElement: HTMLDivElement): void {
   const filterToggleButton = document.createElement("button");
   filterToggleButton.className = "tabulator-filter-toggle-button";
 
-  const paginators: HTMLCollectionOf<Element> = tableElement.getElementsByClassName("tabulator-paginator");
+  const paginators: HTMLCollectionOf<Element> =
+    tableElement.getElementsByClassName("tabulator-paginator");
 
   for (let i = 0; i < paginators.length; i++) {
     paginators.item(i)?.prepend(filterToggleButton);
-    filterToggleButton.addEventListener("click", () => toggleFilter(tableElement));
+    filterToggleButton.addEventListener("click", () =>
+      toggleFilter(tableElement)
+    );
     paginators.item(i)?.prepend(editToggleButton);
-    editToggleButton.addEventListener("click", () => toggleEdit(tableElement, editToggleButton));
+    editToggleButton.addEventListener("click", () =>
+      toggleEdit(tableElement, editToggleButton)
+    );
     paginators.item(i)?.prepend(savePopUpButton);
     savePopUpButton.addEventListener("click", () => togglePopUpSave(true));
   }
@@ -150,9 +159,11 @@ function renderFilterProps(tableElement: HTMLDivElement): void {
  * See {@link dateStringFormatCToDate} | {@link getWeekNumber} | {@link getSemesterWeekNumber}.
  */
 function addSemanasColumns(): void {
-  if (!tabledata.some(row => row.hasOwnProperty('Data da aula'))) return;
+  if (!tabledata.some((row) => row.hasOwnProperty("Data da aula"))) return;
 
-  const startSemesterDates = getSemesterStarts(tabledata.map((row) => row['Data da aula'] as string));
+  const startSemesterDates = getSemesterStarts(
+    tabledata.map((row) => row["Data da aula"] as string)
+  );
   tabledata.forEach((row) => {
     let dateObject: Date;
     try {
@@ -163,7 +174,10 @@ function addSemanasColumns(): void {
       return;
     }
     row["Semana do Ano"] = getWeekNumber(dateObject);
-    row["Semana do Semestre"] = getSemesterWeekNumber(dateObject, startSemesterDates);
+    row["Semana do Semestre"] = getSemesterWeekNumber(
+      dateObject,
+      startSemesterDates
+    );
   });
 }
 
@@ -181,27 +195,36 @@ function toggleFilter(tableElement: HTMLDivElement): void {
 
   if (toggled == "off") {
     tableElement.setAttribute("filters", "and");
-    tableElement.querySelectorAll(".tabulator-header-filter").forEach((element) => {
-      element.querySelector("input")?.classList.remove("hidden");
-    });
+    tableElement
+      .querySelectorAll(".tabulator-header-filter")
+      .forEach((element) => {
+        element.querySelector("input")?.classList.remove("hidden");
+      });
   } else if (toggled == "and") {
     tableElement.setAttribute("filters", "or");
-    tableElement.querySelectorAll(".tabulator-header-filter").forEach((element) => {
-      element.querySelector("input")?.classList.add("hidden");
-      element.querySelector(".filter-OR")?.classList.remove("hidden");
-    });
+    tableElement
+      .querySelectorAll(".tabulator-header-filter")
+      .forEach((element) => {
+        element.querySelector("input")?.classList.add("hidden");
+        element.querySelector(".filter-OR")?.classList.remove("hidden");
+      });
   } else {
     tableElement.setAttribute("filters", "off");
-    tableElement.querySelectorAll(".tabulator-header-filter").forEach((element) => {
-      element.querySelector(".filter-OR")?.classList.add("hidden");
-    });
+    tableElement
+      .querySelectorAll(".tabulator-header-filter")
+      .forEach((element) => {
+        element.querySelector(".filter-OR")?.classList.add("hidden");
+      });
   }
 }
 
 /**
  * Adiciona a todas as colunas o botão de esconder e um novo input de filtro OR.
  */
-function addHiddenButtonsAndInputsToColumns(table: Tabulator, tableElement: HTMLDivElement): void {
+function addHiddenButtonsAndInputsToColumns(
+  table: Tabulator,
+  tableElement: HTMLDivElement
+): void {
   let columns: NodeListOf<Element> =
     tableElement.querySelectorAll(".tabulator-col");
 
@@ -215,10 +238,10 @@ function addHiddenButtonsAndInputsToColumns(table: Tabulator, tableElement: HTML
     input.className = "hidden filter-OR";
 
     column.querySelector(".tabulator-col-sorter")?.appendChild(button);
-    const nameColumn: string = column.getAttribute(
-      "tabulator-field"
-    ) as string;
-    button.addEventListener("click", () => hideColumn(table, tableElement, column, nameColumn));
+    const nameColumn: string = column.getAttribute("tabulator-field") as string;
+    button.addEventListener("click", () =>
+      hideColumn(table, tableElement, column, nameColumn)
+    );
     column.querySelector(".tabulator-header-filter")?.appendChild(input);
     input.addEventListener("keypress", () => filterByOr(table, tableElement));
   });
@@ -227,23 +250,26 @@ function addHiddenButtonsAndInputsToColumns(table: Tabulator, tableElement: HTML
 /**
  * Esconde/mostra os botões para apagar cada coluna na tabela.
  */
-function toggleEdit(tableElement: HTMLDivElement, editToggleButton: HTMLButtonElement): void {
+function toggleEdit(
+  tableElement: HTMLDivElement,
+  editToggleButton: HTMLButtonElement
+): void {
   if (editToggleButton.getAttribute("toggled") == "on") {
     editToggleButton.setAttribute("toggled", "off");
-    tableElement.querySelectorAll(".tabulator-col-sorter").forEach((element) => {
-      element.querySelector(".tabulator-arrow")?.classList.remove("hidden");
-      element
-        .querySelector(".tabulator-hideColumn-toggle-button")
-        ?.classList.add("hidden");
-    });
+    tableElement
+      .querySelectorAll(".tabulator-col-sorter")
+      .forEach((element) => {
+        element.querySelector(".tabulator-arrow")?.classList.remove("hidden");
+        element
+          .querySelector(".tabulator-hideColumn-toggle-button")
+          ?.classList.add("hidden");
+      });
   } else {
     editToggleButton.setAttribute("toggled", "on");
     tableElement
       .querySelectorAll(".tabulator-col-sorter")
       .forEach((element) => {
-        element
-          .querySelector(".tabulator-arrow")
-          ?.classList.add("hidden");
+        element.querySelector(".tabulator-arrow")?.classList.add("hidden");
         element
           .querySelector(".tabulator-hideColumn-toggle-button")
           ?.classList.remove("hidden");
@@ -258,7 +284,12 @@ function toggleEdit(tableElement: HTMLDivElement, editToggleButton: HTMLButtonEl
  * @param {Column} column - coluna da tabela
  * @param {String} nameColumn - nome da coluna
  */
-function hideColumn(table: Tabulator, tableElement: HTMLDivElement, column: ColumnDefinition, nameColumn: string): void {
+function hideColumn(
+  table: Tabulator,
+  tableElement: HTMLDivElement,
+  column: ColumnDefinition,
+  nameColumn: string
+): void {
   table.hideColumn(nameColumn);
   addHiddenColumns(table, tableElement, column, nameColumn);
 }
@@ -270,13 +301,19 @@ function hideColumn(table: Tabulator, tableElement: HTMLDivElement, column: Colu
  * @param {Column} column - coluna da tabela
  * @param {String} nameColumn - nome da coluna
  */
-function addHiddenColumns(table: Tabulator, tableElement: HTMLDivElement, column: ColumnDefinition, nameColumn: string): void {
+function addHiddenColumns(
+  table: Tabulator,
+  tableElement: HTMLDivElement,
+  column: ColumnDefinition,
+  nameColumn: string
+): void {
   const button: HTMLButtonElement = document.createElement("button");
   button.className = "tabulator-hiddenColumn-toggle-button";
-  button.textContent = column.querySelector(
-    ".tabulator-col-title"
-  ).textContent;
-  document.getElementById(tableElement.id + "HiddenColumns")?.getElementsByTagName("ul")[0]?.appendChild(button);
+  button.textContent = column.querySelector(".tabulator-col-title").textContent;
+  document
+    .getElementById(tableElement.id + "HiddenColumns")
+    ?.getElementsByTagName("ul")[0]
+    ?.appendChild(button);
   button.addEventListener("click", () => {
     button.remove();
     table.showColumn(nameColumn);
