@@ -5,6 +5,7 @@ import {
   getSemesterWeekNumber,
   getSemesterStarts,
   getWeekNumber,
+  dateComparator
 } from "../ts/dates";
 
 describe("dateStringFormatCToDate", () => {
@@ -118,3 +119,22 @@ describe("getSemesterStarts", () => {
     });
   });
 });
+
+describe("dateComparator", () => {
+  it("Compara dois objetos Date com a mesma Data baseado apenas no Ano, Mês e dia, desconsiderando a hora", () => {
+    expect(
+      dateComparator(
+        new Date("2024-01-01"),
+        new Date("2024-01-01 20:53")
+      )
+    ).toBe(true)
+  })
+  it("Compara dois objetos Date com diferentes Datas baseado apenas no Ano, Mês e dia, desconsiderando a hora", () => {
+    expect(
+      dateComparator(
+        new Date("2024-01-01"),
+        new Date("2024-01-02")
+      )
+    ).toBe(false)
+  })
+})
