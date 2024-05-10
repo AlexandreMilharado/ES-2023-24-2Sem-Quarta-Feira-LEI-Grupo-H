@@ -117,11 +117,11 @@ export async function handleSubmit(
   }
   return fileTable
     .then((file) => {
-      handleData(
+      setUserTable(fileType, file);
+      return handleData(
         document.getElementById("HorarioPrincipal") as HTMLDivElement,
         file
       );
-      setUserTable(fileType, file);
     })
     .catch((e) => {
       return e.response?.data
