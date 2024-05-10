@@ -9,10 +9,10 @@ import { addFile } from "./variables";
  */
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("ClosePopUp")?.addEventListener("click", () => {
-    togglePopUp(false);
+    togglePopUp(false, document);
   });
   document.getElementById("OpenPopUp")?.addEventListener("click", () => {
-    togglePopUp(true);
+    togglePopUp(true, document);
   });
 
   loadInitialCsvFiles(addFile);

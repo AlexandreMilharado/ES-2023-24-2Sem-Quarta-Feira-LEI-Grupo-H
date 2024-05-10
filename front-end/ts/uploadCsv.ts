@@ -85,7 +85,7 @@ export async function handleSubmit(event: SubmitEvent, handleData: (tableElement
     return "Forms não preenchido.";
 
   form.reset();
-  togglePopUp(false);
+  togglePopUp(false, document);
 
   let fileString: Promise<string>;
   let fileTable: Promise<TableRow[]>;
