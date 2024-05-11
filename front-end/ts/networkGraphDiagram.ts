@@ -97,7 +97,7 @@ function createGraph() {
   const networkDiagramGraph: HTMLDivElement = document.getElementById("NetworkDiagramGraph") as HTMLDivElement;
   networkDiagramGraph.classList.remove("hidden");
   networkDiagramGraph.innerHTML = "";
-  var chart = anychart.graph({ nodes: nodes, edges: edges });
+  const chart = anychart.graph({ nodes: nodes, edges: edges });
   chart.title("Conflito com as aulas");
   chart.container("NetworkDiagramGraph").draw();
 }
@@ -141,10 +141,10 @@ function getCriteriaInputs(mainDiv: HTMLDivElement): string {
   let finalFilter: string = "";
   table.clearFilter();
   const filter: NodeListOf<Element> = mainDiv.querySelectorAll(".criteria-container-characteristics");
-  for (let i = 0; i != filter.length; i++) {
+  for (let i = 0; i < filter.length; i++) {
     let criteriaString: string = "";
     const criteriaContainerComponents = filter[i].querySelectorAll(".criteria-container-components");
-    for (let i = 0; i != criteriaContainerComponents.length; i++) {
+    for (let i = 0; i < criteriaContainerComponents.length; i++) {
       const column: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-column-selector") as HTMLSelectElement;
       const operator: HTMLSelectElement = criteriaContainerComponents[i].querySelector(".criteria-filter-option-selector") as HTMLSelectElement;
       const input: HTMLInputElement = criteriaContainerComponents[i].querySelector(".criteria-input") as HTMLInputElement;

@@ -1,6 +1,6 @@
 import Tabulator from "tabulator-tables";
 import { TableRow } from "./interfaces";
-import { dateComparator, formatDateToDDMMYYYY, formatStringToMMDDYYY, getClassesStartingHours, getDayOfWeekFromDate, getDaysFromRange } from "./dates";
+import { dateComparator, formatDateToDDMMYYYY, getClassesStartingHours, getDayOfWeekFromDate, getDaysFromRange } from "./dates";
 import { customFilter, setData } from "./table";
 import { GetCarateristicas, GetHorario, sortFiles } from "./variables";
 createHtmlElements();
@@ -301,8 +301,8 @@ export function getCharacteristics(mainDiv: HTMLDivElement, tabledata: TableRow[
   let filteredRow: any = {};
   table.getRows(true).forEach((row: any) => {
     const object: any = {};
-    for (let i = 0; i != usedColumns.length; i++) {
-      if (!(usedColumns[i] == "Nome sala")) object[usedColumns[i]] = row.getData()[usedColumns[i]];
+    for (let i = 0; i < usedColumns.length; i++) {
+      if (usedColumns[i] != "Nome sala") object[usedColumns[i]] = row.getData()[usedColumns[i]];
     }
     filteredRow[row.getData()["Nome sala"]] = object;
   });
@@ -376,7 +376,6 @@ function generateSugestions(mainDiv: HTMLDivElement, timeTableElement: HTMLDivEl
     }
   });
   const filteredSugestions = removeConflicts(suggestions, table);
-  table = setData(timeTableElement, filteredSugestions, false);
   table = setData(timeTableElement, filteredSugestions, false);
 }
 

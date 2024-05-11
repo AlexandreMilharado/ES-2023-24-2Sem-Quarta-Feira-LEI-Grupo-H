@@ -63,7 +63,7 @@ function getHeat(rooms: any, isOccupation: boolean, isDayOfWeek: boolean): any {
     const endElement: HTMLInputElement = document.getElementById("fim") as HTMLInputElement;
     const dates = getDaysFromRange(new Date(startElement.value), new Date(endElement.value));
     let filter: string = "(";
-    for (let i = 0; i != dates.length; i++) {
+    for (let i = 0; i < dates.length; i++) {
         if (i == dates.length - 1) {
             filter += `data["Data da aula"] == "${formatDateToDDMMYYYY(dates[i])}"`;
         } else {
@@ -187,15 +187,9 @@ function templateData(firstDay: string, isDayOfWeek: boolean): { "x": string, "y
 function createHeatMap(dataHeat: any, isDayOfWeek: boolean) {
     const firstDay: any = Object.values(dataHeat)[0];
     const dataHeatMap: { "x": string, "y": string, "heat": string }[] = templateData(firstDay["Data da aula"], isDayOfWeek);
-    if (isDayOfWeek) {
-        Object.values(dataHeat).forEach((data: any) => {
-            dataHeatMap.push({ x: data["Data da aula"], y: data["Hora início da aula"], heat: data["heat"] })
-        });
-    } else {
-        Object.values(dataHeat).forEach((data: any) => {
-            dataHeatMap.push({ x: data["Data da aula"], y: data["Hora início da aula"], heat: data["heat"] })
-        });
-    }
+    Object.values(dataHeat).forEach((data: any) => {
+        dataHeatMap.push({ x: data["Data da aula"], y: data["Hora início da aula"], heat: data["heat"] })
+    });
     const typeHeatMap: string = document.getElementById("tipoHeatMap")?.querySelector("select")?.value as string;
     let colorScale = anychart.scales.ordinalColor();
     if (typeHeatMap == "Ocupação") {

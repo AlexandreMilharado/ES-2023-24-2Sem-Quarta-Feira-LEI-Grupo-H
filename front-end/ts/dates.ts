@@ -209,9 +209,9 @@ export function getDayOfWeek(number: number): string {
  * @returns {string} -Retorna a data em formato de DD/MM/YYYYY
 */
 export function formatDateToDDMMYYYY(date: Date): string {
-  var day = String(date.getDate()).padStart(2, '0');
-  var month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() returns 0-based index
-  var year = date.getFullYear();
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() returns 0-based index
+  const year = date.getFullYear();
   return day + '/' + month + '/' + year;
 }
 
