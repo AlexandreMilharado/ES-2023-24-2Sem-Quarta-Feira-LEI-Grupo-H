@@ -5,17 +5,20 @@ import {
   getSemesterWeekNumber,
   getSemesterStarts,
   getWeekNumber,
+  formatDateToDDMMYYYY,
+  getDaysFromRange,
+  getClassesStartingHours,
 } from "../ts/dates";
 
 describe("dateStringFormatCToDate", () => {
   it("devolve Invalid Data se for inserida uma data não válida", () => {
     const result: boolean =
       (dateStringFormatCToDate("38/01/2023") as Date).toString() ===
-        "Invalid Date" &&
+      "Invalid Date" &&
       (dateStringFormatCToDate("18/01/-2023") as Date).toString() ===
-        "Invalid Date" &&
+      "Invalid Date" &&
       (dateStringFormatCToDate("18/01/a") as Date).toString() ===
-        "Invalid Date";
+      "Invalid Date";
     expect(result).toBe(true);
   });
 
@@ -118,3 +121,36 @@ describe("getSemesterStarts", () => {
     });
   });
 });
+
+describe('formatDateToDDMMYYYY', () => {
+  it('converte bem a data', () => {
+    expect(formatDateToDDMMYYYY(new Date(1995, 11, 17))).toStrictEqual("17/12/1995");
+  })
+});
+
+describe('getDaysFromRange', () => {
+  it('converter range de datas', () => {
+    expect(getDaysFromRange(new Date(2024, 0, 1), new Date(2024, 0, 10))).toStrictEqual([
+      new Date("2024-01-01"),
+      new Date("2024-01-02"),
+      new Date("2024-01-03"),
+      new Date("2024-01-04"),
+      new Date("2024-01-05"),
+      new Date("2024-01-06"),
+      new Date("2024-01-08"),
+      new Date("2024-01-09"),
+      new Date("2024-01-10"),
+    ]);
+  })
+});
+
+describe('getClassesStartingHours', () => {
+  it('devolve inicio das aulas corretamente num espaço de 90 minutos', () => {
+    expect(getClassesStartingHours(new Date("1 08:00:00"), new Date("1 12:30:00"))).toStrictEqual([
+      "08:00",
+      "09:30",
+      "11:00",
+    ]);
+  })
+});
+

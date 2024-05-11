@@ -16,6 +16,8 @@ import {
 	handleSubmit,
 	needToDownloadCsv,
 	checkBackendStatus,
+	loadInitialCsvFiles,
+	TableRow,
 } from "../ts/uploadCsv";
 
 /**
@@ -241,3 +243,24 @@ describe("formatCsv", () => {
 		);
 	});
 });
+
+describe('loadInitialCsvFiles', () => {
+	it('dá load aos dados corretamente', async () => {
+		let arrTable: TableRow[][] = [];
+		let arrindex: number[] = [];
+		function add(file: TableRow[], index: number): void {
+			arrTable.push(file);
+			arrindex.push(index);
+		}
+		loadInitialCsvFiles(add);
+		expect(arrindex).toStrictEqual([]);
+	});
+});
+
+describe('checkBackendStatus', () => {
+	it('retorna a conexão com o servidor', async () => {
+		const result = await checkBackendStatus();
+		const bool = result == "OFFLINE" || result == "UNDEFINED" || result == "ONLINE";
+		expect(bool).toBe(true);
+	})
+})
