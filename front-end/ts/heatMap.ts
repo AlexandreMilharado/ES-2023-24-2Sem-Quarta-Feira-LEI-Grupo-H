@@ -38,7 +38,6 @@ function createHtmlElements(): void {
     buttonCreateGraph.textContent = "Gerar heat map"
     buttonCreateGraph.addEventListener("click", () => {
         const rooms = getCharacteristics(mainDiv, GetCarateristicas());
-        console.log(rooms);
         if (!Object.keys(rooms).length) {
             window.alert("Não existem salas com esses criterios");
             return;
@@ -98,7 +97,6 @@ function createDataHeat(rooms: any, dataHeat: any, isDayOfWeek: boolean): any {
     let time: string;
     let date: string;
     const numberOfRoomsPerDay: any = {};
-    console.log("Numero de salas " + table.getRows(true).length.toString());
     table.getRows(true).forEach((row: any) => {
         if (row.getData()["Sala atribuída à aula"].trim() == "" || row.getData()["Data da aula"].trim() == "") return;
         if ((row.getData()["Sala atribuída à aula"] in rooms)) {

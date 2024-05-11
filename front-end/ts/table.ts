@@ -7,7 +7,7 @@ import {
   getSemesterWeekNumber,
   getWeekNumber,
 } from "./dates";
-import { TableRow } from "./uploadCsv";
+import { TableRow } from "./interfaces";
 import { togglePopUpSave } from "./popUp";
 import { createHtmlElements } from "./suggestSlotst"
 import { GetHorario, sortFiles } from "./variables";

@@ -1,13 +1,14 @@
-import { TableRow } from "./uploadCsv";
-
 /**
  * Funções para manusear o upload de múltiplos ficheiros
  * @module TablesUploaded
  */
 
+import { TableRow } from "./interfaces";
+
 let filesToCalculateSugestions: TableRow[][] = [];
 let callingOrder: number[] = [];
 let orderedArrayByInsert: TableRow[][];
+let tablesByUser: TableRow[][] = [[], []];
 
 /**
  * Adds table to TableRow[][] for future calculations.
@@ -40,7 +41,8 @@ export function getFiles(): TableRow[][] {
  * @returns {TableRow[]} - Horário em tabela
  */
 export function GetHorario(): TableRow[] {
-  return orderedArrayByInsert[1];
+  if (tablesByUser[1].length == 0) return orderedArrayByInsert[1];
+  return tablesByUser[1];
 }
 
 /**
@@ -48,7 +50,8 @@ export function GetHorario(): TableRow[] {
  * @returns {TableRow[]} - Características em tabela
  */
 export function GetCarateristicas(): TableRow[] {
-  return orderedArrayByInsert[0];
+  if (tablesByUser[0].length == 0) return orderedArrayByInsert[0];
+  return tablesByUser[0];
 }
 
 /**
@@ -73,5 +76,22 @@ export function sortFiles(): void {
   for (let i = 0; i < callingOrder.length; i++) {
     orderedArrayByInsert[callingOrder[i]] =
       filesToCalculateSugestions[callingOrder[i]];
+  }
+}
+
+/**
+ * Atualizar a tabela para cálculo de sugestões de slots.
+ * @param {string} name - categoria da tabela a adicionar
+ * @param {TableRow[]} table - tabela a adionar ao array
+ */
+export function setUserTable(name: string, table: TableRow[]) {
+  switch (name) {
+    case "Características":
+      tablesByUser[0] = table;
+      break;
+    case "Horário":
+      tablesByUser[1] = table;
+      break;
+    default:
   }
 }

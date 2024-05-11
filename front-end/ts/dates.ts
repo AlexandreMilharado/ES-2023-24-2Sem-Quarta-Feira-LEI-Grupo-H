@@ -44,21 +44,13 @@ export function getWeekNumber(
   firstDayOfTheWeek: number = 1
 ): number | string {
   if (date === null || date.toString() === "Invalid Date") return EMPTY_DATA;
-
   const firstDayOfTheYear: Date = new Date(date.getFullYear(), 0, 1); //January 1st of the same year as date
-
   let weekStartOffset: number = firstDayOfTheYear.getDay() - firstDayOfTheWeek;
   weekStartOffset += weekStartOffset < 0 ? 7 : 0;
-
   const daysElapsedThisYear: number = Math.ceil(
-    Math.abs(date.getTime() - firstDayOfTheYear.getTime()) /
-    (1000 * 60 * 60 * 24)
-  ); //Days since january 1st
-
+    Math.abs(date.getTime() - firstDayOfTheYear.getTime()) / (1000 * 60 * 60 * 24)); //Days since january 1st
   const correctedDay: number = daysElapsedThisYear + weekStartOffset;
-
   const weekNumber: number = Math.floor(correctedDay / 7) + 1;
-
   return weekNumber;
 }
 
@@ -123,10 +115,7 @@ export function getSemesterWeekNumber(date: Date, semesterStartingDates: Semeste
     month > 8 || (month < 2 && date.getDay() < 20) ? "first" : "second";
 
   const semesterStart: Date = semesterStartingDates[academicYear][semester]!;
-
-  const weekNumberOfSemesterStart: number = getWeekNumber(
-    semesterStart
-  ) as number;
+  const weekNumberOfSemesterStart: number = getWeekNumber(semesterStart) as number;
 
   const weekNumberOfDate: number = getWeekNumber(date) as number;
 
@@ -151,14 +140,10 @@ export function getClassesStartingHours(startTime: Date, finishStartTime: Date, 
   let currentHour = new Date('1 08:00:00');
   let finishHour = new Date('1 22:30:00');
   finishHour.setMinutes(finishHour.getMinutes() - classDuration);
-
   while (currentHour <= finishHour && currentHour <= finishStartTime) {
     if (currentHour >= startTime) {
-      hours.push(
-        `${String(currentHour.getHours()).padStart(2, '0')}:${String(currentHour.getMinutes()).padStart(2, '0')}`
-      );
+      hours.push(`${String(currentHour.getHours()).padStart(2, '0')}:${String(currentHour.getMinutes()).padStart(2, '0')}`);
     }
-
     if ((currentHour.getHours() === 11 && classDuration >= 90) ||
       (currentHour.getHours() === 11 && currentHour.getMinutes() > 30 && classDuration >= 60) ||
       (currentHour.getHours() === 12)) {
@@ -168,7 +153,6 @@ export function getClassesStartingHours(startTime: Date, finishStartTime: Date, 
       currentHour.setMinutes(currentHour.getMinutes() + classDuration);
     }
   }
-
   return hours;
 }
 
@@ -201,6 +185,7 @@ export function getDayOfWeekFromDate(date: Date): string {
   const dayOfWeek: number = date.getDay();
   return getDayOfWeek(dayOfWeek);
 }
+
 /**
  * Devolve o dia da semana
  * @param {number} number -Dia de semana
@@ -239,7 +224,6 @@ export function formatStringToMMDDYYY(date: string): string {
   const tempDate = date.split("/");
   return (Number(tempDate[1])) + "/" + tempDate[0] + "/" + tempDate[2];
 }
-
 
 /**
  * Compara duas datas em função do dia, mês e ano
