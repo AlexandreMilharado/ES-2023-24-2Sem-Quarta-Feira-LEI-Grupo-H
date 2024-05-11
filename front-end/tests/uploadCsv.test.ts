@@ -54,7 +54,7 @@ describe("handleSubmit", () => {
       let result: string | void = await handleSubmit(
         event,
         (file) => file,
-        () => {}
+        () => { }
       );
       expect(result).toEqual(expectedError);
       event = getTestEventWithUrl(
@@ -63,7 +63,7 @@ describe("handleSubmit", () => {
       result = await handleSubmit(
         event,
         (file) => file,
-        () => {}
+        () => { }
       );
       expect(result).toEqual(expectedError);
       event = getTestEventWithUrl(
@@ -72,7 +72,7 @@ describe("handleSubmit", () => {
       result = await handleSubmit(
         event,
         (file) => file,
-        () => {}
+        () => { }
       );
       expect(result).toEqual(expectedError);
       event = getTestEventWithUrl(
@@ -81,7 +81,7 @@ describe("handleSubmit", () => {
       result = await handleSubmit(
         event,
         (file) => file,
-        () => {}
+        () => { }
       );
       expect(result).toEqual(expectedError);
       event = getTestEventWithUrl(
@@ -90,7 +90,7 @@ describe("handleSubmit", () => {
       result = await handleSubmit(
         event,
         (file) => file,
-        () => {}
+        () => { }
       );
       expect(result).toEqual(expectedError);
     }

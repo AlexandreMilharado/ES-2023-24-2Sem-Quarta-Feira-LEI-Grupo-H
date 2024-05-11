@@ -44,21 +44,13 @@ export function getWeekNumber(
   firstDayOfTheWeek: number = 1
 ): number | string {
   if (date === null || date.toString() === "Invalid Date") return EMPTY_DATA;
-
   const firstDayOfTheYear: Date = new Date(date.getFullYear(), 0, 1); //January 1st of the same year as date
-
   let weekStartOffset: number = firstDayOfTheYear.getDay() - firstDayOfTheWeek;
   weekStartOffset += weekStartOffset < 0 ? 7 : 0;
-
   const daysElapsedThisYear: number = Math.ceil(
-    Math.abs(date.getTime() - firstDayOfTheYear.getTime()) /
-    (1000 * 60 * 60 * 24)
-  ); //Days since january 1st
-
+    Math.abs(date.getTime() - firstDayOfTheYear.getTime()) / (1000 * 60 * 60 * 24)); //Days since january 1st
   const correctedDay: number = daysElapsedThisYear + weekStartOffset;
-
   const weekNumber: number = Math.floor(correctedDay / 7) + 1;
-
   return weekNumber;
 }
 
@@ -114,10 +106,7 @@ export function getSemesterStarts(datesList: string[]): SemesterStartDates {
  * @param {SemesterStartDates} semesterStartingDates - Objecto com o inicio dos semestres existentes na informação importada
  * @returns {number} - Número da semana consoante o semestre
  */
-export function getSemesterWeekNumber(
-  date: Date,
-  semesterStartingDates: SemesterStartDates
-): string | number {
+export function getSemesterWeekNumber(date: Date, semesterStartingDates: SemesterStartDates): string | number {
   if (date === null || date.toString() === "Invalid Date") return EMPTY_DATA;
 
   const month = date.getMonth() + 1;
@@ -126,10 +115,7 @@ export function getSemesterWeekNumber(
     month > 8 || (month < 2 && date.getDay() < 20) ? "first" : "second";
 
   const semesterStart: Date = semesterStartingDates[academicYear][semester]!;
-
-  const weekNumberOfSemesterStart: number = getWeekNumber(
-    semesterStart
-  ) as number;
+  const weekNumberOfSemesterStart: number = getWeekNumber(semesterStart) as number;
 
   const weekNumberOfDate: number = getWeekNumber(date) as number;
 
@@ -149,29 +135,24 @@ export function getSemesterWeekNumber(
  * @param {number} classDuration - Duração em minutos das aulas a considerar
  * @returns {string[]} - Lista com as horas geradas no formato 'hh:mm'
  */
-export function getClassesStartingHours(startTime: Date, finishStartTime: Date, classDuration = 90) : string[] {
+export function getClassesStartingHours(startTime: Date, finishStartTime: Date, classDuration = 90): string[] {
   const hours = [];
   let currentHour = new Date('1 08:00:00');
-  let finishHour = new Date('1 22:00:00');
+  let finishHour = new Date('1 22:30:00');
   finishHour.setMinutes(finishHour.getMinutes() - classDuration);
-
   while (currentHour <= finishHour && currentHour <= finishStartTime) {
     if (currentHour >= startTime) {
-      hours.push(
-        `${String(currentHour.getHours()).padStart(2, '0')}:${String(currentHour.getMinutes()).padStart(2, '0')}`
-      );
+      hours.push(`${String(currentHour.getHours()).padStart(2, '0')}:${String(currentHour.getMinutes()).padStart(2, '0')}`);
     }
-
-    if ((currentHour.getHours() === 11 && classDuration >= 90) || 
-    (currentHour.getHours() === 11 && currentHour.getMinutes()>30 && classDuration >= 60) ||
-    (currentHour.getHours() === 12)) {
+    if ((currentHour.getHours() === 11 && classDuration >= 90) ||
+      (currentHour.getHours() === 11 && currentHour.getMinutes() > 30 && classDuration >= 60) ||
+      (currentHour.getHours() === 12)) {
       currentHour.setHours(13);
       currentHour.setMinutes(0);
     } else {
       currentHour.setMinutes(currentHour.getMinutes() + classDuration);
     }
   }
-
   return hours;
 }
 
@@ -187,7 +168,7 @@ export function getDaysFromRange(startDate: Date, finalDate: Date, dayOfWeek?: s
   let currentDate: Date = structuredClone(startDate);
   const dates = [];
   while (currentDate.getTime() <= finalDate.getTime()) {
-    if (currentDate.getDay() && (!dayOfWeek || getDayOfWeek(currentDate) == dayOfWeek)) 
+    if (currentDate.getDay() && (!dayOfWeek || getDayOfWeekFromDate(currentDate) == dayOfWeek))
       // Adiciona data se não for domingo ou se for igual ao dia da semana caso especificado
       dates.push(new Date(currentDate));
     currentDate.setDate(currentDate.getDate() + 1);
@@ -195,34 +176,54 @@ export function getDaysFromRange(startDate: Date, finalDate: Date, dayOfWeek?: s
   return dates;
 }
 
-export function getDayOfWeek(date: Date): string {
+/**
+ * Devolve o dia da semana
+ * @param {Date} date -Data
+ * @returns {string} -Retorna o dia da semana
+*/
+export function getDayOfWeekFromDate(date: Date): string {
   const dayOfWeek: number = date.getDay();
-  let dayOfWeekString: string;
-  if (dayOfWeek == 0) dayOfWeekString = "Dom";
-  else if (dayOfWeek == 1) dayOfWeekString = "Seg";
-  else if (dayOfWeek == 2) dayOfWeekString = "Ter";
-  else if (dayOfWeek == 3) dayOfWeekString = "Qua";
-  else if (dayOfWeek == 4) dayOfWeekString = "Qui";
-  else if (dayOfWeek == 5) dayOfWeekString = "Sex";
-  else dayOfWeekString = "Sab";
-
-  return dayOfWeekString;
+  return getDayOfWeek(dayOfWeek);
 }
 
+/**
+ * Devolve o dia da semana
+ * @param {number} number -Dia de semana
+ * @returns {string} -Retorna o dia da semana
+*/
+export function getDayOfWeek(number: number): string {
+  switch (number) {
+    case 0: return "Dom";
+    case 1: return "Seg";
+    case 2: return "Ter";
+    case 3: return "Qua";
+    case 4: return "Qui";
+    case 5: return "Sex";
+    default: return "Sab";
+  }
+}
 
 /**
- * Converte objeto Date para o formato de data usado em Portugal
- * @param {Date} data - Objecto a ser convertido 
- * @param {Date} finalDate - Data máxima 
- * @returns {string} - data em texto no formato dia/mês/ano
- */
-export function formatDateToDDMMYYYY(date: Date) : string {
+ * Converte a data no formato especificado
+ * @param {Date} date -Data
+ * @returns {string} -Retorna a data em formato de DD/MM/YYYYY
+*/
+export function formatDateToDDMMYYYY(date: Date): string {
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() returns 0-based index
   const year = date.getFullYear();
   return day + '/' + month + '/' + year;
 }
 
+/**
+ * Converte a data no formato especificado
+ * @param {Date} date -Data
+ * @returns {string} -Retorna a data em formato de MM/DD/YYYYY
+*/
+export function formatStringToMMDDYYY(date: string): string {
+  const tempDate = date.split("/");
+  return (Number(tempDate[1])) + "/" + tempDate[0] + "/" + tempDate[2];
+}
 
 /**
  * Compara duas datas em função do dia, mês e ano
@@ -230,8 +231,8 @@ export function formatDateToDDMMYYYY(date: Date) : string {
  * @param {Date} date2 - 2ª Data da comparação
  * @returns {boolean} - true se tiverem os mesmo ano, mês e dia, false caso contrário 
  */
-export function dateComparator(date1: Date, date2 : Date) : boolean {
+export function dateComparator(date1: Date, date2: Date): boolean {
   return date1.getDate() === date2.getDate() &&  //Dia
-        date1.getMonth() === date2.getMonth() &&  //Mes
-        date1.getFullYear() === date2.getFullYear() //Ano
+    date1.getMonth() === date2.getMonth() &&  //Mes
+    date1.getFullYear() === date2.getFullYear() //Ano
 }

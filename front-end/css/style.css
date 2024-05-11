@@ -5,6 +5,7 @@
 
 html {
     height: 100vh;
+    overflow-x: hidden;
 }
 
 * {
@@ -29,8 +30,8 @@ header {
     }
 }
 
-h3{
-    margin-bottom:0;
+h3 {
+    margin-bottom: 0;
 }
 
 .hidden {
@@ -162,22 +163,23 @@ h3{
             }
         }
     }
-    & select{
-        width:100%;
+
+    & select {
+        width: 100%;
         box-shadow: 0px 9px 15px -1px rgba(56, 30, 0, 0.2);
-            border-radius: 10px;
-            height: 50px;
-            width: 100%;
-            font-size: 0.85em;
-            border:none;
-            background-color: whitesmoke;
-            margin-top: 0.5vw;
+        border-radius: 10px;
+        height: 50px;
+        width: 100%;
+        font-size: 0.85em;
+        border: none;
+        background-color: whitesmoke;
+        margin-top: 0.5vw;
     }
 }
 
 #PopUpUpload {
     &>div {
-        
+
         &>h3 {
             font-size: 1.4vw;
         }
@@ -352,10 +354,10 @@ h3{
                             background-size: contain;
                             background-repeat: no-repeat;
                             background-position: 50%;
-                            width:0.75vw;
-                            height:0.75vw;
+                            width: 0.75vw;
+                            height: 0.75vw;
                         }
-                        
+
 
                         &>.tabulator-hideColumn-toggle-button {
                             background-image: url("../graphics/images/cross.png");
@@ -530,15 +532,17 @@ h3{
     }
 }
 
-#SuggestSlots {
+#SuggestSlots,
+#conflitsNetwork,
+#conflitsHeat {
     display: grid;
     justify-content: center;
 }
 
 .styled-button {
-    margin: 0.5vw;
-    width:25vw;
-    margin:1vw auto;
+    margin: 0.5vw auto;
+    width: 25vw;
+    margin: 1vw auto;
     border: none;
     background-image: linear-gradient(225deg, #A989ED, #5C6AE3);
     color: whitesmoke;
@@ -554,8 +558,11 @@ h3{
 }
 
 #ReplacementClass,
-#UcClass {
+#UcClass,
+#NetworkDiagram,
+#HeatMap {
     width: 100vw;
+
     &>#UcClassInformation {
         display: flex;
         justify-content: center;
@@ -563,13 +570,15 @@ h3{
 
     &>#ReplacementClassCriteria,
     #UcClassCriteria,
+    #NetworkDiagramCriteria,
+    #HeatMapCriteria,
     .ContainerTimeTable,
     .ContainerCharacteristics {
         width: 50vw;
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin:auto;
+        margin: auto;
 
 
         border-radius: 15px;
@@ -634,6 +643,10 @@ h3{
                 }
             }
         }
+
+        &>.styled-button {
+            width: 15vw;
+        }
     }
 
 }
@@ -641,7 +654,8 @@ h3{
 .criteria-input,
 .criteria-filter-option-selector,
 .criteria-column-selector,
-.criteria-duration-selector {
+.criteria-duration-selector,
+.styled-selector {
     height: 100%;
     width: 100%;
     border: none;
@@ -677,21 +691,67 @@ h3{
 }
 
 
-div>.tabulator{
+div>.tabulator {
     & .tabulator-header {
-        color:whitesmoke;
+        color: whitesmoke;
         background-image: linear-gradient(225deg, rgb(169, 137, 237), #5C6AE3);
+    }
 
-       
-    }
-    & .tabulator-row:hover{
+    & .tabulator-row:hover {
         background-color: rgba(237, 137, 232, 0.13) !important;
-        
+
     }
+
     & .tabulator-page.active {
         translate: 0 -2px;
         background-color: rgb(169, 137, 237) !important;
     }
-              
-           
+}
+
+#HeatMapSettings {
+    width: 40vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    box-shadow: 0px 9px 15px -1px rgba(170, 131, 196, 0.25);
+    background-color: rgb(228, 228, 228);
+    border-radius: 15px;
+    padding: 2vw !important;
+
+    &>label {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 0.5vw;
+        min-width: 50%;
+        justify-content: center;
+
+        &>select {
+            width: 50%;
+            margin-left: 0.5vw;
+        }
+    }
+
+    &>div {
+        text-align: center;
+
+        &>div {
+            margin-top: 1vw;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 100%;
+
+            &>label {
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
+            }
+        }
+
+        & .styled-selector {
+            width: 60%;
+        }
+    }
 }
