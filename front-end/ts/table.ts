@@ -88,6 +88,14 @@ export function setData(tableElement: HTMLDivElement, file: TableRow[], addSeman
   sortFiles();
   const table = new Tabulator("#" + tableElement.id, {
     headerFilterPlaceholder: "Filtrar 'AND'",
+    rowClick: function (e: any, row: any) {
+      if (getComputedStyle(row.getElement()).getPropertyValue("background-color") == "rgb(245, 245, 245)") {
+        row.getElement().style.backgroundColor = "rgba(0,0,0,0)";
+      } else {
+        row.getElement().style.backgroundColor = "rgba(245, 245, 245)";
+      }
+      console.log(getComputedStyle(row.getElement()).getPropertyValue("background-color"));
+    },
     data: file,
     layout: "fitDataFill",
     pagination: "local",
