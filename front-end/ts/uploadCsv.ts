@@ -7,8 +7,10 @@ import {
   GetHorario,
   addFile,
   getFiles,
+  setUserTable,
   sortFiles,
 } from "./variables";
+import { TableCell, TableRow } from "./interfaces";
 
 /**
  * Server's Path
@@ -29,25 +31,13 @@ const LOCAL_FORM: HTMLElement | null = document.getElementById("localUpload");
 LOCAL_FORM?.addEventListener("submit", handleSubmit);
 
 /**
- * TableCell - célula da tabela.
- * @type {string | number}
- */
-export type TableCell = string | number;
-
-/**
- * Linha de dados da tabela.
- * @type TableRow
- */
-export type TableRow = Record<string, TableCell>;
-
-/**
  * Dados do forms upload .CSV.
  * @interface FormDataJson
- * TODO
  */
 export interface FormDataJson {
   localFile: File;
   remoteFile: string;
+  fileType: string;
 }
 
 /**
@@ -69,7 +59,13 @@ export interface FormDataJson {
  * @param {Function} [handleData] - Função a executar após a transformação do ficheiro
  * @param alertFunction - Possibilidade de substituir a função de alert para possibilitar testes.
  */
-export async function handleSubmit(event: SubmitEvent, handleData: (tableElement: HTMLDivElement, file: TableRow[]) => void = setData, alertFunction: (message?: any) => void = alert
+export async function handleSubmit(
+  event: SubmitEvent,
+  handleData: (
+    tableElement: HTMLDivElement,
+    file: TableRow[]
+  ) => void = setData,
+  alertFunction: (message?: any) => void = alert
 ): Promise<string | void> {
   if (!event) return;
 
@@ -77,7 +73,7 @@ export async function handleSubmit(event: SubmitEvent, handleData: (tableElement
 
   const form: HTMLFormElement = event.currentTarget as HTMLFormElement;
 
-  const { localFile, remoteFile }: FormDataJson = formDataToJson(
+  const { localFile, remoteFile, fileType }: FormDataJson = formDataToJson(
     new FormData(form)
   );
 
@@ -120,7 +116,13 @@ export async function handleSubmit(event: SubmitEvent, handleData: (tableElement
     return;
   }
   return fileTable
-    .then((file) => handleData(document.getElementById("HorarioPrincipal") as HTMLDivElement, file))
+    .then((file) => {
+      setUserTable(fileType, file);
+      return handleData(
+        document.getElementById("HorarioPrincipal") as HTMLDivElement,
+        file
+      );
+    })
     .catch((e) => {
       return e.response?.data
         ? JSON.stringify(e.response.data)
@@ -162,6 +164,7 @@ export function formDataToJson(formData: FormData): FormDataJson {
   return {
     localFile: formData.get("localFile") as File,
     remoteFile: formData.get("remoteFile") as string,
+    fileType: formData.get("fileType") as string,
   };
 }
 
@@ -262,7 +265,8 @@ export function loadInitialCsvFiles(
 ): void {
   const urls: string[] = [
     "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/Caracteriza%C3%A7%C3%A3oDasSalas.csv",
-    "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemplo.csv",
+    // "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemplo.csv",
+    "https://raw.githubusercontent.com/AlexandreMilharado/filesToUpload/main/HorarioDeExemploConflitos.csv",
   ];
   urls.forEach(async (url, index) => {
     await getRemoteFile(url, (file) => {

@@ -8,8 +8,6 @@
     <script type="module" src="ts/init.ts"></script>
     <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.8.4/dist/js/tabulator.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
-
-
 </head>
 
 <body>
@@ -28,7 +26,11 @@
 
                 <input name="remoteFile" type="text" id="fileInput">
 
-
+                <select name="fileType">
+                    <option>Default</option>
+                    <option>Características</option>
+                    <option>Horário</option>
+                </select>
                 <button type="submit">UPLOAD</button>
             </form>
         </div>
@@ -68,13 +70,10 @@
                 </div>
             </div>
             <div id="ReplacementClassTable">
-                <div id="ReplacementClassCharacteristicsTable" style="display: none;">
-
-                </div>
                 <div id="ReplacementClassTimeTable">
 
                 </div>
-                <div id="ReplacementClassHiddenColumns">
+                <div id="ReplacementClassTimeTableHiddenColumns">
                     <ul>
 
                     </ul>
@@ -94,13 +93,10 @@
                 </div>
             </div>
             <div id="UcClassTable">
-                <div id="UcClassCharacteristicsTable" style="display: none;">
-
-                </div>
                 <div id="UcClassTimeTable">
 
                 </div>
-                <div id="UcClassHiddenColumns">
+                <div id="UcClassTimeTableHiddenColumns">
                     <ul>
 
                     </ul>
@@ -109,9 +105,86 @@
         </div>
         </div>
     </section>
+    <section id="conflitsNetwork">
+        <div id="NetworkDiagram">
+            <div id="NetworkDiagramCriteria">
+                <div class="ContainerTimeTable">
+                    <h3>Caracteristicas de Horario</h3>
+
+                </div>
+            </div>
+            <div id="NetworkDiagramGraph" style="height: 850px;" class="hidden">
+
+            </div>
+        </div>
+    </section>
+    <section id="conflitsHeat">
+        <div id="HeatMap">
+            <h3 style="text-align: center;">Definições de Horario</h3>
+            <div id="HeatMapSettings">
+
+                <label id="tipoHeatMap">
+                    Tipo de Heat Map:
+                    <select class="styled-selector">
+                        <option value="Ocupação">
+                            Ocupação
+                        </option>
+                        <option value="Disponbilidade">
+                            Disponbilidade
+                        </option>
+                    </select>
+                </label>
+                <br>
+                <label id="eixoXHeatMap">
+                    Eixo X:
+                    <select class="styled-selector">
+                        <option value="Dia da semana">
+                            Dia da semana
+                        </option>
+                        <option value="Data da aula">
+                            Dia do mês
+                        </option>
+                    </select>
+                </label>
+                <p>
+                    Eixo Y: Horas
+                </p>
+                <div>
+                    Periodo que pretende analisar:
+                    <br>
+                    <div>
+                        <label>
+                            Inicio:
+                            <input id="inicio" type="date" class="styled-selector">
+                        </label>
+                        <label>
+                            Fim:
+                            <input id="fim" type="date" class="styled-selector">
+                        </label>
+                    </div>
+
+
+                </div>
+            </div>
+            <div id="HeatMapCriteria">
+                <div class="ContainerCharacteristics">
+                    <h3>Caracteristicas de Horario</h3>
+
+                </div>
+            </div>
+            <div id="map" style="height: 850px;">
+
+            </div>
+        </div>
+    </section>
+    <div id="tempTable" class="hidden">
+
+    </div>
     <script type="module" src="ts/table.ts"></script>
     <!-- <script type="module" src="ts/suggestSlotst.ts"></script> -->
     <script type="module" src="ts/suggestSlotsUC.ts"></script>
+    <script type="module" src="ts/networkGraphDiagram.ts"></script>
+    <script type="module" src="ts/heatMap.ts"></script>
 </body>
 
 </html>

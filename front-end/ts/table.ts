@@ -2,11 +2,12 @@ import Tabulator from "tabulator-tables";
 import ColumnDefinition from "tabulator-tables";
 import {
   dateStringFormatCToDate,
+  formatStringToMMDDYYY,
   getSemesterStarts,
   getSemesterWeekNumber,
   getWeekNumber,
 } from "./dates";
-import { TableRow } from "./uploadCsv";
+import { TableRow } from "./interfaces";
 import { togglePopUpSave } from "./popUp";
 import { createHtmlElements } from "./suggestSlotst"
 import { GetHorario, sortFiles } from "./variables";
@@ -82,8 +83,8 @@ let savePopUpButton: HTMLButtonElement;
  * @param {TableRow[]} file - dados do ficheiro .CSV importado
  */
 export function setData(tableElement: HTMLDivElement, file: TableRow[], addSemana = true): Tabulator {
-  // tabledata = file;
-  if (addSemana) addSemanasColumns();
+  tabledata = file;
+  if (addSemana) addSemanasColumns(file);
   sortFiles();
   const table = new Tabulator("#" + tableElement.id, {
     headerFilterPlaceholder: "Filtrar 'AND'",
@@ -149,7 +150,7 @@ function renderFilterProps(tableElement: HTMLDivElement): void {
  *
  * See {@link dateStringFormatCToDate} | {@link getWeekNumber} | {@link getSemesterWeekNumber}.
  */
-function addSemanasColumns(): void {
+function addSemanasColumns(tabledata: TableRow[]): void {
   if (!tabledata.some(row => row.hasOwnProperty('Data da aula'))) return;
 
   const startSemesterDates = getSemesterStarts(tabledata.map((row) => row['Data da aula'] as string));
@@ -273,10 +274,8 @@ function hideColumn(table: Tabulator, tableElement: HTMLDivElement, column: Colu
 function addHiddenColumns(table: Tabulator, tableElement: HTMLDivElement, column: ColumnDefinition, nameColumn: string): void {
   const button: HTMLButtonElement = document.createElement("button");
   button.className = "tabulator-hiddenColumn-toggle-button";
-  button.textContent = column.querySelector(
-    ".tabulator-col-title"
-  ).textContent;
-  document.getElementById(tableElement.id + "HiddenColumns")?.getElementsByTagName("ul")[0]?.appendChild(button);
+  button.textContent = column.querySelector(".tabulator-col-title").textContent;
+  document.getElementById(tableElement.id + "HiddenColumns")?.querySelector("ul")?.appendChild(button);
   button.addEventListener("click", () => {
     button.remove();
     table.showColumn(nameColumn);
@@ -307,3 +306,4 @@ function filterByOr(table: Tabulator, tableElement: HTMLDivElement): void {
 export function customFilter(data: Tabulator, filterParams: string) {
   return eval(filterParams);
 }
+formatStringToMMDDYYY
