@@ -89,10 +89,10 @@ export function setData(tableElement: HTMLDivElement, file: TableRow[], addSeman
   const table = new Tabulator("#" + tableElement.id, {
     headerFilterPlaceholder: "Filtrar 'AND'",
     rowClick: function (e: any, row: any) {
-      if (getComputedStyle(row.getElement()).getPropertyValue("background-color") == "rgb(245, 245, 245)") {
-        row.getElement().style.backgroundColor = "rgba(0,0,0,0)";
+      if (row.getElement().classList.contains("row-selected")) {
+        row.getElement().classList.remove("row-selected");
       } else {
-        row.getElement().style.backgroundColor = "rgba(245, 245, 245)";
+        row.getElement().classList.add("row-selected");
       }
       console.log(getComputedStyle(row.getElement()).getPropertyValue("background-color"));
     },
