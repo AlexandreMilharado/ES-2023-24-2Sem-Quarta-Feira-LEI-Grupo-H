@@ -142,6 +142,12 @@ export function setData(tableElement: HTMLDivElement, file: TableRow[], addSeman
   return table;
 }
 
+function addSugestionSlot() {
+  const editToggleButton = document.createElement("button");
+  editToggleButton.className = "tabulator-add-sugetion-toggle-button";
+  editToggleButton.setAttribute("toggled", "off");
+}
+
 /**
  * Adiciona os filtros no tabela e desliga-os para não aparecerem no ecrã(aparecem por default).
  */

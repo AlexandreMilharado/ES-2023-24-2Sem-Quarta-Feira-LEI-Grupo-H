@@ -1,8 +1,9 @@
 import Tabulator from "tabulator-tables";
 import { TableRow } from "./interfaces";
-import { dateComparator, formatDateToDDMMYYYY, getClassesStartingHours, getDayOfWeekFromDate, getDaysFromRange } from "./dates";
+import { dateComparator, formatDateToDDMMYYYY, getClassesStartingHours, getDayOfWeek, getDayOfWeekFromDate, getDaysFromRange } from "./dates";
 import { customFilter, setData } from "./table";
 import { GetCarateristicas, GetHorario, sortFiles } from "./variables";
+import { stringToHTMLElement } from "../tests/utilities";
 
 //Variaveis globais
 let table: Tabulator;
@@ -17,7 +18,7 @@ export function createHtmlElements(): void {
   sortFiles();//Para garantir que a ordem dos ficheiros encontra-se coerente.
   const replacementClassCriteriaContainer: HTMLDivElement = document.querySelector("#ReplacementClassCriteria") as HTMLDivElement;
   const replacementClassContainer = document.getElementById("ReplacementClass") as HTMLDivElement;
-
+  addformManualSugestion(replacementClassContainer, "ReplacementClassTimeTable");
   //Criação do botão para sugerir slots as aulas de substituição
   const suggestSlotReplaceButton: HTMLButtonElement = document.createElement("button");
   suggestSlotReplaceButton.textContent = "Sugerir slots para alocação da aula de substituição";
@@ -36,7 +37,6 @@ export function createHtmlElements(): void {
   *no botão esse container vai se encontrar invisivel
   */
   const replacementClassTimeTable = document.getElementById("ReplacementClassTimeTable") as HTMLDivElement;
-
   const buttonAddSuggestions = document.createElement("button");
   buttonAddSuggestions.classList.add("styled-button");
   buttonAddSuggestions.textContent = "Alocar slot";
@@ -49,6 +49,62 @@ export function createHtmlElements(): void {
   replacementClassTimeTable.parentElement?.querySelector(".flex-centered")?.appendChild(buttonAddSuggestions);
   //
 
+}
+
+/**
+ * Cria formulário para adicionar sugestão manual na tabela previamente gerada de sugetões.
+ * @param {HTMLDivElement} replacementClassTimeTable - Div a inserir formulário
+ * @param {string} addToTable - Nome da classe Tabulator a adicionar sugestão manual
+ */
+export function addformManualSugestion(replacementClassTimeTable: HTMLDivElement, addToTable: string) {
+  function isValidForms(inicio: string, fim: string, sala: string) {
+    const init = inicio.split(":");
+    const end = fim.split(":");
+    const tempTable = setData(document.getElementById("tempTable") as HTMLDivElement, GetCarateristicas(), false);
+    tempTable.setFilter("Nome sala", "=", sala);
+    return Number(init[0] + init[1]) < Number(end[0] + end[1]) && tempTable.getRows(true).length > 0;
+  }
+  function updateSugestion(event: SubmitEvent) {
+    if (!event) return;
+
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget as HTMLFormElement);
+    if (!isValidForms(formData.get("inicio-add-sugestion") as string, formData.get("fim-add-sugestion") as string, formData.get("sala-add-sugestion") as string)) {
+      window.alert("Não existem salas com esse nome ou a hora de inicio e fim são inválidas");
+      (event.currentTarget as HTMLFormElement).reset();
+    }
+
+    const updatedData = {
+      "Sala atribuída à aula": formData.get("sala-add-sugestion") as string,
+      "Data da aula": formatDateToDDMMYYYY(new Date(formData.get("data-add-sugestion") as string)),
+      "Dia da semana": getDayOfWeekFromDate(new Date(formData.get("data-add-sugestion") as string)),
+      "Hora início da aula": formData.get("inicio-add-sugestion") as string + ":00",
+      "Hora fim da aula": formData.get("fim-add-sugestion") as string + ":00"
+    }
+    table.addRow(updatedData, true);
+    (event.currentTarget as HTMLFormElement).reset();
+  }
+
+  replacementClassTimeTable.parentElement?.querySelector(".flex-centered")?.append(stringToHTMLElement(`<h3>Adicionar uma sugestão manualmente!</h3>`) as HTMLElement)
+  const addManualSugestion: HTMLDivElement = document.createElement("div");
+  addManualSugestion.innerHTML = `<form id="add-sugestion-form-${addToTable}" method="post">
+                <label for="sala-add-sugestion">Nome da Sala
+                  <input id="sala-add-sugestion" name="sala-add-sugestion" type="text" required>
+                </label>
+                <label for="data-add-sugestion">Data
+                  <input id="data-add-sugestion" name="data-add-sugestion" type="date" required>
+                </label>
+                <label for="inicio-add-sugestion">Hora de Inicio
+                  <input id="inicio-add-sugestion" name="inicio-add-sugestion" type="time" required>
+                </label>
+                <label for="fim-add-sugestion">Hora de Fim
+                  <input id="fim-add-sugestion" name="fim-add-sugestion" type="time" required>
+                </label>   
+                <input type="submit" value="Adicionar sugestão">
+              </form>`;
+  replacementClassTimeTable.parentElement?.querySelector(".flex-centered")?.append(addManualSugestion);
+  document.getElementById(`add-sugestion-form-${addToTable}`)?.addEventListener("submit", updateSugestion);
 }
 /**
  * Cria um container com um criterio, e um botão de crirar novo container.

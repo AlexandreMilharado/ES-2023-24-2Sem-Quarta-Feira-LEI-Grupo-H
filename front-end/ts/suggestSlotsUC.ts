@@ -1,5 +1,6 @@
 // import { Tabulator } from "tabulator-tables";
-import { addSuggestion, removeConflicts, showCriteriaSuggestSlots } from "./suggestSlotst";
+import { stringToHTMLElement } from "../tests/utilities";
+import { addSuggestion, addformManualSugestion, removeConflicts, showCriteriaSuggestSlots } from "./suggestSlotst";
 import { sortFiles } from "./variables";
 createHtmlElements();
 /**
@@ -9,6 +10,7 @@ function createHtmlElements(): void {
     sortFiles();//Para garantir que a ordem dos ficheiros encontra-se coerente.
     const suggestSlotUcDiv: HTMLDivElement = document.querySelector("#UcClassCriteria") as HTMLDivElement;
     const ucClassContainer = document.getElementById("UcClass") as HTMLDivElement;
+
 
     //Criação do botão para sugerir slots das aulas de UC
     const suggestSlotUcButton: HTMLButtonElement = document.createElement("button");
@@ -29,6 +31,7 @@ function createHtmlElements(): void {
     */
     const ucClassTimeTable = document.getElementById("UcClassTimeTable") as HTMLDivElement;
 
+    addformManualSugestion(ucClassTimeTable, "UcClassTimeTable");
     const buttonAddSuggestions = document.createElement("button");
     buttonAddSuggestions.classList.add("styled-button");
     buttonAddSuggestions.textContent = "Marcar aula";
