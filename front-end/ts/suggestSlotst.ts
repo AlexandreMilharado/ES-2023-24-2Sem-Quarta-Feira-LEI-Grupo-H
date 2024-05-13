@@ -3,6 +3,11 @@ import { TableRow } from "./interfaces";
 import { dateComparator, formatDateToDDMMYYYY, getClassesStartingHours, getDayOfWeekFromDate, getDaysFromRange } from "./dates";
 import { customFilter, setData } from "./table";
 import { GetCarateristicas, GetHorario, sortFiles } from "./variables";
+
+//Variaveis globais
+let table: Tabulator;
+
+//
 createHtmlElements();
 
 /**
@@ -30,11 +35,15 @@ export function createHtmlElements(): void {
   /**Cria um container para se puder inserir os criteiros para sugerir slots as aulas de substituição, mas enquanto não for clicado 
   *no botão esse container vai se encontrar invisivel
   */
-  showCriteriaSuggestSlots(replacementClassCriteriaContainer,
-    document.getElementById("ReplacementClassTimeTable") as HTMLDivElement);
+  const replacementClassTimeTable = document.getElementById("ReplacementClassTimeTable") as HTMLDivElement;
+  const buttonAddSuggestions = document.createElement("button");
+  buttonAddSuggestions.textContent = "Adicionar as sugestões selecionadas";
+  buttonAddSuggestions.addEventListener("click", () => addSuggestion(buttonAddSuggestions));
+  showCriteriaSuggestSlots(replacementClassCriteriaContainer, replacementClassTimeTable);
   replacementClassContainer.style.display = "none";
   document.getElementById("SuggestSlots")?.insertBefore(suggestSlotReplaceButton,
     document.getElementById("ReplacementClass") as HTMLDivElement);
+  replacementClassTimeTable.parentElement?.appendChild(buttonAddSuggestions);
   //
 
 }
@@ -361,7 +370,7 @@ function generateSugestions(mainDiv: HTMLDivElement, timeTableElement: HTMLDivEl
     window.alert("Não existem salas com esses criterios");
     return;
   }
-  let table = setData(timeTableElement, GetHorario(), false);
+  table = setData(timeTableElement, GetHorario(), false);
   const timeTable = getFilteredDateHourCombination(mainDiv);
   const suggestions: any = {};
   Object.keys(characteristics).forEach((room: string) => {
@@ -377,6 +386,7 @@ function generateSugestions(mainDiv: HTMLDivElement, timeTableElement: HTMLDivEl
   });
   const filteredSugestions = removeConflicts(suggestions, table);
   table = setData(timeTableElement, filteredSugestions, false);
+  return table;
 }
 
 
@@ -435,6 +445,27 @@ function removeConflicts(suggestions: any, table: Tabulator): any {
   });
   console.log(rowsWithoutConflicts);
   return rowsWithoutConflicts;
+}
+
+function addSuggestion(button: HTMLButtonElement) {
+  const selectedRows: any = button.parentElement?.querySelectorAll(".row-selected");
+  const data = JSON.parse(document.getElementById("ReplacementClassInformation")?.textContent as string);
+  console.log(selectedRows);
+  selectedRows.forEach((suggestion: any) => {
+    const suggestionData = suggestion.querySelectorAll(".tabulator-cell");
+    let suggestionObject: string = "";
+    for (let i = 0; i != 5; i++) {
+      if (i != 4) suggestionObject += `"${suggestionData[i].getAttribute("tabulator-field")}":"${suggestionData[i].textContent}",`;
+      else suggestionObject += `"${suggestionData[i].getAttribute("tabulator-field")}":"${suggestionData[i].textContent}"`;
+    }
+    console.log(suggestionObject);
+    const updatedData = Object.assign(data, JSON.parse("{" + suggestionObject + "}"));
+    let table2 = Tabulator.prototype.findTable("#HorarioPrincipal")[0];
+    console.log(updatedData);
+    console.log(table.getData());
+    console.log(table2.getData());
+    table2.addRow(updatedData, true);
+  });
 }
 
 /**

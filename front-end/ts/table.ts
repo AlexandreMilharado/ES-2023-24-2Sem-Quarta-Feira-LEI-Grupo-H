@@ -29,15 +29,15 @@ export let tabledata: TableRow[] = [{ Message: "Dados ainda não inseridos" }];
  * Tabela do Tabulator
  * @type {Tabulator}
  */
-export let table: Tabulator = new Tabulator("#HorarioPrincipal", {
-  data: tabledata,
-  layout: "fitDataFill",
-  pagination: "local",
-  paginationSize: 10,
-  paginationSizeSelector: [5, 10, 20, 40],
-  movableColumns: false,
-  autoColumns: true,
-});
+// export let table: Tabulator = new Tabulator("#HorarioPrincipal", {
+//   data: tabledata,
+//   layout: "fitDataFill",
+//   pagination: "local",
+//   paginationSize: 10,
+//   paginationSizeSelector: [5, 10, 20, 40],
+//   movableColumns: false,
+//   autoColumns: true,
+// });
 
 /**
  * Footer da tabela relacionada à navegação da mesma.
@@ -94,7 +94,8 @@ export function setData(tableElement: HTMLDivElement, file: TableRow[], addSeman
       } else {
         row.getElement().classList.add("row-selected");
       }
-      console.log(getComputedStyle(row.getElement()).getPropertyValue("background-color"));
+
+      console.log(row.getElement().parentElement.parentElement.parentElement.id);
     },
     data: file,
     layout: "fitDataFill",
