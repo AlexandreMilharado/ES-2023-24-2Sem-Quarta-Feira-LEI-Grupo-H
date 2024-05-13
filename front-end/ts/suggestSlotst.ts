@@ -36,14 +36,17 @@ export function createHtmlElements(): void {
   *no botão esse container vai se encontrar invisivel
   */
   const replacementClassTimeTable = document.getElementById("ReplacementClassTimeTable") as HTMLDivElement;
+
   const buttonAddSuggestions = document.createElement("button");
-  buttonAddSuggestions.textContent = "Adicionar as sugestões selecionadas";
+  buttonAddSuggestions.classList.add("styled-button");
+  buttonAddSuggestions.textContent = "Alocar slot";
   buttonAddSuggestions.addEventListener("click", () => addSuggestion(buttonAddSuggestions));
+
   showCriteriaSuggestSlots(replacementClassCriteriaContainer, replacementClassTimeTable);
   replacementClassContainer.style.display = "none";
   document.getElementById("SuggestSlots")?.insertBefore(suggestSlotReplaceButton,
     document.getElementById("ReplacementClass") as HTMLDivElement);
-  replacementClassTimeTable.parentElement?.appendChild(buttonAddSuggestions);
+  replacementClassTimeTable.parentElement?.querySelector(".flex-centered")?.appendChild(buttonAddSuggestions);
   //
 
 }
@@ -75,8 +78,8 @@ export function showCriteriaSuggestSlots(mainDiv: HTMLDivElement, timeTableEleme
 
   const buttonCreateTable: HTMLButtonElement = document.createElement("button");
   buttonCreateTable.textContent = "Gerar tabela"
-  buttonCreateTable.textContent = "Gerar tabela"
   buttonCreateTable.addEventListener("click", () => {
+    buttonCreateTable.parentElement?.parentElement?.querySelector(".flex-centered")?.classList.remove("hidden");
     generateSugestions(mainDiv, timeTableElement);
   });
   buttonCreateTable.classList.add("styled-button");
@@ -396,7 +399,7 @@ function generateSugestions(mainDiv: HTMLDivElement, timeTableElement: HTMLDivEl
  * @param {Tabulator} table -Tabela ao qual vai se buscar as linhas que podem ter conflito com as sugestões
  * @returns { any } -Retorna sugestoes sem conflitos
  */
-function removeConflicts(suggestions: any, table: Tabulator): any {
+export function removeConflicts(suggestions: any, table: Tabulator): any {
   let conflitData: any = {};
   let hours: number;
   let minutes: number;
@@ -447,9 +450,11 @@ function removeConflicts(suggestions: any, table: Tabulator): any {
   return rowsWithoutConflicts;
 }
 
-function addSuggestion(button: HTMLButtonElement) {
-  const selectedRows: any = button.parentElement?.querySelectorAll(".row-selected");
+export function addSuggestion(button: HTMLButtonElement) {
+  console.log(table.getElement())
+  const selectedRows: any = button.parentElement?.parentElement?.querySelectorAll(".row-selected");
   const data = JSON.parse(document.getElementById("ReplacementClassInformation")?.textContent as string);
+  const suggestions: any = {};
   console.log(selectedRows);
   selectedRows.forEach((suggestion: any) => {
     const suggestionData = suggestion.querySelectorAll(".tabulator-cell");
@@ -458,12 +463,19 @@ function addSuggestion(button: HTMLButtonElement) {
       if (i != 4) suggestionObject += `"${suggestionData[i].getAttribute("tabulator-field")}":"${suggestionData[i].textContent}",`;
       else suggestionObject += `"${suggestionData[i].getAttribute("tabulator-field")}":"${suggestionData[i].textContent}"`;
     }
-    console.log(suggestionObject);
     const updatedData = Object.assign(data, JSON.parse("{" + suggestionObject + "}"));
-    let table2 = Tabulator.prototype.findTable("#HorarioPrincipal")[0];
     console.log(updatedData);
+    suggestions[updatedData["Sala atribuída à aula"] + updatedData["Data da aula"] + updatedData["Hora fim da aula"]] = updatedData;
+    let table2 = Tabulator.prototype.findTable("#HorarioPrincipal")[0];
     console.log(table.getData());
     console.log(table2.getData());
+    if (!removeConflicts(suggestions, table2)) {
+      window.alert("O criterio inserido tem conflitos");
+      return;
+    }
+    selectedRows.forEach((row: any) => {
+      row.remove();
+    });
     table2.addRow(updatedData, true);
   });
 }

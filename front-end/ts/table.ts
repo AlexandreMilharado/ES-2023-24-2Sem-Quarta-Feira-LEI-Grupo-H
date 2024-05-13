@@ -89,13 +89,33 @@ export function setData(tableElement: HTMLDivElement, file: TableRow[], addSeman
   const table = new Tabulator("#" + tableElement.id, {
     headerFilterPlaceholder: "Filtrar 'AND'",
     rowClick: function (e: any, row: any) {
-      if (row.getElement().classList.contains("row-selected")) {
-        row.getElement().classList.remove("row-selected");
-      } else {
-        row.getElement().classList.add("row-selected");
+      const tableElement: HTMLDivElement = row.getElement().parentElement.parentElement.parentElement;
+      if (tableElement.querySelector(".tabulator-edit-toggle-button")?.getAttribute("toggled") == "on") {
+        row.delete();
+        return;
       }
-
-      console.log(row.getElement().parentElement.parentElement.parentElement.id);
+      if (tableElement.id == "HorarioPrincipal") {
+        const data = document.getElementById("ReplacementClassInformation") as HTMLDivElement;
+        data.innerHTML = JSON.stringify(row.getData());
+      } else {
+        if (tableElement.id == "ReplacementClassTimeTable") {
+          if (row.getElement().parentElement.querySelectorAll(".row-selected").length >= 1) {
+            row.getElement().classList.remove("row-selected");
+            return;
+          }
+        } else {
+          if (row.getElement().parentElement.querySelectorAll(".row-selected").length >=
+            Number(document.getElementById("UcClassInformation")?.querySelector("label")?.querySelector("input")?.value as string)) {
+            row.getElement().classList.remove("row-selected");
+            return;
+          }
+        }
+        if (row.getElement().classList.contains("row-selected")) {
+          row.getElement().classList.remove("row-selected");
+        } else {
+          row.getElement().classList.add("row-selected");
+        }
+      }
     },
     data: file,
     layout: "fitDataFill",
