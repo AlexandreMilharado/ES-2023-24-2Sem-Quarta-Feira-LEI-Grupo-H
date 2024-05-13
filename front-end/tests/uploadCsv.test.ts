@@ -17,8 +17,8 @@ import {
   needToDownloadCsv,
   checkBackendStatus,
   loadInitialCsvFiles,
-  TableRow,
 } from "../ts/uploadCsv";
+import { TableRow } from "../ts/interfaces";
 
 /**
  * Para testar é recomendado ligar o servidor backend. Caso não o faça, defina TESTBACKEND para false.

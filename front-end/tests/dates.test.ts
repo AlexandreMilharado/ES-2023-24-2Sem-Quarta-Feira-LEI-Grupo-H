@@ -8,7 +8,9 @@ import {
   formatDateToDDMMYYYY,
   getDaysFromRange,
   getClassesStartingHours,
-  dateComparator
+  dateComparator,
+  formatStringToMMDDYYY,
+  getDayOfWeekFromDate
 } from "../ts/dates";
 
 describe("dateStringFormatCToDate", () => {
@@ -131,16 +133,9 @@ describe('formatDateToDDMMYYYY', () => {
 
 describe('getDaysFromRange', () => {
   it('converter range de datas', () => {
-    expect(getDaysFromRange(new Date(2024, 0, 1), new Date(2024, 0, 10))).toStrictEqual([
+    expect(getDaysFromRange(new Date(2024, 0, 1), new Date(2024, 0, 10), "Seg")).toStrictEqual([
       new Date("2024-01-01"),
-      new Date("2024-01-02"),
-      new Date("2024-01-03"),
-      new Date("2024-01-04"),
-      new Date("2024-01-05"),
-      new Date("2024-01-06"),
       new Date("2024-01-08"),
-      new Date("2024-01-09"),
-      new Date("2024-01-10"),
     ]);
   })
 });
@@ -152,6 +147,18 @@ describe('getClassesStartingHours', () => {
       "09:30",
       "11:00",
     ]);
+  })
+  it("devolve inicio das aulas corretamente num espaço de 45 minutos", () => {
+    expect(getClassesStartingHours(new Date("1 08:00:00"), new Date("1 13:00:00"), 45)).toStrictEqual([
+      "08:00",
+      "08:45",
+      "09:30",
+      "10:15",
+      "11:00",
+      "11:45",
+      "12:30",
+      "13:00",
+    ])
   })
 });
 
@@ -173,4 +180,23 @@ describe("dateComparator", () => {
       )
     ).toBe(false)
   })
-})
+});
+
+describe("formatStringToMMDDYYY", () => {
+  it("coverter de DD/MM/YYYY para MM/DD/YYYY", () => {
+    expect(formatStringToMMDDYYY("05/12/2031")).toStrictEqual("12/05/2031");
+  })
+});
+
+describe("getDayOfWeekFromDate", () => {
+  it("converte bem as datas de cada dia da semana", () => {
+    const bool = getDayOfWeekFromDate(new Date(2024, 0, 1)) === "Seg" &&
+      getDayOfWeekFromDate(new Date(2024, 0, 2)) === "Ter" &&
+      getDayOfWeekFromDate(new Date(2024, 0, 3)) === "Qua" &&
+      getDayOfWeekFromDate(new Date(2024, 0, 4)) === "Qui" &&
+      getDayOfWeekFromDate(new Date(2024, 0, 5)) === "Sex" &&
+      getDayOfWeekFromDate(new Date(2024, 0, 6)) === "Sab" &&
+      getDayOfWeekFromDate(new Date(2024, 0, 7)) === "Dom";
+    expect(bool).toBe(true);
+  })
+});

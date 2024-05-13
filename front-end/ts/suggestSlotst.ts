@@ -30,9 +30,9 @@ export function createHtmlElements(): void {
   /**Cria um container para se puder inserir os criteiros para sugerir slots as aulas de substituição, mas enquanto não for clicado 
   *no botão esse container vai se encontrar invisivel
   */
-  showCriteriaSuggestSlots(replacementClassCriteriaContainer,
-    document.getElementById("ReplacementClassTimeTable") as HTMLDivElement);
-  replacementClassContainer.style.display = "none";
+  showCriteriaSuggestSlots(replacementClassCriteriaContainer, document.getElementById("ReplacementClassTimeTable") as HTMLDivElement);
+  if (replacementClassContainer != null)
+    replacementClassContainer.style.display = "none";
   document.getElementById("SuggestSlots")?.insertBefore(suggestSlotReplaceButton,
     document.getElementById("ReplacementClass") as HTMLDivElement);
   //
@@ -44,34 +44,34 @@ export function createHtmlElements(): void {
  * @param  {HTMLDivElement} timeTableElement --Container da tabela dos horarios
 */
 export function showCriteriaSuggestSlots(mainDiv: HTMLDivElement, timeTableElement: HTMLDivElement): void {
-  const buttonAddNewCriteriaDivTimeTable: HTMLButtonElement = document.createElement("button");
+  const buttonAddNewCriteriaDivTimeTable: HTMLButtonElement = document?.createElement("button");
   buttonAddNewCriteriaDivTimeTable.textContent = "Or"
-  const timeTableContainer = mainDiv.querySelector(".ContainerTimeTable") as HTMLDivElement;
+  const timeTableContainer = mainDiv?.querySelector(".ContainerTimeTable") as HTMLDivElement;
   buttonAddNewCriteriaDivTimeTable.addEventListener("click", () => addNewCriteriaContainer(timeTableContainer, buttonAddNewCriteriaDivTimeTable, "timeTable"));
 
 
-  timeTableContainer.appendChild(buttonAddNewCriteriaDivTimeTable);
+  timeTableContainer?.appendChild(buttonAddNewCriteriaDivTimeTable);
 
   createCriteriaContainer(timeTableContainer, buttonAddNewCriteriaDivTimeTable, "timeTable").prepend(createSelectWithOptionsToClassDuration());
 
-  const buttonAddNewCriteriaDivCharacteristics: HTMLButtonElement = document.createElement("button");
+  const buttonAddNewCriteriaDivCharacteristics: HTMLButtonElement = document?.createElement("button");
   buttonAddNewCriteriaDivCharacteristics.textContent = "Or"
-  const characteristicsContainer = mainDiv.querySelector(".ContainerCharacteristics") as HTMLDivElement;
+  const characteristicsContainer = mainDiv?.querySelector(".ContainerCharacteristics") as HTMLDivElement;
   buttonAddNewCriteriaDivCharacteristics.addEventListener("click", () => addNewCriteriaContainer(characteristicsContainer, buttonAddNewCriteriaDivCharacteristics, "characteristics"));
 
 
-  characteristicsContainer.appendChild(buttonAddNewCriteriaDivCharacteristics);
+  characteristicsContainer?.appendChild(buttonAddNewCriteriaDivCharacteristics);
 
   createCriteriaContainer(characteristicsContainer, buttonAddNewCriteriaDivCharacteristics, "characteristics");
 
-  const buttonCreateTable: HTMLButtonElement = document.createElement("button");
+  const buttonCreateTable: HTMLButtonElement = document?.createElement("button");
   buttonCreateTable.textContent = "Gerar tabela"
   buttonCreateTable.textContent = "Gerar tabela"
   buttonCreateTable.addEventListener("click", () => {
     generateSugestions(mainDiv, timeTableElement);
   });
   buttonCreateTable.classList.add("styled-button");
-  mainDiv.appendChild(buttonCreateTable);
+  mainDiv?.appendChild(buttonCreateTable);
 }
 /**
  * Cria um novo container com um criterio inserido adicionando tambem um botão de apagar o cotnainer e
@@ -110,13 +110,13 @@ export function createCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCri
   labelDiv.appendChild(textLabel);
   //
 
-  mainDiv.insertBefore(criteriaContainer, buttonAddNewCriteriaContainer);
+  mainDiv?.insertBefore(criteriaContainer, buttonAddNewCriteriaContainer);
   const buttonAddNewCriteria: HTMLButtonElement = createNewCriteriaButton(mainDiv, criteriaContainer, typeOfOptions);
   criteriaContainer.appendChild(buttonAddNewCriteria);
   const element: HTMLDivElement = addNewCriteriaOptionToSuggestSlots(typeOfOptions);
   criteriaContainer.insertBefore(element, buttonAddNewCriteria);
   criteriaContainer.appendChild(labelDiv);
-  mainDiv.querySelector(".criteria-label")
+  mainDiv?.querySelector(".criteria-label")
 
   return criteriaContainer;
 }
