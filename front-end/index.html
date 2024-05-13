@@ -61,6 +61,11 @@
     </section>
     <section id="SuggestSlots">
         <div id="ReplacementClass">
+            <div id="ReplacementClassInformation">
+                <label>
+                    Clique na tabela principal na aula que quer substituir
+                </label>
+            </div>
             <div id="ReplacementClassCriteria">
                 <div class="ContainerTimeTable">
                     <h3>Caracteristicas de Horario</h3>
@@ -77,6 +82,8 @@
                     <ul>
 
                     </ul>
+                </div>
+                <div class="flex-centered extra-inputs-panel hidden" style="flex-direction: column;">
                 </div>
             </div>
         </div>
@@ -100,6 +107,22 @@
                     <ul>
 
                     </ul>
+                </div>
+                <div class="flex-centered extra-inputs-panel hidden" style="flex-direction: column;">
+                    <h3>Informacao necessaria para marcar a aula</h3>
+                    <div>
+                        <input class="styled-input" type="text" placeholder="Curso: i.g. LEI" required>
+
+                        <input class="styled-input" type="text" placeholder="UC: i.g. ES" required>
+
+                        <input class="styled-input" type="text" placeholder="Turno: i.g. Manhã" required>
+
+                        <input class="styled-input" type="text" placeholder="Turma: i.g. EI03" required>
+
+                        <input class="styled-input" type="text" placeholder="# Inscritos: i.g. 35" required>
+
+                        <input class="styled-input" type="text" placeholder="Caracteristica: i.g. BYOD" required>
+                    </div>
                 </div>
             </div>
         </div>
@@ -162,8 +185,6 @@
                             <input id="fim" type="date" class="styled-selector">
                         </label>
                     </div>
-
-
                 </div>
             </div>
             <div id="HeatMapCriteria">

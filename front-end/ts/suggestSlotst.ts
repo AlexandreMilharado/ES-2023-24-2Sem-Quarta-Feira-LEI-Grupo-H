@@ -1,8 +1,14 @@
 import Tabulator from "tabulator-tables";
 import { TableRow } from "./interfaces";
-import { dateComparator, formatDateToDDMMYYYY, getClassesStartingHours, getDayOfWeekFromDate, getDaysFromRange } from "./dates";
+import { dateComparator, dateStringFormatCToDate, formatDateToDDMMYYYY, getClassesStartingHours, getDayOfWeek, getDayOfWeekFromDate, getDaysFromRange, getSemesterStarts, getSemesterWeekNumber, getWeekNumber } from "./dates";
 import { customFilter, setData } from "./table";
 import { GetCarateristicas, GetHorario, sortFiles } from "./variables";
+import { stringToHTMLElement } from "../tests/utilities";
+
+//Variaveis globais
+let table: Tabulator;
+
+//
 createHtmlElements();
 
 /**
@@ -12,7 +18,7 @@ export function createHtmlElements(): void {
   sortFiles();//Para garantir que a ordem dos ficheiros encontra-se coerente.
   const replacementClassCriteriaContainer: HTMLDivElement = document.querySelector("#ReplacementClassCriteria") as HTMLDivElement;
   const replacementClassContainer = document.getElementById("ReplacementClass") as HTMLDivElement;
-
+  addformManualSugestion(replacementClassContainer, "ReplacementClassTimeTable");
   //Criação do botão para sugerir slots as aulas de substituição
   const suggestSlotReplaceButton: HTMLButtonElement = document.createElement("button");
   suggestSlotReplaceButton.textContent = "Sugerir slots para alocação da aula de substituição";
@@ -30,13 +36,75 @@ export function createHtmlElements(): void {
   /**Cria um container para se puder inserir os criteiros para sugerir slots as aulas de substituição, mas enquanto não for clicado 
   *no botão esse container vai se encontrar invisivel
   */
-  showCriteriaSuggestSlots(replacementClassCriteriaContainer, document.getElementById("ReplacementClassTimeTable") as HTMLDivElement);
-  if (replacementClassContainer != null)
-    replacementClassContainer.style.display = "none";
+  const replacementClassTimeTable = document.getElementById("ReplacementClassTimeTable") as HTMLDivElement;
+  const buttonAddSuggestions = document.createElement("button");
+  buttonAddSuggestions.classList.add("styled-button");
+  buttonAddSuggestions.textContent = "Alocar slot";
+  buttonAddSuggestions.addEventListener("click", () => addSuggestion(buttonAddSuggestions));
+
+  showCriteriaSuggestSlots(replacementClassCriteriaContainer, replacementClassTimeTable);
+  replacementClassContainer.style.display = "none";
   document.getElementById("SuggestSlots")?.insertBefore(suggestSlotReplaceButton,
     document.getElementById("ReplacementClass") as HTMLDivElement);
+  replacementClassTimeTable.parentElement?.querySelector(".flex-centered")?.appendChild(buttonAddSuggestions);
   //
 
+}
+
+/**
+ * Cria formulário para adicionar sugestão manual na tabela previamente gerada de sugetões.
+ * @param {HTMLDivElement} replacementClassTimeTable - Div a inserir formulário
+ * @param {string} addToTable - Nome da classe Tabulator a adicionar sugestão manual
+ */
+export function addformManualSugestion(replacementClassTimeTable: HTMLDivElement, addToTable: string) {
+  function isValidForms(inicio: string, fim: string, sala: string) {
+    const init = inicio.split(":");
+    const end = fim.split(":");
+    const tempTable = setData(document.getElementById("tempTable") as HTMLDivElement, GetCarateristicas(), false);
+    tempTable.setFilter("Nome sala", "=", sala);
+    return Number(init[0] + init[1]) < Number(end[0] + end[1]) && tempTable.getRows(true).length > 0;
+  }
+  function updateSugestion(event: SubmitEvent) {
+    if (!event) return;
+
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget as HTMLFormElement);
+    if (!isValidForms(formData.get("inicio-add-sugestion") as string, formData.get("fim-add-sugestion") as string, formData.get("sala-add-sugestion") as string)) {
+      window.alert("Não existem salas com esse nome ou a hora de inicio e fim são inválidas");
+      (event.currentTarget as HTMLFormElement).reset();
+    }
+
+    const updatedData = {
+      "Sala atribuída à aula": formData.get("sala-add-sugestion") as string,
+      "Data da aula": formatDateToDDMMYYYY(new Date(formData.get("data-add-sugestion") as string)),
+      "Dia da semana": getDayOfWeekFromDate(new Date(formData.get("data-add-sugestion") as string)),
+      "Hora início da aula": formData.get("inicio-add-sugestion") as string + ":00",
+      "Hora fim da aula": formData.get("fim-add-sugestion") as string + ":00"
+    }
+    table.addRow(updatedData, true);
+    (event.currentTarget as HTMLFormElement).reset();
+  }
+
+  replacementClassTimeTable.parentElement?.querySelector(".flex-centered")?.append(stringToHTMLElement(`<h3>Adicionar uma sugestão manualmente!</h3>`) as HTMLElement)
+  const addManualSugestion: HTMLDivElement = document.createElement("div");
+  addManualSugestion.innerHTML = `<form id="add-sugestion-form-${addToTable}" method="post">
+                <label for="sala-add-sugestion">Nome da Sala
+                  <input id="sala-add-sugestion" name="sala-add-sugestion" type="text" required>
+                </label>
+                <label for="data-add-sugestion">Data
+                  <input id="data-add-sugestion" name="data-add-sugestion" type="date" required>
+                </label>
+                <label for="inicio-add-sugestion">Hora de Inicio
+                  <input id="inicio-add-sugestion" name="inicio-add-sugestion" type="time" required>
+                </label>
+                <label for="fim-add-sugestion">Hora de Fim
+                  <input id="fim-add-sugestion" name="fim-add-sugestion" type="time" required>
+                </label>   
+                <input type="submit" value="Adicionar sugestão">
+              </form>`;
+  replacementClassTimeTable.parentElement?.querySelector(".flex-centered")?.append(addManualSugestion);
+  document.getElementById(`add-sugestion-form-${addToTable}`)?.addEventListener("submit", updateSugestion);
 }
 /**
  * Cria um container com um criterio, e um botão de crirar novo container.
@@ -64,10 +132,10 @@ export function showCriteriaSuggestSlots(mainDiv: HTMLDivElement, timeTableEleme
 
   createCriteriaContainer(characteristicsContainer, buttonAddNewCriteriaDivCharacteristics, "characteristics");
 
-  const buttonCreateTable: HTMLButtonElement = document?.createElement("button");
-  buttonCreateTable.textContent = "Gerar tabela"
+  const buttonCreateTable: HTMLButtonElement = document.createElement("button");
   buttonCreateTable.textContent = "Gerar tabela"
   buttonCreateTable.addEventListener("click", () => {
+    buttonCreateTable.parentElement?.parentElement?.querySelector(".flex-centered")?.classList.remove("hidden");
     generateSugestions(mainDiv, timeTableElement);
   });
   buttonCreateTable.classList.add("styled-button");
@@ -361,7 +429,7 @@ function generateSugestions(mainDiv: HTMLDivElement, timeTableElement: HTMLDivEl
     window.alert("Não existem salas com esses criterios");
     return;
   }
-  let table = setData(timeTableElement, GetHorario(), false);
+  table = setData(timeTableElement, GetHorario(), false);
   const timeTable = getFilteredDateHourCombination(mainDiv);
   const suggestions: any = {};
   Object.keys(characteristics).forEach((room: string) => {
@@ -377,6 +445,7 @@ function generateSugestions(mainDiv: HTMLDivElement, timeTableElement: HTMLDivEl
   });
   const filteredSugestions = removeConflicts(suggestions, table);
   table = setData(timeTableElement, filteredSugestions, false);
+  return table;
 }
 
 
@@ -386,7 +455,7 @@ function generateSugestions(mainDiv: HTMLDivElement, timeTableElement: HTMLDivEl
  * @param {Tabulator} table -Tabela ao qual vai se buscar as linhas que podem ter conflito com as sugestões
  * @returns { any } -Retorna sugestoes sem conflitos
  */
-function removeConflicts(suggestions: any, table: Tabulator): any {
+export function removeConflicts(suggestions: any, table: Tabulator): any {
   let conflitData: any = {};
   let hours: number;
   let minutes: number;
@@ -435,6 +504,51 @@ function removeConflicts(suggestions: any, table: Tabulator): any {
   });
   console.log(rowsWithoutConflicts);
   return rowsWithoutConflicts;
+}
+
+export function addSuggestion(button: HTMLButtonElement) {
+  const selectedRows: any = button.parentElement?.parentElement?.querySelectorAll(".row-selected");
+  const mainTable = Tabulator.prototype.findTable("#HorarioPrincipal")[0];
+  console.log(mainTable.getData())
+  let data;
+  if (button.parentElement?.parentElement?.id == "ReplacementClassTable") {
+    data = JSON.parse(document.getElementById("ReplacementClassInformation")?.textContent as string);
+  } else {
+    const userSuggestion = button.parentElement?.querySelectorAll("input") as NodeListOf<HTMLInputElement>;
+    for (let i = 0; i != userSuggestion?.length; i++)
+      if (userSuggestion[i].value == "") return;
+    data = {
+      "Curso": userSuggestion[0].value, "Unidade Curricular": userSuggestion[1].value, "Turno": userSuggestion[2].value,
+      "Turma": userSuggestion[3].value, "Inscritos no turno": userSuggestion[4].value, "Características da sala pedida": userSuggestion[5].value
+    };
+  }
+
+  const suggestions: any = {};
+  const startSemesterDates = getSemesterStarts(table.getData().map((row: any) => row['Data da aula'] as string));
+  selectedRows.forEach((suggestion: any) => {
+    const suggestionData = suggestion.querySelectorAll(".tabulator-cell");
+    let suggestionObject: string = "";
+    for (let i = 0; i != 5; i++) {
+      if (i != 4) suggestionObject += `"${suggestionData[i].getAttribute("tabulator-field")}":"${suggestionData[i].textContent}",`;
+      else suggestionObject += `"${suggestionData[i].getAttribute("tabulator-field")}":"${suggestionData[i].textContent}"`;
+    }
+    let updatedData = Object.assign(data, JSON.parse("{" + suggestionObject + "}"));
+    const date: string = updatedData["Data da aula"];
+    updatedData = Object.assign(updatedData, {
+      "Semana do Ano": getWeekNumber(dateStringFormatCToDate(date) as Date),
+      "Semana do Semestre": getSemesterWeekNumber(dateStringFormatCToDate(date) as Date, startSemesterDates)
+    });
+    suggestions[updatedData["Sala atribuída à aula"] + date + updatedData["Hora fim da aula"]] = updatedData;
+    // console.log(table2.getData());
+    if (!removeConflicts(suggestions, mainTable)) {
+      window.alert("O criterio inserido tem conflitos");
+      return;
+    }
+    mainTable.addRow(updatedData, true);
+  });
+  table.getRows(true).forEach((row: any) => {
+    if (row.getElement().classList.contains("row-selected")) row.delete();
+  });
 }
 
 /**
