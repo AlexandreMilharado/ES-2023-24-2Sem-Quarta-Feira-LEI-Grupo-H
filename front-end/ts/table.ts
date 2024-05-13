@@ -185,7 +185,7 @@ function renderFilterProps(tableElement: HTMLDivElement): void {
  *
  * See {@link dateStringFormatCToDate} | {@link getWeekNumber} | {@link getSemesterWeekNumber}.
  */
-function addSemanasColumns(tabledata: TableRow[]): void {
+export function addSemanasColumns(tabledata: TableRow[]): void {
   if (!tabledata.some(row => row.hasOwnProperty('Data da aula'))) return;
 
   const startSemesterDates = getSemesterStarts(tabledata.map((row) => row['Data da aula'] as string));

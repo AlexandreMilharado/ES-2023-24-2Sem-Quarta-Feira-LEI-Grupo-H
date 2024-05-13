@@ -1,6 +1,6 @@
 import Tabulator from "tabulator-tables";
 import { TableRow } from "./interfaces";
-import { dateComparator, formatDateToDDMMYYYY, getClassesStartingHours, getDayOfWeek, getDayOfWeekFromDate, getDaysFromRange } from "./dates";
+import { dateComparator, dateStringFormatCToDate, formatDateToDDMMYYYY, getClassesStartingHours, getDayOfWeek, getDayOfWeekFromDate, getDaysFromRange, getSemesterStarts, getSemesterWeekNumber, getWeekNumber } from "./dates";
 import { customFilter, setData } from "./table";
 import { GetCarateristicas, GetHorario, sortFiles } from "./variables";
 import { stringToHTMLElement } from "../tests/utilities";
@@ -507,11 +507,24 @@ export function removeConflicts(suggestions: any, table: Tabulator): any {
 }
 
 export function addSuggestion(button: HTMLButtonElement) {
-  console.log(table.getElement())
   const selectedRows: any = button.parentElement?.parentElement?.querySelectorAll(".row-selected");
-  const data = JSON.parse(document.getElementById("ReplacementClassInformation")?.textContent as string);
+  const mainTable = Tabulator.prototype.findTable("#HorarioPrincipal")[0];
+  console.log(mainTable.getData())
+  let data;
+  if (button.parentElement?.parentElement?.id == "ReplacementClassTable") {
+    data = JSON.parse(document.getElementById("ReplacementClassInformation")?.textContent as string);
+  } else {
+    const userSuggestion = button.parentElement?.querySelectorAll("input") as NodeListOf<HTMLInputElement>;
+    for (let i = 0; i != userSuggestion?.length; i++)
+      if (userSuggestion[i].value == "") return;
+    data = {
+      "Curso": userSuggestion[0].value, "Unidade Curricular": userSuggestion[1].value, "Turno": userSuggestion[2].value,
+      "Turma": userSuggestion[3].value, "Inscritos no turno": userSuggestion[4].value, "Características da sala pedida": userSuggestion[5].value
+    };
+  }
+
   const suggestions: any = {};
-  console.log(selectedRows);
+  const startSemesterDates = getSemesterStarts(table.getData().map((row: any) => row['Data da aula'] as string));
   selectedRows.forEach((suggestion: any) => {
     const suggestionData = suggestion.querySelectorAll(".tabulator-cell");
     let suggestionObject: string = "";
@@ -519,20 +532,22 @@ export function addSuggestion(button: HTMLButtonElement) {
       if (i != 4) suggestionObject += `"${suggestionData[i].getAttribute("tabulator-field")}":"${suggestionData[i].textContent}",`;
       else suggestionObject += `"${suggestionData[i].getAttribute("tabulator-field")}":"${suggestionData[i].textContent}"`;
     }
-    const updatedData = Object.assign(data, JSON.parse("{" + suggestionObject + "}"));
-    console.log(updatedData);
-    suggestions[updatedData["Sala atribuída à aula"] + updatedData["Data da aula"] + updatedData["Hora fim da aula"]] = updatedData;
-    let table2 = Tabulator.prototype.findTable("#HorarioPrincipal")[0];
-    console.log(table.getData());
-    console.log(table2.getData());
-    if (!removeConflicts(suggestions, table2)) {
+    let updatedData = Object.assign(data, JSON.parse("{" + suggestionObject + "}"));
+    const date: string = updatedData["Data da aula"];
+    updatedData = Object.assign(updatedData, {
+      "Semana do Ano": getWeekNumber(dateStringFormatCToDate(date) as Date),
+      "Semana do Semestre": getSemesterWeekNumber(dateStringFormatCToDate(date) as Date, startSemesterDates)
+    });
+    suggestions[updatedData["Sala atribuída à aula"] + date + updatedData["Hora fim da aula"]] = updatedData;
+    // console.log(table2.getData());
+    if (!removeConflicts(suggestions, mainTable)) {
       window.alert("O criterio inserido tem conflitos");
       return;
     }
-    selectedRows.forEach((row: any) => {
-      row.remove();
-    });
-    table2.addRow(updatedData, true);
+    mainTable.addRow(updatedData, true);
+  });
+  table.getRows(true).forEach((row: any) => {
+    if (row.getElement().classList.contains("row-selected")) row.delete();
   });
 }
 
