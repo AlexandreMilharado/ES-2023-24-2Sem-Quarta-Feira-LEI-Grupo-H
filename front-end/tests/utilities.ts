@@ -1034,6 +1034,19 @@ export function getTablutator() {
 	]
 }
 
+export function getLabelHTML() {
+	return stringToHTMLElement(`<label>       Duração:
+                <select class="criteria-duration-selector">
+                    <option value="30">30m</option>
+                    <option value="60">1h</option>
+                    <option value="90">1h30m</option>
+                    <option value="120">2h</option>
+                    <option value="150">2h30m</option>
+                    <option value="180">3h</option>
+                </select>
+        </label>`);
+}
+
 export function parseToDocument(html: string): Document {
 	let parser = new DOMParser();
 	return parser.parseFromString(html, "text/html");
