@@ -7,7 +7,6 @@ import {
   generateEmpyArray,
   getFiles,
   reset,
-  setUserTable,
   sortFiles,
 } from "../ts/variables";
 
@@ -16,12 +15,6 @@ function loadPreconditons() {
   addFile(getTestFileWithoutHeadersJSON(), 1);
   sortFiles();
 }
-
-function loadUserPreconditions() {
-  setUserTable("Características", getTestFileJSON());
-  setUserTable("Horário", getTestFileWithoutHeadersJSON());
-}
-
 describe("addFile", () => {
   it("atualiza o array dos ficheiros corretamente", () => {
     addFile(getTestFileJSON(), 0);
@@ -60,8 +53,6 @@ describe("GetHorario", () => {
   it("retorna corretamente o ficheiro", () => {
     expect(GetHorario()).toStrictEqual(getTestFileWithoutHeadersJSON());
   });
-
-
 });
 
 describe("GetCarateristicas", () => {
@@ -73,35 +64,8 @@ describe("GetCarateristicas", () => {
   });
 });
 
-describe("GetHorario User", () => {
-  it("a carregar a précondições do user", () => {
-    loadUserPreconditions();
-  });
-
-  it("retorna corretamente o ficheiro inserido pelo user", () => {
-    expect(GetHorario()).toStrictEqual(getTestFileWithoutHeadersJSON());
-  });
-})
-
-describe("GetCarateristicas User", () => {
-  it("a carregar a précondições do user", () => {
-    loadUserPreconditions();
-  });
-
-  it("retorna corretamente o ficheiro inserido pelo user", () => {
-    expect(GetCarateristicas()).toStrictEqual(getTestFileJSON());
-  });
-})
-
 describe("generateEmpyArray", () => {
   it("cria array vazio corretamente", () => {
     expect(generateEmpyArray(5)).toStrictEqual([null, null, null, null, null]);
   });
 });
-
-describe("setUserTable", () => {
-  it("não modifica array se não for bem colocado o tipo de tabela", () => {
-    setUserTable("Empty", [{}]);
-    expect(GetCarateristicas()).toStrictEqual(getTestFileJSON());
-  })
-})

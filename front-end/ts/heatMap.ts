@@ -7,16 +7,17 @@ import { formatDateToDDMMYYYY, formatStringToMMDDYYY, getDayOfWeek, getDayOfWeek
 let table: any;
 //
 
+createHtmlElements();
+
 /**
  * Cria o botão que mostra a UI para criar um um grafo.
- * @param {Document} documentElement - Document a buscar dados
  */
 
-export function createHtmlElementsHeat(documentElement: Document): void {
-    const mainDiv: HTMLDivElement = documentElement.getElementById("HeatMap") as HTMLDivElement;
-    const criteriaDiv: HTMLDivElement = documentElement.getElementById("HeatMapCriteria")?.querySelector(".ContainerCharacteristics") as HTMLDivElement;
+function createHtmlElements(): void {
+    const mainDiv: HTMLDivElement = document.getElementById("HeatMap") as HTMLDivElement;
+    const criteriaDiv: HTMLDivElement = document.getElementById("HeatMapCriteria")?.querySelector(".ContainerCharacteristics") as HTMLDivElement;
 
-    const showConflitButton: HTMLButtonElement = documentElement.createElement("button");
+    const showConflitButton: HTMLButtonElement = document.createElement("button");
     showConflitButton.textContent = "Heat Map conflit";
     showConflitButton.classList.add("styled-button");
     showConflitButton.addEventListener("click", () => {
@@ -29,11 +30,11 @@ export function createHtmlElementsHeat(documentElement: Document): void {
         }
     });
     showConflitButton.addEventListener("click", () => {
-        criteria(criteriaDiv, documentElement);
+        criteria(criteriaDiv);
     }, { once: true });
     mainDiv.style.display = "none";
-    documentElement.getElementById("conflitsHeat")?.insertBefore(showConflitButton, mainDiv);
-    const buttonCreateGraph: HTMLButtonElement = documentElement.createElement("button");
+    document.getElementById("conflitsHeat")?.insertBefore(showConflitButton, mainDiv);
+    const buttonCreateGraph: HTMLButtonElement = document.createElement("button");
     buttonCreateGraph.textContent = "Gerar heat map"
     buttonCreateGraph.addEventListener("click", () => {
         const rooms = getCharacteristics(mainDiv, GetCarateristicas());
@@ -41,26 +42,25 @@ export function createHtmlElementsHeat(documentElement: Document): void {
             window.alert("Não existem salas com esses criterios");
             return;
         }
-        const isOccupation: boolean = documentElement.getElementById("tipoHeatMap")?.querySelector("select")?.value == "Ocupação";
-        const isDayOfWeek: boolean = documentElement.getElementById("eixoXHeatMap")?.querySelector("select")?.value == "Dia da semana";
-        const dataHeat = getHeat(rooms, isOccupation, isDayOfWeek, documentElement);
-        createHeatMap(dataHeat, isDayOfWeek, documentElement);
+        const isOccupation: boolean = document.getElementById("tipoHeatMap")?.querySelector("select")?.value == "Ocupação";
+        const isDayOfWeek: boolean = document.getElementById("eixoXHeatMap")?.querySelector("select")?.value == "Dia da semana";
+        const dataHeat = getHeat(rooms, isOccupation, isDayOfWeek);
+        createHeatMap(dataHeat, isDayOfWeek);
     });
     buttonCreateGraph.classList.add("styled-button");
-    documentElement.getElementById("HeatMapCriteria")?.appendChild(buttonCreateGraph);
+    document.getElementById("HeatMapCriteria")?.appendChild(buttonCreateGraph);
 }
 
 /**
  * Cria um heat map onde cada celula representa a disponibilidade/ocupação das salas
  * @param {any} rooms -Salas que vão ser usadas nos dados para criar o heat map
  * @param {boolean} isOccupation -Indica se o tipo de heat map é de ocupação ou disponibilidade
- * @param {boolean} isDayOfWeek- Indica se esta em modo de dia da semana
- * @param {Document} documentElement - Document a buscar dados
+ * @param {boolean} isDayOfWeek- Indica se esta em modo de dia da semana 
  * @returns {any} -Retorna os dados que vão ser usados para criar o heat map
 */
-export function getHeat(rooms: any, isOccupation: boolean, isDayOfWeek: boolean, documentElement: Document): any {
-    const startElement: HTMLInputElement = documentElement.getElementById("inicio") as HTMLInputElement;
-    const endElement: HTMLInputElement = documentElement.getElementById("fim") as HTMLInputElement;
+function getHeat(rooms: any, isOccupation: boolean, isDayOfWeek: boolean): any {
+    const startElement: HTMLInputElement = document.getElementById("inicio") as HTMLInputElement;
+    const endElement: HTMLInputElement = document.getElementById("fim") as HTMLInputElement;
     const dates = getDaysFromRange(new Date(startElement.value), new Date(endElement.value));
     let filter: string = "(";
     for (let i = 0; i < dates.length; i++) {
@@ -71,7 +71,7 @@ export function getHeat(rooms: any, isOccupation: boolean, isDayOfWeek: boolean,
         }
     }
     filter += ")";
-    table = setData(documentElement.getElementById("tempTable") as HTMLDivElement, GetHorario(), false);
+    table = setData(document.getElementById("tempTable") as HTMLDivElement, GetHorario(), false);
     table.setFilter(customFilter, filter);
     let dataHeat: any = {};
     table.setSort("Data da aula", "asc");
@@ -135,10 +135,9 @@ function createDataHeat(rooms: any, dataHeat: any, isDayOfWeek: boolean): any {
 /**
  * Cria um novo container (de "and") com um criterio inserido.
  * @param {HTMLDivElement} criteriaDiv -Container dos criterios.
- * @param {Document} documentElement - Document a buscar dados
 */
-function criteria(criteriaDiv: HTMLDivElement, documentElement: Document) {
-    const buttonAddNewCriteriaDivTimeTable: HTMLButtonElement = documentElement.createElement("button");
+function criteria(criteriaDiv: HTMLDivElement) {
+    const buttonAddNewCriteriaDivTimeTable: HTMLButtonElement = document.createElement("button");
     buttonAddNewCriteriaDivTimeTable.textContent = "Or"
     buttonAddNewCriteriaDivTimeTable.addEventListener("click", () => addNewCriteriaContainer(criteriaDiv, buttonAddNewCriteriaDivTimeTable, "characteristics"));
     criteriaDiv.appendChild(buttonAddNewCriteriaDivTimeTable);
@@ -149,14 +148,13 @@ function criteria(criteriaDiv: HTMLDivElement, documentElement: Document) {
  * Cria um heat map onde cada celula representa a disponibilidade/ocupação das salas
  * @param {string} firstDay -Primeiro dia dos dados
  * @param {boolean} isDayOfWeek- Indica se esta em modo de dia da semana
- * @param {Document} documentElement - Document a buscar dados
  * @returns {{"x": string, "y": string, "heat": string}[] } -Retorna o formato que os dados devem seguir
 */
-function templateData(firstDay: string, isDayOfWeek: boolean, documentElement: Document): { "x": string, "y": string, "heat": string }[] {
+function templateData(firstDay: string, isDayOfWeek: boolean): { "x": string, "y": string, "heat": string }[] {
     const templateData: { "x": string, "y": string, "heat": string }[] = [];
     if (isDayOfWeek) {
-        const firstDayElement = documentElement.getElementById("inicio") as HTMLInputElement;
-        const lastDayElement: HTMLInputElement = documentElement.getElementById("fim") as HTMLInputElement;
+        const firstDayElement = document.getElementById("inicio") as HTMLInputElement;
+        const lastDayElement: HTMLInputElement = document.getElementById("fim") as HTMLInputElement;
         const firstDay = new Date(firstDayElement.value)
         const lastDay = new Date(lastDayElement.value);
         const differenceInDays = Math.round((lastDay.getTime() - firstDay.getTime()) / (1000 * 3600 * 24));
@@ -185,15 +183,14 @@ function templateData(firstDay: string, isDayOfWeek: boolean, documentElement: D
  * Cria um heat map onde cada celula representa a disponibilidade/ocupação das salas
  * @param {any} dataHeat -Dados que vão ser usados para criar o heat map
  * @param {boolean} isDayOfWeek- Indica se esta em modo de dia da semana
- * @param {Document} documentElement - Document a buscar dados
 */
-function createHeatMap(dataHeat: any, isDayOfWeek: boolean, documentElement: Document) {
+function createHeatMap(dataHeat: any, isDayOfWeek: boolean) {
     const firstDay: any = Object.values(dataHeat)[0];
-    const dataHeatMap: { "x": string, "y": string, "heat": string }[] = templateData(firstDay["Data da aula"], isDayOfWeek, documentElement);
+    const dataHeatMap: { "x": string, "y": string, "heat": string }[] = templateData(firstDay["Data da aula"], isDayOfWeek);
     Object.values(dataHeat).forEach((data: any) => {
         dataHeatMap.push({ x: data["Data da aula"], y: data["Hora início da aula"], heat: data["heat"] })
     });
-    const typeHeatMap: string = documentElement.getElementById("tipoHeatMap")?.querySelector("select")?.value as string;
+    const typeHeatMap: string = document.getElementById("tipoHeatMap")?.querySelector("select")?.value as string;
     let colorScale = anychart.scales.ordinalColor();
     if (typeHeatMap == "Ocupação") {
         colorScale.ranges([
@@ -210,7 +207,7 @@ function createHeatMap(dataHeat: any, isDayOfWeek: boolean, documentElement: Doc
             { greater: 500, color: "#ffffff" }
         ]);
     }
-    const map: HTMLDivElement = documentElement.getElementById("map") as HTMLDivElement;
+    const map: HTMLDivElement = document.getElementById("map") as HTMLDivElement;
     map.innerHTML = "";
     const chart = anychart.heatMap(dataHeatMap);
     chart.colorScale(colorScale);

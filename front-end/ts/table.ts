@@ -29,15 +29,15 @@ export let tabledata: TableRow[] = [{ Message: "Dados ainda não inseridos" }];
  * Tabela do Tabulator
  * @type {Tabulator}
  */
-// export let table: Tabulator = new Tabulator("#HorarioPrincipal", {
-//   data: tabledata,
-//   layout: "fitDataFill",
-//   pagination: "local",
-//   paginationSize: 10,
-//   paginationSizeSelector: [5, 10, 20, 40],
-//   movableColumns: false,
-//   autoColumns: true,
-// });
+export let table: Tabulator = new Tabulator("#HorarioPrincipal", {
+  data: tabledata,
+  layout: "fitDataFill",
+  pagination: "local",
+  paginationSize: 10,
+  paginationSizeSelector: [5, 10, 20, 40],
+  movableColumns: false,
+  autoColumns: true,
+});
 
 /**
  * Footer da tabela relacionada à navegação da mesma.
@@ -88,35 +88,6 @@ export function setData(tableElement: HTMLDivElement, file: TableRow[], addSeman
   sortFiles();
   const table = new Tabulator("#" + tableElement.id, {
     headerFilterPlaceholder: "Filtrar 'AND'",
-    rowClick: function (e: any, row: any) {
-      const tableElement: HTMLDivElement = row.getElement().parentElement.parentElement.parentElement;
-      if (tableElement.querySelector(".tabulator-edit-toggle-button")?.getAttribute("toggled") == "on") {
-        row.delete();
-        return;
-      }
-      if (tableElement.id == "HorarioPrincipal") {
-        const data = document.getElementById("ReplacementClassInformation") as HTMLDivElement;
-        data.innerHTML = JSON.stringify(row.getData());
-      } else {
-        if (tableElement.id == "ReplacementClassTimeTable") {
-          if (row.getElement().parentElement.querySelectorAll(".row-selected").length >= 1) {
-            row.getElement().classList.remove("row-selected");
-            return;
-          }
-        } else {
-          if (row.getElement().parentElement.querySelectorAll(".row-selected").length >=
-            Number(document.getElementById("UcClassInformation")?.querySelector("label")?.querySelector("input")?.value as string)) {
-            row.getElement().classList.remove("row-selected");
-            return;
-          }
-        }
-        if (row.getElement().classList.contains("row-selected")) {
-          row.getElement().classList.remove("row-selected");
-        } else {
-          row.getElement().classList.add("row-selected");
-        }
-      }
-    },
     data: file,
     layout: "fitDataFill",
     pagination: "local",
@@ -142,12 +113,6 @@ export function setData(tableElement: HTMLDivElement, file: TableRow[], addSeman
   return table;
 }
 
-function addSugestionSlot() {
-  const editToggleButton = document.createElement("button");
-  editToggleButton.className = "tabulator-add-sugetion-toggle-button";
-  editToggleButton.setAttribute("toggled", "off");
-}
-
 /**
  * Adiciona os filtros no tabela e desliga-os para não aparecerem no ecrã(aparecem por default).
  */
@@ -167,7 +132,7 @@ function renderFilterProps(tableElement: HTMLDivElement): void {
     paginators.item(i)?.prepend(editToggleButton);
     editToggleButton.addEventListener("click", () => toggleEdit(tableElement, editToggleButton));
     paginators.item(i)?.prepend(savePopUpButton);
-    savePopUpButton.addEventListener("click", () => togglePopUpSave(true, document));
+    savePopUpButton.addEventListener("click", () => togglePopUpSave(true));
   }
 
   // let horario: HTMLElement = document.getElementById(
@@ -185,7 +150,7 @@ function renderFilterProps(tableElement: HTMLDivElement): void {
  *
  * See {@link dateStringFormatCToDate} | {@link getWeekNumber} | {@link getSemesterWeekNumber}.
  */
-export function addSemanasColumns(tabledata: TableRow[]): void {
+function addSemanasColumns(tabledata: TableRow[]): void {
   if (!tabledata.some(row => row.hasOwnProperty('Data da aula'))) return;
 
   const startSemesterDates = getSemesterStarts(tabledata.map((row) => row['Data da aula'] as string));

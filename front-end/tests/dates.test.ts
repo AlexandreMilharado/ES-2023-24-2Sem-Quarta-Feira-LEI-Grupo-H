@@ -5,23 +5,18 @@ import {
   getSemesterWeekNumber,
   getSemesterStarts,
   getWeekNumber,
-  formatDateToDDMMYYYY,
-  getDaysFromRange,
-  getClassesStartingHours,
-  dateComparator,
-  formatStringToMMDDYYY,
-  getDayOfWeekFromDate
+  dateComparator
 } from "../ts/dates";
 
 describe("dateStringFormatCToDate", () => {
   it("devolve Invalid Data se for inserida uma data não válida", () => {
     const result: boolean =
       (dateStringFormatCToDate("38/01/2023") as Date).toString() ===
-      "Invalid Date" &&
+        "Invalid Date" &&
       (dateStringFormatCToDate("18/01/-2023") as Date).toString() ===
-      "Invalid Date" &&
+        "Invalid Date" &&
       (dateStringFormatCToDate("18/01/a") as Date).toString() ===
-      "Invalid Date";
+        "Invalid Date";
     expect(result).toBe(true);
   });
 
@@ -125,44 +120,6 @@ describe("getSemesterStarts", () => {
   });
 });
 
-describe('formatDateToDDMMYYYY', () => {
-  it('converte bem a data', () => {
-    expect(formatDateToDDMMYYYY(new Date(1995, 11, 17))).toStrictEqual("17/12/1995");
-  })
-});
-
-describe('getDaysFromRange', () => {
-  it('converter range de datas', () => {
-    expect(getDaysFromRange(new Date(2024, 0, 1), new Date(2024, 0, 10), "Seg")).toStrictEqual([
-      new Date("2024-01-01"),
-      new Date("2024-01-08"),
-    ]);
-  })
-});
-
-describe('getClassesStartingHours', () => {
-  it('devolve inicio das aulas corretamente num espaço de 90 minutos', () => {
-    expect(getClassesStartingHours(new Date("1 08:00:00"), new Date("1 12:30:00"))).toStrictEqual([
-      "08:00",
-      "09:30",
-      "11:00",
-    ]);
-  })
-  it("devolve inicio das aulas corretamente num espaço de 45 minutos", () => {
-    expect(getClassesStartingHours(new Date("1 08:00:00"), new Date("1 13:00:00"), 45)).toStrictEqual([
-      "08:00",
-      "08:45",
-      "09:30",
-      "10:15",
-      "11:00",
-      "11:45",
-      "12:30",
-      "13:00",
-    ])
-  })
-});
-
-
 describe("dateComparator", () => {
   it("Compara dois objetos Date com a mesma Data baseado apenas no Ano, Mês e dia, desconsiderando a hora", () => {
     expect(
@@ -180,23 +137,4 @@ describe("dateComparator", () => {
       )
     ).toBe(false)
   })
-});
-
-describe("formatStringToMMDDYYY", () => {
-  it("coverter de DD/MM/YYYY para MM/DD/YYYY", () => {
-    expect(formatStringToMMDDYYY("05/12/2031")).toStrictEqual("12/05/2031");
-  })
-});
-
-describe("getDayOfWeekFromDate", () => {
-  it("converte bem as datas de cada dia da semana", () => {
-    const bool = getDayOfWeekFromDate(new Date(2024, 0, 1)) === "Seg" &&
-      getDayOfWeekFromDate(new Date(2024, 0, 2)) === "Ter" &&
-      getDayOfWeekFromDate(new Date(2024, 0, 3)) === "Qua" &&
-      getDayOfWeekFromDate(new Date(2024, 0, 4)) === "Qui" &&
-      getDayOfWeekFromDate(new Date(2024, 0, 5)) === "Sex" &&
-      getDayOfWeekFromDate(new Date(2024, 0, 6)) === "Sab" &&
-      getDayOfWeekFromDate(new Date(2024, 0, 7)) === "Dom";
-    expect(bool).toBe(true);
-  })
-});
+})
