@@ -90,32 +90,31 @@ export function setData(tableElement: HTMLDivElement, file: TableRow[], addSeman
     headerFilterPlaceholder: "Filtrar 'AND'",
     rowClick: function (e: any, row: any) {
       const tableElement: HTMLDivElement = row.getElement().parentElement.parentElement.parentElement;
+      const size = row.getElement().parentElement.querySelectorAll(".row-selected").length;
       if (tableElement.querySelector(".tabulator-edit-toggle-button")?.getAttribute("toggled") == "on") {
         row.delete();
         return;
       }
+
       if (tableElement.id == "HorarioPrincipal") {
         const data = document.getElementById("ReplacementClassInformation") as HTMLDivElement;
         data.innerHTML = JSON.stringify(row.getData());
-      } else {
-        if (tableElement.id == "ReplacementClassTimeTable") {
-          if (row.getElement().parentElement.querySelectorAll(".row-selected").length >= 1) {
-            row.getElement().classList.remove("row-selected");
-            return;
-          }
-        } else {
-          if (row.getElement().parentElement.querySelectorAll(".row-selected").length >=
-            Number(document.getElementById("UcClassInformation")?.querySelector("label")?.querySelector("input")?.value as string)) {
-            row.getElement().classList.remove("row-selected");
-            return;
-          }
-        }
-        if (row.getElement().classList.contains("row-selected")) {
+
+      } else if (tableElement.id == "UcClassTimeTable") {
+        if (size >= Number(document.getElementById("UcClassInformation")?.querySelector("label")?.querySelector("input")?.value as string)) {
           row.getElement().classList.remove("row-selected");
-        } else {
-          row.getElement().classList.add("row-selected");
+          return;
         }
       }
+      console.log(size);
+      if (size >= 1 && tableElement.id != "UcClassTimeTable") {
+        row.getElement().classList.remove("row-selected");
+        return;
+      }
+
+      if (row.getElement().classList.contains("row-selected")) row.getElement().classList.remove("row-selected");
+      else row.getElement().classList.add("row-selected");
+
     },
     data: file,
     layout: "fitDataFill",
