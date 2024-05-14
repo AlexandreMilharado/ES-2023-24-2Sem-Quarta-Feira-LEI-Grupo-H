@@ -67,7 +67,7 @@ function criteria(criteriaDiv: HTMLDivElement) {
  * Cria um grafo onde o nó representa a aula e a aresta representa o conflito
 */
 function createGraph() {
-  const nodes: { "id": string }[] = [];
+  const nodes: { "id": string, "normal": {} }[] = [];
   const edges: { "from": string, "to": string }[] = [];
   const aulas: any = {};
   table.getRows(true).forEach((row: any) => {
@@ -80,19 +80,23 @@ function createGraph() {
     let hours = Number(row.getData()["Hora início da aula"].substring(0, 2));
     let minutes = Number(row.getData()["Hora início da aula"].substring(3, 4));
     let time = "";
+    let color: string = "#0000FF";
     while (true) {
       if (hours < 10) time = `0${hours}:${minutes}0:00`;
       else time = `${hours}:${minutes}0:00`;
       const key: string = row.getData()["Sala atribuída à aula"] + row.getData()["Data da aula"] + time;
       if (row.getData()["Hora fim da aula"] == time) break;
-      if ((key in aulas)) edges.push({ from: JSON.stringify(aula), to: aulas[key] });
+      if ((key in aulas)) {
+        color = "#ff3232";
+        edges.push({ from: JSON.stringify(aula), to: aulas[key] });
+      }
       else aulas[key] = JSON.stringify(aula);
       if (minutes == 3) {
         minutes = 0;
         hours++;
       } else minutes = 3;
     }
-    nodes.push({ "id": JSON.stringify(aula) });
+    nodes.push({ "id": JSON.stringify(aula), normal: { fill: color } });
   });
   const networkDiagramGraph: HTMLDivElement = document.getElementById("NetworkDiagramGraph") as HTMLDivElement;
   networkDiagramGraph.classList.remove("hidden");
