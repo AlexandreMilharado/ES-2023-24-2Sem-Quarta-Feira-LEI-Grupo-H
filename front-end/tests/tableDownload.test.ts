@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { saveFileCSV, saveFileJSON } from "../ts/tableDownload";
+import { saveFileCSV, saveFileJSON, saveToFile } from "../ts/tableDownload";
 import {
 	getEmptyTable,
 	getTestFileJSON,
