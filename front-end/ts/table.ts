@@ -107,7 +107,6 @@ export function setData(tableElement: HTMLDivElement, file: TableRow[], addSeman
           return;
         }
       }
-      console.log(size);
       if (size >= 1 && tableElement.id != "UcClassTimeTable") {
         row.getElement().classList.remove("row-selected");
         return;
@@ -136,18 +135,15 @@ export function setData(tableElement: HTMLDivElement, file: TableRow[], addSeman
   savePopUpButton = document.createElement("button");
   savePopUpButton.className = "tabulator-save-toggle-button";
 
-  // list.innerHTML = "";
   renderFilterProps(tableElement);
   addHiddenButtonsAndInputsToColumns(table, tableElement);
   return table;
 }
 
-function addSugestionSlot() {
-  const editToggleButton = document.createElement("button");
-  editToggleButton.className = "tabulator-add-sugetion-toggle-button";
-  editToggleButton.setAttribute("toggled", "off");
-}
-
+/**
+ * Formata a tabela para aplicar css.
+ * @param {TableRow[]} data - tabela a colocar
+ */
 function formatText(data: TableRow[]) {
   const element = document.getElementById("ReplacementClassInformation") as HTMLDivElement;
   const dataString = JSON.stringify(data).replace(/["']/g, '').split(",");
