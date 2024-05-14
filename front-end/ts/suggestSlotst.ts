@@ -92,19 +92,20 @@ export function addformManualSugestion(replacementClassTimeTable: HTMLDivElement
   const addManualSugestion: HTMLDivElement = document.createElement("div");
   addManualSugestion.innerHTML = `<form id="add-sugestion-form-${addToTable}" method="post">
                 <label for="sala-add-sugestion">Nome da Sala
-                  <input id="sala-add-sugestion" name="sala-add-sugestion" type="text" required>
+                  <input class="styled-input" id="sala-add-sugestion" name="sala-add-sugestion" type="text" required>
                 </label>
                 <label for="data-add-sugestion">Data
-                  <input id="data-add-sugestion" name="data-add-sugestion" type="date" required>
+                  <input class="styled-input" id="data-add-sugestion" name="data-add-sugestion" type="date" required>
                 </label>
                 <label for="inicio-add-sugestion">Hora de Inicio
-                  <input id="inicio-add-sugestion" name="inicio-add-sugestion" type="time" required>
+                  <input class="styled-input" id="inicio-add-sugestion" name="inicio-add-sugestion" type="time" required>
                 </label>
                 <label for="fim-add-sugestion">Hora de Fim
-                  <input id="fim-add-sugestion" name="fim-add-sugestion" type="time" required>
+                  <input class="styled-input" id="fim-add-sugestion" name="fim-add-sugestion" type="time" required>
                 </label>   
-                <input type="submit" value="Adicionar sugestão">
+                <input class="styled-button" type="submit" value="Adicionar sugestão">
               </form>`;
+  addManualSugestion.classList.add("add-suggestion-div");
   replacementClassTimeTable?.parentElement?.querySelector(".flex-centered")?.append(addManualSugestion);
   document.getElementById(`add-sugestion-form-${addToTable}`)?.addEventListener("submit", updateSugestion);
 }
