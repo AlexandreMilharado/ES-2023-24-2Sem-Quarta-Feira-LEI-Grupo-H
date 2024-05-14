@@ -64,7 +64,7 @@ export function addformManualSugestion(replacementClassTimeTable: HTMLDivElement
     const end = fim.split(":");
     const tempTable = setData(document.getElementById("tempTable") as HTMLDivElement, GetCarateristicas(), false);
     tempTable.setFilter("Nome sala", "=", sala);
-    return Number(init[0] + init[1]) < Number(end[0] + end[1]) && tempTable.getRows(true).length > 0;
+    return Number(init[0] + init[1]) < Number(end[0] + end[1]) && Number(init[1]) % 30 == 0 && Number(end[1]) % 30 == 0 && tempTable.getRows(true).length > 0;
   }
   function updateSugestion(event: SubmitEvent) {
     if (!event) return;
@@ -481,6 +481,7 @@ export function removeConflicts(suggestions: any, table: Tabulator): any {
   });
   let rowsWithoutConflicts: any = [];
   console.log(suggestions);
+  console.log(conflitData);
   Object.values(suggestions).forEach((data: any) => {
     if (data["Sala atribuída à aula"] == "") return;
     hours = Number(data["Hora início da aula"].substring(0, 2));
@@ -508,15 +509,18 @@ export function removeConflicts(suggestions: any, table: Tabulator): any {
   return rowsWithoutConflicts;
 }
 
+/**
+ * Verifica e adiciona todas as sugestoes selecionadas do user
+ * @param {HTMLButtonElement} button -Botão que permite adcionar as sugestoes selecionadas a main table
+ */
 export function addSuggestion(button: HTMLButtonElement) {
   const selectedRows: any = button.parentElement?.parentElement?.querySelectorAll(".row-selected");
   const mainTable = Tabulator.prototype.findTable("#HorarioPrincipal")[0];
-  console.log(mainTable.getData())
   let data;
   if (button.parentElement?.parentElement?.id == "ReplacementClassTable") {
     data = JSON.parse(document.getElementById("ReplacementClassInformation")?.textContent as string);
   } else {
-    const userSuggestion = button.parentElement?.querySelectorAll("input") as NodeListOf<HTMLInputElement>;
+    const userSuggestion = button.parentElement?.querySelector("#ucData")?.querySelectorAll("input") as NodeListOf<HTMLInputElement>;
     for (let i = 0; i != userSuggestion?.length; i++)
       if (userSuggestion[i].value == "") return;
     data = {
@@ -524,7 +528,6 @@ export function addSuggestion(button: HTMLButtonElement) {
       "Turma": userSuggestion[3].value, "Inscritos no turno": userSuggestion[4].value, "Características da sala pedida": userSuggestion[5].value
     };
   }
-
   const suggestions: any = {};
   const startSemesterDates = getSemesterStarts(table.getData().map((row: any) => row['Data da aula'] as string));
   selectedRows.forEach((suggestion: any) => {
@@ -541,15 +544,19 @@ export function addSuggestion(button: HTMLButtonElement) {
       "Semana do Semestre": getSemesterWeekNumber(dateStringFormatCToDate(date) as Date, startSemesterDates)
     });
     suggestions[updatedData["Sala atribuída à aula"] + date + updatedData["Hora fim da aula"]] = updatedData;
-    // console.log(table2.getData());
-    if (!removeConflicts(suggestions, mainTable)) {
+    if (!Object.keys(removeConflicts(suggestions, mainTable)).length) {
       window.alert("O criterio inserido tem conflitos");
       return;
     }
     mainTable.addRow(updatedData, true);
   });
-  table.getRows(true).forEach((row: any) => {
+  table.getRows().forEach((row: any) => {
     if (row.getElement().classList.contains("row-selected")) row.delete();
+  });
+  mainTable.getRows().forEach((row: any) => {
+    if (row.getElement().classList.contains("row-selected")) {
+      row.delete();
+    }
   });
 }
 
