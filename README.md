@@ -16,13 +16,13 @@ Aplicação de suporte à gestão de horários.
 
 - [x] Carregar horario a partir de .csv [1]
 - [x] Mostrar e navegar o horário [2]
-- [ ] Mostrar e navegar no cadastro de salas do Iscte [3]
-- [ ] Gravar o Horário [4]
-- [ ] Sugestão de horario de substituição [5]
-- [ ] Sistema de Alocação de Aulas para UCs [6]
-- [ ] Visualização e Personalização de Sugestões de Slots [7]
-- [ ] Visualização Gráfica de Conflitos de Horários [8]
-- [ ] Ocupação de Salas com Heatmaps Personalizáveis [9]
+- [x] Mostrar e navegar no cadastro de salas do Iscte [3]
+- [x] Gravar o Horário [4]
+- [x] Sugestão de horario de substituição [5]
+- [x] Sistema de Alocação de Aulas para UCs [6]
+- [x] Visualização e Personalização de Sugestões de Slots [7]
+- [x] Visualização Gráfica de Conflitos de Horários [8]
+- [x] Ocupação de Salas com Heatmaps Personalizáveis [9]
 
 ## Rodar Servidores
 
@@ -73,7 +73,7 @@ npm run ui
 
 ## Stack utilizada
 
-**Front-end:** HTML, CSS, Javascript, Tabulator, Axios, Jsdoc, Vite, Vitest.
+**Front-end:** HTML, CSS, Javascript, Tabulator, Axios, Jsdoc, Vite, Vitest, cyclomatic-complexity.
 
 **Back-end:** Nodemon, Express, Cors, Axios.
 

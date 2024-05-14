@@ -334,7 +334,7 @@ function showExtraOptions(criteriaContainerComponents: HTMLDivElement, column: s
 /**
  * Cria um botão que permite remover o criterio associado.
  * @param {HTMLDivElement} mainDiv -Container principal
- * @param  {HTMLDivElement} criteriaContainerComponents -Container
+ * @param  {HTMLDivElement} criteriaContainer - Container
  * @param {string} criteriaContainerName -Nome do container, ao qual vai se buscar os criterios
  * @param  {string} className -Nome da classe do botão
  * @param  {HTMLLabelElement} label -Label
@@ -403,7 +403,6 @@ export function getCriteriaInputs(table: Tabulator, mainDiv: HTMLDivElement, cri
       let columnValue: string = column.value;
       let inputValue: string = input.value.trim();
 
-      console.log("inputValue " + inputValue);
       if (inputValue == "") continue;
       if (columnValue == "Características") {
         columnValue = inputValue;
@@ -417,7 +416,6 @@ export function getCriteriaInputs(table: Tabulator, mainDiv: HTMLDivElement, cri
     if (i != filter.length - 1) finalFilter += "( " + criteriaString + " )" + " || "
     else finalFilter += "( " + criteriaString + " )";
   }
-  console.log(finalFilter);
   return { usedColumns, finalFilter };
 }
 
@@ -481,8 +479,6 @@ export function removeConflicts(suggestions: any, table: Tabulator): any {
     }
   });
   let rowsWithoutConflicts: any = [];
-  console.log(suggestions);
-  console.log(conflitData);
   Object.values(suggestions).forEach((data: any) => {
     if (data["Sala atribuída à aula"] == "") return;
     hours = Number(data["Hora início da aula"].substring(0, 2));
@@ -506,7 +502,6 @@ export function removeConflicts(suggestions: any, table: Tabulator): any {
     const key: string = data["Sala atribuída à aula"] + data["Data da aula"];
     if (!haveConflict) rowsWithoutConflicts.push(suggestions[key + data["Hora fim da aula"]]);
   });
-  console.log(rowsWithoutConflicts);
   return rowsWithoutConflicts;
 }
 

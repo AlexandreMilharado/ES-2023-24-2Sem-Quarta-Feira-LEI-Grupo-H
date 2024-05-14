@@ -1,0 +1,1126 @@
+[
+   {
+      "file": "ts\\variables.ts",
+      "functionComplexities": [
+         {
+            "name": "setUserTable",
+            "complexity": 4,
+            "line": 88
+         },
+         {
+            "name": "GetHorario",
+            "complexity": 2,
+            "line": 43
+         },
+         {
+            "name": "GetCarateristicas",
+            "complexity": 2,
+            "line": 53
+         },
+         {
+            "name": "generateEmpyArray",
+            "complexity": 2,
+            "line": 64
+         },
+         {
+            "name": "sortFiles",
+            "complexity": 2,
+            "line": 75
+         },
+         {
+            "name": "addFile",
+            "complexity": 1,
+            "line": 17
+         },
+         {
+            "name": "reset",
+            "complexity": 1,
+            "line": 25
+         },
+         {
+            "name": "getFiles",
+            "complexity": 1,
+            "line": 35
+         },
+         {
+            "name": "global",
+            "complexity": 0,
+            "line": 0
+         }
+      ],
+      "complexityLevel": "ok",
+      "complexitySum": 15
+   },
+   {
+      "file": "ts\\uploadCsv.ts",
+      "functionComplexities": [
+         {
+            "name": "step",
+            "complexity": 35,
+            "line": 16
+         },
+         {
+            "name": "anonymous: __generator",
+            "complexity": 24,
+            "line": 86
+         },
+         {
+            "name": "anonymous: __generator",
+            "complexity": 5,
+            "line": 12
+         },
+         {
+            "name": "needToDownloadCsv",
+            "complexity": 5,
+            "line": 203
+         },
+         {
+            "name": "formatCsv",
+            "complexity": 5,
+            "line": 241
+         },
+         {
+            "name": "fulfilled",
+            "complexity": 4,
+            "line": 6
+         },
+         {
+            "name": "rejected",
+            "complexity": 4,
+            "line": 7
+         },
+         {
+            "name": "anonymous: catch",
+            "complexity": 4,
+            "line": 136
+         },
+         {
+            "name": "anonymous: onload",
+            "complexity": 4,
+            "line": 217
+         },
+         {
+            "name": "step",
+            "complexity": 3,
+            "line": 8
+         },
+         {
+            "name": "anonymous: Promise",
+            "complexity": 3,
+            "line": 81
+         },
+         {
+            "name": "anonymous: __generator",
+            "complexity": 3,
+            "line": 154
+         },
+         {
+            "name": "anonymous: then",
+            "complexity": 3,
+            "line": 160
+         },
+         {
+            "name": "anonymous: __generator",
+            "complexity": 3,
+            "line": 290
+         },
+         {
+            "name": "anonymous: url",
+            "complexity": 3,
+            "line": 292
+         },
+         {
+            "name": "anonymous: __awaiter",
+            "complexity": 2,
+            "line": 3
+         },
+         {
+            "name": "adopt",
+            "complexity": 2,
+            "line": 4
+         },
+         {
+            "name": "anonymous: P",
+            "complexity": 2,
+            "line": 4
+         },
+         {
+            "name": "anonymous: Promise",
+            "complexity": 2,
+            "line": 5
+         },
+         {
+            "name": "anonymous: sent",
+            "complexity": 2,
+            "line": 13
+         },
+         {
+            "name": "anonymous: then",
+            "complexity": 2,
+            "line": 122
+         },
+         {
+            "name": "anonymous: then",
+            "complexity": 2,
+            "line": 132
+         },
+         {
+            "name": "anonymous: then",
+            "complexity": 2,
+            "line": 273
+         },
+         {
+            "name": "anonymous: iterator",
+            "complexity": 1,
+            "line": 14
+         },
+         {
+            "name": "verb",
+            "complexity": 1,
+            "line": 15
+         },
+         {
+            "name": "anonymous: n",
+            "complexity": 1,
+            "line": 15
+         },
+         {
+            "name": "handleSubmit",
+            "complexity": 1,
+            "line": 80
+         },
+         {
+            "name": "anonymous: then",
+            "complexity": 1,
+            "line": 108
+         },
+         {
+            "name": "anonymous: catch",
+            "complexity": 1,
+            "line": 109
+         },
+         {
+            "name": "anonymous: then",
+            "complexity": 1,
+            "line": 125
+         },
+         {
+            "name": "checkBackendStatus",
+            "complexity": 1,
+            "line": 151
+         },
+         {
+            "name": "anonymous: Promise",
+            "complexity": 1,
+            "line": 152
+         },
+         {
+            "name": "anonymous: catch",
+            "complexity": 1,
+            "line": 159
+         },
+         {
+            "name": "formDataToJson",
+            "complexity": 1,
+            "line": 186
+         },
+         {
+            "name": "formatToString",
+            "complexity": 1,
+            "line": 212
+         },
+         {
+            "name": "anonymous: Promise",
+            "complexity": 1,
+            "line": 213
+         },
+         {
+            "name": "anonymous: __generator",
+            "complexity": 1,
+            "line": 214
+         },
+         {
+            "name": "anonymous: Promise",
+            "complexity": 1,
+            "line": 215
+         },
+         {
+            "name": "anonymous: map",
+            "complexity": 1,
+            "line": 247
+         },
+         {
+            "name": "anonymous: filter",
+            "complexity": 1,
+            "line": 250
+         },
+         {
+            "name": "anonymous: map",
+            "complexity": 1,
+            "line": 251
+         },
+         {
+            "name": "anonymous: reduce",
+            "complexity": 1,
+            "line": 252
+         },
+         {
+            "name": "getRemoteFile",
+            "complexity": 1,
+            "line": 265
+         },
+         {
+            "name": "anonymous: Promise",
+            "complexity": 1,
+            "line": 266
+         },
+         {
+            "name": "anonymous: __generator",
+            "complexity": 1,
+            "line": 267
+         },
+         {
+            "name": "anonymous: then",
+            "complexity": 1,
+            "line": 272
+         },
+         {
+            "name": "anonymous: catch",
+            "complexity": 1,
+            "line": 274
+         },
+         {
+            "name": "loadInitialCsvFiles",
+            "complexity": 1,
+            "line": 282
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 1,
+            "line": 289
+         },
+         {
+            "name": "anonymous: _this",
+            "complexity": 1,
+            "line": 289
+         },
+         {
+            "name": "global",
+            "complexity": 0,
+            "line": 0
+         }
+      ],
+      "complexityLevel": "error",
+      "complexitySum": 151
+   },
+   {
+      "file": "ts\\tableDownload.ts",
+      "functionComplexities": [
+         {
+            "name": "saveFileCSV",
+            "complexity": 5,
+            "line": 63
+         },
+         {
+            "name": "saveFileJSON",
+            "complexity": 4,
+            "line": 36
+         },
+         {
+            "name": "saveToFile",
+            "complexity": 1,
+            "line": 9
+         },
+         {
+            "name": "anonymous: some",
+            "complexity": 1,
+            "line": 70
+         },
+         {
+            "name": "anonymous: some",
+            "complexity": 1,
+            "line": 71
+         },
+         {
+            "name": "anonymous: map",
+            "complexity": 1,
+            "line": 85
+         },
+         {
+            "name": "anonymous: reduce",
+            "complexity": 1,
+            "line": 87
+         },
+         {
+            "name": "anonymous: map",
+            "complexity": 1,
+            "line": 93
+         },
+         {
+            "name": "anonymous: map",
+            "complexity": 1,
+            "line": 97
+         },
+         {
+            "name": "anonymous: reduce",
+            "complexity": 1,
+            "line": 99
+         },
+         {
+            "name": "anonymous: reduce",
+            "complexity": 1,
+            "line": 102
+         },
+         {
+            "name": "global",
+            "complexity": 0,
+            "line": 0
+         }
+      ],
+      "complexityLevel": "ok",
+      "complexitySum": 18
+   },
+   {
+      "file": "ts\\table.ts",
+      "functionComplexities": [
+         {
+            "name": "anonymous: rowClick",
+            "complexity": 16,
+            "line": 78
+         },
+         {
+            "name": "renderFilterProps",
+            "complexity": 8,
+            "line": 142
+         },
+         {
+            "name": "setData",
+            "complexity": 6,
+            "line": 70
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 5,
+            "line": 209
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 5,
+            "line": 228
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 5,
+            "line": 249
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 5,
+            "line": 260
+         },
+         {
+            "name": "addHiddenColumns",
+            "complexity": 5,
+            "line": 287
+         },
+         {
+            "name": "toggleFilter",
+            "complexity": 3,
+            "line": 194
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 3,
+            "line": 202
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 3,
+            "line": 217
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 2,
+            "line": 152
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 2,
+            "line": 154
+         },
+         {
+            "name": "addSemanasColumns",
+            "complexity": 2,
+            "line": 172
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 2,
+            "line": 176
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 2,
+            "line": 238
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 2,
+            "line": 240
+         },
+         {
+            "name": "toggleEdit",
+            "complexity": 2,
+            "line": 246
+         },
+         {
+            "name": "hideColumn",
+            "complexity": 2,
+            "line": 276
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 2,
+            "line": 304
+         },
+         {
+            "name": "customFilter",
+            "complexity": 2,
+            "line": 317
+         },
+         {
+            "name": "anonymous: autoColumnsDefinitions",
+            "complexity": 1,
+            "line": 118
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 1,
+            "line": 120
+         },
+         {
+            "name": "addSugestionSlot",
+            "complexity": 1,
+            "line": 134
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 1,
+            "line": 156
+         },
+         {
+            "name": "anonymous: some",
+            "complexity": 1,
+            "line": 173
+         },
+         {
+            "name": "anonymous: map",
+            "complexity": 1,
+            "line": 175
+         },
+         {
+            "name": "addHiddenButtonsAndInputsToColumns",
+            "complexity": 1,
+            "line": 226
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 1,
+            "line": 293
+         },
+         {
+            "name": "filterByOr",
+            "complexity": 1,
+            "line": 301
+         },
+         {
+            "name": "global",
+            "complexity": 0,
+            "line": 0
+         }
+      ],
+      "complexityLevel": "warning",
+      "complexitySum": 93
+   },
+   {
+      "file": "ts\\suggestSlotsUC.ts",
+      "functionComplexities": [
+         {
+            "name": "createHtmlElements",
+            "complexity": 8,
+            "line": 9
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 2,
+            "line": 18
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 1,
+            "line": 37
+         },
+         {
+            "name": "extraElements",
+            "complexity": 1,
+            "line": 48
+         },
+         {
+            "name": "global",
+            "complexity": 0,
+            "line": 0
+         }
+      ],
+      "complexityLevel": "ok",
+      "complexitySum": 12
+   },
+   {
+      "file": "ts\\suggestSlotst.ts",
+      "functionComplexities": [
+         {
+            "name": "showCriteriaSuggestSlots",
+            "complexity": 18,
+            "line": 108
+         },
+         {
+            "name": "addSuggestion",
+            "complexity": 18,
+            "line": 475
+         },
+         {
+            "name": "addformManualSugestion",
+            "complexity": 15,
+            "line": 68
+         },
+         {
+            "name": "createHtmlElements",
+            "complexity": 12,
+            "line": 25
+         },
+         {
+            "name": "anonymous: _loop_1",
+            "complexity": 11,
+            "line": 533
+         },
+         {
+            "name": "showExtraOptions",
+            "complexity": 10,
+            "line": 259
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 10,
+            "line": 441
+         },
+         {
+            "name": "anonymous: _loop_2",
+            "complexity": 9,
+            "line": 579
+         },
+         {
+            "name": "anonymous: __spreadArray",
+            "complexity": 8,
+            "line": 2
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 8,
+            "line": 123
+         },
+         {
+            "name": "createCriteriaContainer",
+            "complexity": 8,
+            "line": 155
+         },
+         {
+            "name": "getCriteriaInputs",
+            "complexity": 8,
+            "line": 338
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 8,
+            "line": 416
+         },
+         {
+            "name": "createSelectWithOptionsToColumns",
+            "complexity": 5,
+            "line": 220
+         },
+         {
+            "name": "isValidForms",
+            "complexity": 4,
+            "line": 70
+         },
+         {
+            "name": "addNewCriteriaOptionToSuggestSlots",
+            "complexity": 4,
+            "line": 203
+         },
+         {
+            "name": "generateSugestions",
+            "complexity": 4,
+            "line": 381
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 4,
+            "line": 496
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 3,
+            "line": 35
+         },
+         {
+            "name": "updateSugestion",
+            "complexity": 3,
+            "line": 77
+         },
+         {
+            "name": "addNewCriteriaContainer",
+            "complexity": 3,
+            "line": 139
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 3,
+            "line": 188
+         },
+         {
+            "name": "createSelectWithOptionsToClassDuration",
+            "complexity": 3,
+            "line": 247
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 3,
+            "line": 319
+         },
+         {
+            "name": "hoursBasedOnFilter",
+            "complexity": 3,
+            "line": 574
+         },
+         {
+            "name": "anonymous: map",
+            "complexity": 3,
+            "line": 608
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 2,
+            "line": 54
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 2,
+            "line": 112
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 2,
+            "line": 118
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 2,
+            "line": 239
+         },
+         {
+            "name": "getCharacteristics",
+            "complexity": 2,
+            "line": 310
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 2,
+            "line": 390
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 2,
+            "line": 519
+         },
+         {
+            "name": "daysBasedOnFilter",
+            "complexity": 2,
+            "line": 530
+         },
+         {
+            "name": "createNewCriteriaButton",
+            "complexity": 1,
+            "line": 185
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 1,
+            "line": 234
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 1,
+            "line": 276
+         },
+         {
+            "name": "createRemoveButton",
+            "complexity": 1,
+            "line": 289
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 1,
+            "line": 292
+         },
+         {
+            "name": "removeConflicts",
+            "complexity": 1,
+            "line": 411
+         },
+         {
+            "name": "anonymous: map",
+            "complexity": 1,
+            "line": 495
+         },
+         {
+            "name": "anonymous: filter",
+            "complexity": 1,
+            "line": 562
+         },
+         {
+            "name": "anonymous: every",
+            "complexity": 1,
+            "line": 562
+         },
+         {
+            "name": "anonymous: filter",
+            "complexity": 1,
+            "line": 603
+         },
+         {
+            "name": "getFilteredDateHourCombination",
+            "complexity": 1,
+            "line": 620
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 1,
+            "line": 623
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 1,
+            "line": 624
+         },
+         {
+            "name": "global",
+            "complexity": 0,
+            "line": 0
+         }
+      ],
+      "complexityLevel": "warning",
+      "complexitySum": 217
+   },
+   {
+      "file": "ts\\popUp.ts",
+      "functionComplexities": [
+         {
+            "name": "togglePopUp",
+            "complexity": 6,
+            "line": 14
+         },
+         {
+            "name": "togglePopUpSave",
+            "complexity": 6,
+            "line": 30
+         },
+         {
+            "name": "global",
+            "complexity": 0,
+            "line": 0
+         }
+      ],
+      "complexityLevel": "ok",
+      "complexitySum": 12
+   },
+   {
+      "file": "ts\\networkGraphDiagram.ts",
+      "functionComplexities": [
+         {
+            "name": "getCriteriaInputs",
+            "complexity": 11,
+            "line": 134
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 9,
+            "line": 63
+         },
+         {
+            "name": "createHtmlElements",
+            "complexity": 7,
+            "line": 12
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 3,
+            "line": 36
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 2,
+            "line": 19
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 2,
+            "line": 29
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 2,
+            "line": 52
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 2,
+            "line": 115
+         },
+         {
+            "name": "criteria",
+            "complexity": 1,
+            "line": 49
+         },
+         {
+            "name": "createGraph",
+            "complexity": 1,
+            "line": 59
+         },
+         {
+            "name": "addNewCriteriaContainer",
+            "complexity": 1,
+            "line": 108
+         },
+         {
+            "name": "allOptions",
+            "complexity": 1,
+            "line": 122
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 1,
+            "line": 124
+         },
+         {
+            "name": "global",
+            "complexity": 0,
+            "line": 0
+         }
+      ],
+      "complexityLevel": "warning",
+      "complexitySum": 43
+   },
+   {
+      "file": "ts\\interfaces.ts",
+      "functionComplexities": [
+         {
+            "name": "global",
+            "complexity": 0,
+            "line": 0
+         }
+      ],
+      "complexityLevel": "ok",
+      "complexitySum": 0
+   },
+   {
+      "file": "ts\\init.ts",
+      "functionComplexities": [
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 11,
+            "line": 12
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 1,
+            "line": 14
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 1,
+            "line": 17
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 1,
+            "line": 21
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 1,
+            "line": 24
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 1,
+            "line": 27
+         },
+         {
+            "name": "global",
+            "complexity": 0,
+            "line": 0
+         }
+      ],
+      "complexityLevel": "warning",
+      "complexitySum": 16
+   },
+   {
+      "file": "ts\\heatMap.ts",
+      "functionComplexities": [
+         {
+            "name": "anonymous: forEach",
+            "complexity": 13,
+            "line": 103
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 12,
+            "line": 39
+         },
+         {
+            "name": "createHtmlElementsHeat",
+            "complexity": 7,
+            "line": 15
+         },
+         {
+            "name": "templateData",
+            "complexity": 7,
+            "line": 166
+         },
+         {
+            "name": "createHeatMap",
+            "complexity": 6,
+            "line": 204
+         },
+         {
+            "name": "getHeat",
+            "complexity": 5,
+            "line": 63
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 2,
+            "line": 22
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 2,
+            "line": 32
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 1,
+            "line": 83
+         },
+         {
+            "name": "createDataHeat",
+            "complexity": 1,
+            "line": 97
+         },
+         {
+            "name": "criteria",
+            "complexity": 1,
+            "line": 152
+         },
+         {
+            "name": "anonymous: addEventListener",
+            "complexity": 1,
+            "line": 155
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 1,
+            "line": 208
+         },
+         {
+            "name": "global",
+            "complexity": 0,
+            "line": 0
+         }
+      ],
+      "complexityLevel": "warning",
+      "complexitySum": 59
+   },
+   {
+      "file": "ts\\dates.ts",
+      "functionComplexities": [
+         {
+            "name": "getClassesStartingHours",
+            "complexity": 13,
+            "line": 115
+         },
+         {
+            "name": "anonymous: forEach",
+            "complexity": 10,
+            "line": 65
+         },
+         {
+            "name": "getSemesterWeekNumber",
+            "complexity": 9,
+            "line": 92
+         },
+         {
+            "name": "getDayOfWeek",
+            "complexity": 8,
+            "line": 173
+         },
+         {
+            "name": "getDaysFromRange",
+            "complexity": 7,
+            "line": 146
+         },
+         {
+            "name": "dateStringFormatCToDate",
+            "complexity": 6,
+            "line": 22
+         },
+         {
+            "name": "getWeekNumber",
+            "complexity": 5,
+            "line": 43
+         },
+         {
+            "name": "formatDateToDDMMYYYY",
+            "complexity": 3,
+            "line": 190
+         },
+         {
+            "name": "dateComparator",
+            "complexity": 3,
+            "line": 213
+         },
+         {
+            "name": "getDayOfWeekFromDate",
+            "complexity": 2,
+            "line": 163
+         },
+         {
+            "name": "formatStringToMMDDYYY",
+            "complexity": 2,
+            "line": 202
+         },
+         {
+            "name": "getSemesterStarts",
+            "complexity": 1,
+            "line": 63
+         },
+         {
+            "name": "global",
+            "complexity": 0,
+            "line": 0
+         }
+      ],
+      "complexityLevel": "warning",
+      "complexitySum": 69
+   }
+]

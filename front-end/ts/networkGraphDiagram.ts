@@ -155,7 +155,6 @@ function getCriteriaInputs(mainDiv: HTMLDivElement): string {
       let columnValue: string = column.value;
       let inputValue: string = input.value.trim();
       let typeData: string = "";
-      console.log("inputValue " + inputValue)
       if (inputValue == "") continue;
       if (columnValue == "Características") {
         columnValue = inputValue;
@@ -174,7 +173,6 @@ function getCriteriaInputs(mainDiv: HTMLDivElement): string {
     if (i != filter.length - 1) finalFilter += "( " + criteriaString + " )" + " || "
     else finalFilter += "( " + criteriaString + " )";
   }
-  console.log("finalFilter: " + finalFilter);
   if (finalFilter == "(  )") finalFilter = "";
   return finalFilter;
 }

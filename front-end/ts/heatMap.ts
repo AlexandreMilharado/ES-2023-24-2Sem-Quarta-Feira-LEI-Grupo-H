@@ -54,7 +54,7 @@ export function createHtmlElementsHeat(documentElement: Document): void {
  * Cria um heat map onde cada celula representa a disponibilidade/ocupação das salas
  * @param {any} rooms -Salas que vão ser usadas nos dados para criar o heat map
  * @param {boolean} isOccupation -Indica se o tipo de heat map é de ocupação ou disponibilidade
- * @param {boolean} isDayOfWeek- Indica se esta em modo de dia da semana
+ * @param {boolean} isDayOfWeek - Indica se esta em modo de dia da semana
  * @param {Document} documentElement - Document a buscar dados
  * @returns {any} -Retorna os dados que vão ser usados para criar o heat map
 */
@@ -128,7 +128,6 @@ function createDataHeat(rooms: any, dataHeat: any, isDayOfWeek: boolean): any {
             else numberOfRoomsPerDay[date] = 1;
         }
     });
-    console.log(numberOfRoomsPerDay);
     return numberOfRoomsPerDay;
 }
 
