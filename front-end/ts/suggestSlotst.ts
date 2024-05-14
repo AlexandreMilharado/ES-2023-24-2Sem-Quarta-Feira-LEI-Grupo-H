@@ -26,7 +26,8 @@ export function createHtmlElements(): void {
   suggestSlotReplaceButton.addEventListener("click", () => {
     if (suggestSlotReplaceButton.value == "On") {
       suggestSlotReplaceButton.value = "Off"
-      replacementClassContainer.style.display = "none";
+      if (replacementClassContainer != null)
+        replacementClassContainer.style.display = "none";
     } else {
       suggestSlotReplaceButton.value = "On";
       replacementClassContainer.style.display = "block";
@@ -43,10 +44,11 @@ export function createHtmlElements(): void {
   buttonAddSuggestions.addEventListener("click", () => addSuggestion(buttonAddSuggestions));
 
   showCriteriaSuggestSlots(replacementClassCriteriaContainer, replacementClassTimeTable);
-  replacementClassContainer.style.display = "none";
+  if (replacementClassContainer != null)
+    replacementClassContainer.style.display = "none";
   document.getElementById("SuggestSlots")?.insertBefore(suggestSlotReplaceButton,
     document.getElementById("ReplacementClass") as HTMLDivElement);
-  replacementClassTimeTable.parentElement?.querySelector(".flex-centered")?.appendChild(buttonAddSuggestions);
+  replacementClassTimeTable?.parentElement?.querySelector(".flex-centered")?.appendChild(buttonAddSuggestions);
   //
 
 }
@@ -86,7 +88,7 @@ export function addformManualSugestion(replacementClassTimeTable: HTMLDivElement
     (event.currentTarget as HTMLFormElement).reset();
   }
 
-  replacementClassTimeTable.parentElement?.querySelector(".flex-centered")?.append(stringToHTMLElement(`<h3>Adicionar uma sugestão manualmente!</h3>`) as HTMLElement)
+  replacementClassTimeTable?.parentElement?.querySelector(".flex-centered")?.append(stringToHTMLElement(`<h3>Adicionar uma sugestão manualmente!</h3>`) as HTMLElement)
   const addManualSugestion: HTMLDivElement = document.createElement("div");
   addManualSugestion.innerHTML = `<form id="add-sugestion-form-${addToTable}" method="post">
                 <label for="sala-add-sugestion">Nome da Sala
@@ -103,7 +105,7 @@ export function addformManualSugestion(replacementClassTimeTable: HTMLDivElement
                 </label>   
                 <input type="submit" value="Adicionar sugestão">
               </form>`;
-  replacementClassTimeTable.parentElement?.querySelector(".flex-centered")?.append(addManualSugestion);
+  replacementClassTimeTable?.parentElement?.querySelector(".flex-centered")?.append(addManualSugestion);
   document.getElementById(`add-sugestion-form-${addToTable}`)?.addEventListener("submit", updateSugestion);
 }
 /**
@@ -112,23 +114,23 @@ export function addformManualSugestion(replacementClassTimeTable: HTMLDivElement
  * @param  {HTMLDivElement} timeTableElement --Container da tabela dos horarios
 */
 export function showCriteriaSuggestSlots(mainDiv: HTMLDivElement, timeTableElement: HTMLDivElement): void {
-  const buttonAddNewCriteriaDivTimeTable: HTMLButtonElement = document.createElement("button");
+  const buttonAddNewCriteriaDivTimeTable: HTMLButtonElement = document?.createElement("button");
   buttonAddNewCriteriaDivTimeTable.textContent = "Or"
-  const timeTableContainer = mainDiv.querySelector(".ContainerTimeTable") as HTMLDivElement;
+  const timeTableContainer = mainDiv?.querySelector(".ContainerTimeTable") as HTMLDivElement;
   buttonAddNewCriteriaDivTimeTable.addEventListener("click", () => addNewCriteriaContainer(timeTableContainer, buttonAddNewCriteriaDivTimeTable, "timeTable"));
 
 
-  timeTableContainer.appendChild(buttonAddNewCriteriaDivTimeTable);
+  timeTableContainer?.appendChild(buttonAddNewCriteriaDivTimeTable);
 
-  createCriteriaContainer(timeTableContainer, buttonAddNewCriteriaDivTimeTable, "timeTable").prepend(createSelectWithOptionsToClassDuration());
+  createCriteriaContainer(timeTableContainer, buttonAddNewCriteriaDivTimeTable, "timeTable").prepend(createSelectWithOptionsToClassDuration(document));
 
-  const buttonAddNewCriteriaDivCharacteristics: HTMLButtonElement = document.createElement("button");
+  const buttonAddNewCriteriaDivCharacteristics: HTMLButtonElement = document?.createElement("button");
   buttonAddNewCriteriaDivCharacteristics.textContent = "Or"
-  const characteristicsContainer = mainDiv.querySelector(".ContainerCharacteristics") as HTMLDivElement;
+  const characteristicsContainer = mainDiv?.querySelector(".ContainerCharacteristics") as HTMLDivElement;
   buttonAddNewCriteriaDivCharacteristics.addEventListener("click", () => addNewCriteriaContainer(characteristicsContainer, buttonAddNewCriteriaDivCharacteristics, "characteristics"));
 
 
-  characteristicsContainer.appendChild(buttonAddNewCriteriaDivCharacteristics);
+  characteristicsContainer?.appendChild(buttonAddNewCriteriaDivCharacteristics);
 
   createCriteriaContainer(characteristicsContainer, buttonAddNewCriteriaDivCharacteristics, "characteristics");
 
@@ -139,7 +141,7 @@ export function showCriteriaSuggestSlots(mainDiv: HTMLDivElement, timeTableEleme
     generateSugestions(mainDiv, timeTableElement);
   });
   buttonCreateTable.classList.add("styled-button");
-  mainDiv.appendChild(buttonCreateTable);
+  mainDiv?.appendChild(buttonCreateTable);
 }
 /**
  * Cria um novo container com um criterio inserido adicionando tambem um botão de apagar o cotnainer e
@@ -178,13 +180,13 @@ export function createCriteriaContainer(mainDiv: HTMLDivElement, buttonAddNewCri
   labelDiv.appendChild(textLabel);
   //
 
-  mainDiv.insertBefore(criteriaContainer, buttonAddNewCriteriaContainer);
+  mainDiv?.insertBefore(criteriaContainer, buttonAddNewCriteriaContainer);
   const buttonAddNewCriteria: HTMLButtonElement = createNewCriteriaButton(mainDiv, criteriaContainer, typeOfOptions);
   criteriaContainer.appendChild(buttonAddNewCriteria);
   const element: HTMLDivElement = addNewCriteriaOptionToSuggestSlots(typeOfOptions);
   criteriaContainer.insertBefore(element, buttonAddNewCriteria);
   criteriaContainer.appendChild(labelDiv);
-  mainDiv.querySelector(".criteria-label")
+  mainDiv?.querySelector(".criteria-label")
 
   return criteriaContainer;
 }
@@ -286,8 +288,8 @@ function createSelectWithOptionsToColumns(criteriaContainerComponents: HTMLDivEl
  * Cria uma label onde dentro dela se encontra um select com as opçoes inseridas da durção da aula.
  * @returns {HTMLLabelElement} -Retorna um label
  */
-function createSelectWithOptionsToClassDuration(): HTMLLabelElement {
-  const select: HTMLLabelElement = document.createElement("label");
+export function createSelectWithOptionsToClassDuration(documentElment: Document): HTMLLabelElement {
+  const select: HTMLLabelElement = documentElment?.createElement("label");
   const options: string = `       Duração:
                 <select class="criteria-duration-selector">
                     <option value="30">30m</option>

@@ -166,7 +166,7 @@ function renderFilterProps(tableElement: HTMLDivElement): void {
     paginators.item(i)?.prepend(editToggleButton);
     editToggleButton.addEventListener("click", () => toggleEdit(tableElement, editToggleButton));
     paginators.item(i)?.prepend(savePopUpButton);
-    savePopUpButton.addEventListener("click", () => togglePopUpSave(true));
+    savePopUpButton.addEventListener("click", () => togglePopUpSave(true, document));
   }
 
   // let horario: HTMLElement = document.getElementById(
