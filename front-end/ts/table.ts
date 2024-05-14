@@ -97,8 +97,9 @@ export function setData(tableElement: HTMLDivElement, file: TableRow[], addSeman
       }
 
       if (tableElement.id == "HorarioPrincipal") {
-        const data = document.getElementById("ReplacementClassInformation") as HTMLDivElement;
-        data.innerHTML = JSON.stringify(row.getData());
+        formatText(row.getData());
+        // const data = document.getElementById("ReplacementClassInformation") as HTMLDivElement;
+        // data.innerHTML = JSON.stringify(row.getData());
 
       } else if (tableElement.id == "UcClassTimeTable") {
         if (size >= Number(document.getElementById("UcClassInformation")?.querySelector("label")?.querySelector("input")?.value as string)) {
@@ -145,6 +146,26 @@ function addSugestionSlot() {
   const editToggleButton = document.createElement("button");
   editToggleButton.className = "tabulator-add-sugetion-toggle-button";
   editToggleButton.setAttribute("toggled", "off");
+}
+
+function formatText(data: TableRow[]) {
+  const element = document.getElementById("ReplacementClassInformation") as HTMLDivElement;
+  const dataString = JSON.stringify(data).replace(/["']/g, '').split(",");
+  let string = ""
+  const container = document.createElement("div");
+  for (let i = 0; i != dataString.length; i++) {
+    const column = dataString[i].split(":");
+    string +=
+      `
+        <div>
+          <span>
+            ${column[0]}
+          </span>
+          ${column[1]}
+        </div>
+      `
+  }
+  element.innerHTML = string;
 }
 
 /**

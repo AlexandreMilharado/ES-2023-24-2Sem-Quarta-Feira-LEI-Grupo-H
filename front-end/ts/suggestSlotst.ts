@@ -520,7 +520,7 @@ export function addSuggestion(button: HTMLButtonElement) {
   if (button.parentElement?.parentElement?.id == "ReplacementClassTable") {
     data = JSON.parse(document.getElementById("ReplacementClassInformation")?.textContent as string);
   } else {
-    const userSuggestion = button.parentElement?.querySelectorAll("input") as NodeListOf<HTMLInputElement>;
+    const userSuggestion = button.parentElement?.querySelector("#ucData")?.querySelectorAll("input") as NodeListOf<HTMLInputElement>;
     for (let i = 0; i != userSuggestion?.length; i++)
       if (userSuggestion[i].value == "") return;
     data = {
@@ -528,7 +528,6 @@ export function addSuggestion(button: HTMLButtonElement) {
       "Turma": userSuggestion[3].value, "Inscritos no turno": userSuggestion[4].value, "Características da sala pedida": userSuggestion[5].value
     };
   }
-
   const suggestions: any = {};
   const startSemesterDates = getSemesterStarts(table.getData().map((row: any) => row['Data da aula'] as string));
   selectedRows.forEach((suggestion: any) => {
